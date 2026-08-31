@@ -1,15 +1,15 @@
-# CSFE Certificate Registry
+# SNCF Certificate Registry
 
-The public, tamper-evident registry of everyone certified as a
-**Certified Sheeternetes Fundamentals Engineer (CSFE)**.
+The public, tamper-evident registry of everyone certified by the
+**Sheet-Native Computing Foundation**.
 
-- **2** credentials issued to date.
-- Anyone (HR, hiring managers, the merely curious) can verify a holder here or at
-  [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
-- Each credential is a JSON file in this folder (`SFEnnnnnn.json`) and a row below.
-- Serials are sequential and assigned by an automated workflow — they cannot be self-minted.
+- **3** credentials issued to date, across 3 programs.
+- Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
+- Each credential is a JSON file in this folder and a row below. Serials are assigned by an
+  automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
 
-| Serial | Holder | Issued | Score | Release | Request |
-|--------|--------|--------|-------|---------|---------|
-| `SFE000001` | [@tym83](https://github.com/tym83) | 2026-08-31 | 10/10 | v0.0.0.0.0.2 | [#5](https://github.com/sncfoundation/sheeternetes/issues/5) |
-| `SFE000002` | [@GoodDingo](https://github.com/GoodDingo) | 2026-08-31 | 9/10 | v0.0.0.0.0.2 | [#37](https://github.com/sncfoundation/sheeternetes/issues/37) |
+| Serial | Holder | Program | Issued | Score | Request |
+|--------|--------|---------|--------|-------|---------|
+| `SFE000001` | [@tym83](https://github.com/tym83) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 10/10 | [#5](https://github.com/tym83/sheeternetes/issues/5) |
+| `SFE000002` | [@GoodDingo](https://github.com/GoodDingo) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 9/10 | [#37](https://github.com/tym83/sheeternetes/issues/37) |
+| `SLM000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Networking Engineer (Sheetlium) | 2026-08-31 | 10/10 | [#7](https://github.com/sncfoundation/sncfoundation.github.io/issues/7) |
