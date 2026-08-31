@@ -3,8 +3,10 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **26** credentials issued to date.
-- Verify a holder at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
+- **27** credentials issued to date, across 19 programs.
+- Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
+- Each credential is a JSON file in this folder and a row below. Serials are assigned by an
+  automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
 
 | Serial | Holder | Program | Issued | Score | Request |
 |--------|--------|---------|--------|-------|---------|
@@ -19,6 +21,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SFE000001` | [@tym83](https://github.com/tym83) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 10/10 | [#5](https://github.com/tym83/sheeternetes/issues/5) |
 | `SFE000002` | [@GoodDingo](https://github.com/GoodDingo) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 9/10 | [#37](https://github.com/tym83/sheeternetes/issues/37) |
 | `SFE000003` | [@Enkilangel](https://github.com/Enkilangel) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | honorary | [#41](https://github.com/sncfoundation/sncfoundation.github.io/issues/41) |
+| `SFE000004` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 9/10 | [#43](https://github.com/sncfoundation/sncfoundation.github.io/issues/43) |
 | `SFN000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-08-31 | 10/10 | [#40](https://github.com/sncfoundation/sncfoundation.github.io/issues/40) |
 | `SFO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native FinOps Engineer (SheetFinOps) | 2026-08-31 | 10/10 | [#33](https://github.com/sncfoundation/sncfoundation.github.io/issues/33) |
 | `SHB000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Platform Engineer (SheetHub) | 2026-08-31 | 10/10 | [#26](https://github.com/sncfoundation/sncfoundation.github.io/issues/26) |
