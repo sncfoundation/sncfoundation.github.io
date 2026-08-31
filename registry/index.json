@@ -1,6 +1,6 @@
 {
   "program": "Certified Sheeternetes Fundamentals Engineer (CSFE)",
-  "count": 22,
+  "count": 26,
   "certificates": [
     {
       "serial": "RNK000001",
@@ -48,6 +48,23 @@
       ],
       "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/36",
       "issue_number": 36
+    },
+    {
+      "serial": "RNK000003",
+      "type": "rank",
+      "rank": "SheetAstronaut",
+      "rank_key": "sheetastronaut",
+      "holder": "Enkilangel",
+      "date": "2026-08-31",
+      "program": "Rank: SheetAstronaut",
+      "credentials": 3,
+      "based_on": [
+        "SFE000003",
+        "SLM000002",
+        "SLX000002"
+      ],
+      "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/41",
+      "issue_number": 41
     },
     {
       "serial": "SAO000001",
@@ -132,6 +149,18 @@
       "program": "Certified Sheeternetes Fundamentals Engineer (CSFE)"
     },
     {
+      "serial": "SFE000003",
+      "seq": 3,
+      "holder": "Enkilangel",
+      "date": "2026-08-31",
+      "score": "honorary",
+      "program": "Certified Sheeternetes Fundamentals Engineer (CSFE)",
+      "program_key": "sheeternetes",
+      "release": null,
+      "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/41",
+      "issue_number": 41
+    },
+    {
       "serial": "SFN000001",
       "seq": 1,
       "holder": "tym83",
@@ -204,6 +233,18 @@
       "issue_number": 7
     },
     {
+      "serial": "SLM000002",
+      "seq": 2,
+      "holder": "Enkilangel",
+      "date": "2026-08-31",
+      "score": "honorary",
+      "program": "Certified Sheet-Native Networking Engineer (Sheetlium)",
+      "program_key": "sheetlium",
+      "release": null,
+      "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/41",
+      "issue_number": 41
+    },
+    {
       "serial": "SLP000001",
       "seq": 1,
       "holder": "tym83",
@@ -226,6 +267,18 @@
       "release": null,
       "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/8",
       "issue_number": 8
+    },
+    {
+      "serial": "SLX000002",
+      "seq": 2,
+      "holder": "Enkilangel",
+      "date": "2026-08-31",
+      "score": "honorary",
+      "program": "Certified Sheet-Native Delivery Engineer (Sheetlux CD)",
+      "program_key": "sheetlux-cd",
+      "release": null,
+      "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/41",
+      "issue_number": 41
     },
     {
       "serial": "SMH000001",

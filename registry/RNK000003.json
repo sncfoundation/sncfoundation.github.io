@@ -1,0 +1,17 @@
+{
+  "serial": "RNK000003",
+  "type": "rank",
+  "rank": "SheetAstronaut",
+  "rank_key": "sheetastronaut",
+  "holder": "Enkilangel",
+  "date": "2026-08-31",
+  "program": "Rank: SheetAstronaut",
+  "credentials": 3,
+  "based_on": [
+    "SFE000003",
+    "SLM000002",
+    "SLX000002"
+  ],
+  "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/41",
+  "issue_number": 41
+}
