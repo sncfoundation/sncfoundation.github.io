@@ -1,6 +1,6 @@
 {
   "program": "Certified Sheeternetes Fundamentals Engineer (CSFE)",
-  "count": 28,
+  "count": 29,
   "certificates": [
     {
       "serial": "RNK000001",
@@ -303,6 +303,18 @@
       "release": null,
       "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/41",
       "issue_number": 41
+    },
+    {
+      "serial": "SLX000003",
+      "seq": 3,
+      "holder": "oysterme1ster",
+      "date": "2026-08-31",
+      "score": "7/8",
+      "program": "Certified Sheet-Native Delivery Engineer (Sheetlux CD)",
+      "program_key": "sheetlux-cd",
+      "release": null,
+      "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/45",
+      "issue_number": 45
     },
     {
       "serial": "SMH000001",
