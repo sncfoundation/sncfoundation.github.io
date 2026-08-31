@@ -21,6 +21,19 @@ body:
         - sheeternetes
         - sheetlux-cd
         - sheetlium
+        - sheetstor
+        - sheethub
+        - sheetos
+        - sheetmesh
+        - sheetelligence
+        - sheetaiops
+        - sheetassembly
+        - skctl-wasm
+        - sheetfinops
+        - cloud-connectors
+        - sheeternetes-powershell
+        - sheeternetes-lisp
+        - sheeternetes-brainfuck
     validations:
       required: true
   - type: input
