@@ -1,7 +1,8 @@
-name: Issue CSFE credential
+name: Issue SNCF credential
 
-# Turns a `certification` issue into a sequential, registry-backed credential.
-# The concurrency group serializes runs so the serial-number counter is race-free.
+# Turns a `certification` issue into an exam credential, or a `rank` issue into a rank
+# credential (evaluated from the registry). The concurrency group serializes runs so the
+# per-program serial counters are race-free.
 
 on:
   issues:
@@ -16,9 +17,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  certify:
-    if: contains(github.event.issue.labels.*.name, 'certification')
+  process:
+    if: contains(github.event.issue.labels.*.name, 'certification') || contains(github.event.issue.labels.*.name, 'rank')
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      HOLDER: ${{ github.event.issue.user.login }}
+      ISSUE_URL: ${{ github.event.issue.html_url }}
+      ISSUE_BODY: ${{ github.event.issue.body }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,15 +39,13 @@ jobs:
       - name: Resolve latest release tag
         id: rel
         run: echo "tag=$(gh release view --json tagName -q .tagName 2>/dev/null || echo '')" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ github.token }}
 
-      - name: Issue credential
+      - name: Issue exam credential
+        if: contains(github.event.issue.labels.*.name, 'certification')
         run: node .github/scripts/issue-credential.mjs
         env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          HOLDER: ${{ github.event.issue.user.login }}
-          ISSUE_URL: ${{ github.event.issue.html_url }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
           RELEASE_TAG: ${{ steps.rel.outputs.tag }}
+
+      - name: Evaluate and award rank
+        if: contains(github.event.issue.labels.*.name, 'rank')
+        run: node .github/scripts/issue-rank.mjs

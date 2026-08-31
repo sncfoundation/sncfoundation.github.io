@@ -1,17 +1,28 @@
-name: "🎓 Claim CSFE credential"
-description: "Register your Certified Sheeternetes Fundamentals Engineer credential in the public registry."
-title: "Certify: CSFE credential request"
+name: "🎓 Claim a certification"
+description: "Register an SNCF certification credential in the public registry."
+title: "Certify: credential request"
 labels: ["certification"]
 body:
   - type: markdown
     attributes:
       value: |
-        You passed the exam. This issue is processed **automatically**:
-        a sequential serial number is assigned, your credential is written to the
-        public registry, and this issue is closed with your verification link.
+        You passed an exam. This issue is processed **automatically**: a sequential serial
+        number is assigned for the program, your credential is written to the public registry,
+        and this issue is closed with your verification link.
 
-        Your credential is issued to **the GitHub account submitting this issue** —
-        you are certifying yourself. No manual review, no waiting for a human.
+        Your credential is issued to **the GitHub account submitting this issue** — you are
+        certifying yourself. No manual review, no waiting for a human.
+  - type: dropdown
+    id: program
+    attributes:
+      label: Program
+      description: "Which exam did you pass? (The exam page pre-selects this.)"
+      options:
+        - sheeternetes
+        - sheetlux-cd
+        - sheetlium
+    validations:
+      required: true
   - type: input
     id: score
     attributes:

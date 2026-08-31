@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
-<title>Sheeternetes Fundamentals exam (CSFE) — SNCF Certification</title>
-<meta name="description" content="Take the Certified Sheeternetes Fundamentals Engineer (CSFE) exam. Pass and earn a verifiable credential with a serial number.">
-<meta property="og:title" content="Sheeternetes Fundamentals exam (CSFE)">
+<title>Sheetlux CD exam (CSDE) — SNCF Certification</title>
+<meta name="description" content="Take the Certified Sheet-Native Delivery Engineer (CSFE) exam. Pass and earn a verifiable credential with a serial number.">
+<meta property="og:title" content="Sheetlux CD exam (CSDE)">
 <meta property="og:description" content="Pass the exam, earn a verifiable credential and the rank of SheetCadet.">
 <meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
-<meta property="og:url" content="https://sncfoundation.github.io/certify-sheeternetes.html">
+<meta property="og:url" content="https://sncfoundation.github.io/certify-sheetlux-cd.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
@@ -58,9 +58,9 @@
 
 <header class="hero">
   <div class="wrap">
-    <img class="plogo" src="logos/sheeternetes.svg" alt="Sheeternetes logo">
-    <p class="kicker">SNCF Certification · Sheeternetes</p>
-    <h1>Certified Sheeternetes Fundamentals Engineer</h1>
+    <img class="plogo" src="logos/sheetlux-cd.svg" alt="Sheeternetes logo">
+    <p class="kicker">SNCF Certification · Sheetlux CD</p>
+    <h1>Certified Sheet-Native Delivery Engineer</h1>
     <p class="tagline">Pass the exam (7/10) and a verifiable credential is issued to your GitHub
       identity — a sequential serial in the public registry, and the rank of 🚀 <b>SheetCadet</b>.</p>
   </div>
@@ -71,7 +71,7 @@
 <div class="wrap">
 
 <section id="exam">
-  <h2>💩 The exam</h2>
+  <h2>🔁 The exam</h2>
   <div class="card">
     <p class="q">Examination policy</p>
     <p style="margin:6px 0">• Format: 10 multiple-choice items. Passing score: 7/10 (70%).</p>
@@ -109,34 +109,31 @@
 
 <footer class="wrap">
   SNCF Certification · <a href="certification.html">All certifications</a> ·
-  <a href="sheeternetes.html">About Sheeternetes</a> · <a href="verify.html">Verify a credential</a>
+  <a href="projects.html">About Sheetlux CD</a> · <a href="verify.html">Verify a credential</a>
 </footer>
 
 <script>
 (function(){
   var CERT_REPO = "sncfoundation/sncfoundation.github.io";
   var QUESTIONS = [
-    { q:"Your interviewer asks where cluster state lives in Sheeternetes. The correct, hireable answer is:",
-      a:["In a Google Sheet — the Sheet is the source of truth","In etcd, like everyone else","In a feeling","In the CEO's inbox"], c:0 },
-    { q:"How does a node prove it is alive?",
-      a:["It heartbeats the apiserver, which stamps the Nodes tab","It pings 8.8.8.8","It sends a fax","It doesn't; we assume the best"], c:0 },
-    { q:"What does Sheetlium give you?",
-      a:["Services + DNS via a shared Docker network","A mechanical keyboard","IPv6 on the moon","Nothing, it's decorative"], c:0 },
-    { q:"What is Sheetlux CD?",
-      a:["GitOps: it syncs a directory of manifests into the cluster","A skincare brand","A Linux distro from 2009","A Cisco router"], c:0 },
-    { q:"A container crashes on a healthy node. What happens?",
-      a:["The control loop notices it's gone and restarts it in place","Nothing, forever","The node is deleted","An incident bridge with 40 people"], c:0 },
-    { q:"Kubernetes has 63+ resource types. Sheeternetes has one spreadsheet. Which is simpler?",
-      a:["The spreadsheet, obviously","Kubernetes, I love pain","Both are equally hard","Please rephrase in YAML"], c:0 },
-    { q:"Is running a production database on a spreadsheet a good idea?",
-      a:["Absolutely — and you should film it","No","It depends","I'd like to speak to a lawyer"], c:0 },
-    { q:"You ship a new image version. How does Sheeternetes roll it out?",
-      a:["A rolling update: it replaces containers gradually so the service stays up","It emails everyone the new binary","It rewrites the Sheet in Comic Sans","It waits for Mercury to leave retrograde"], c:0 },
-    { q:"After passing, what job title are you entitled to put on LinkedIn?",
-      a:["Certified Sheeternetes Fundamentals Engineer (CSFE)","Kubernetes Refugee, 2nd class","Person Who Owns A Laptop","Former Believer"], c:0 },
-    { q:"Are you ready to believe in Sheeternetes unconditionally, without asking stupid questions?",
-      a:["Yes. Unconditionally. 🙏","I have several questions","Let me check with my SRE team","Only if it's SOC2 compliant"], c:0 }
+    { q:"In Sheetlux CD, what is the source of truth?",
+      a:["The Git directory of manifests","The running cluster","The last person to edit a cell","Your feelings"], c:0 },
+    { q:"How does Sheetlux CD converge the cluster to Git?",
+      a:["It runs skctl apply on every manifest","It emails you the diff","It rewrites etcd","It waits for a human"], c:0 },
+    { q:"Why is it safe to apply the same manifest repeatedly?",
+      a:["apply is idempotent — an upsert","It isn't; you must apply once","Because Mercury is direct","It deletes and recreates everything"], c:0 },
+    { q:"What is Sheetlux CD the spreadsheet-native analog of?",
+      a:["Argo CD / Flux","Photoshop","A Cisco router","systemd"], c:0 },
+    { q:"If the manifests directory is a git working tree, Sheetlux CD first…",
+      a:["git pull --ff-only before syncing","force-pushes to main","opens a pull request","ignores git entirely"], c:0 },
+    { q:"You delete a replica field from a manifest. What happens on the next tick?",
+      a:["The cluster reconciles to the new desired state","Nothing, forever","The repo is deleted","It pages the on-call"], c:0 },
+    { q:"Where does desired state live?",
+      a:["In Git — declared, versioned","In the CEO's inbox","In a feeling","In a screenshot"], c:0 },
+    { q:"Do you believe delivery should be declarative and reconcile continuously?",
+      a:["Yes. Unconditionally. 🙏","Only on Tuesdays","Let me ask my SRE","Only if it's SOC2"], c:0 }
   ];
+
   function shuffle(arr){ for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; } return arr; }
   var CORRECT=[], quiz=document.getElementById("quiz");
   QUESTIONS.forEach(function(item,i){
@@ -167,7 +164,7 @@
     score.style.color=pass?"var(--accent)":"#f85149";
     document.getElementById("certForm").classList.toggle("hidden", !pass);
     if(pass){
-      var url="https://github.com/"+CERT_REPO+"/issues/new?template=certify.yml&labels=certification&program=sheeternetes&score="+encodeURIComponent(correct+"/"+QUESTIONS.length);
+      var url="https://github.com/"+CERT_REPO+"/issues/new?template=certify.yml&labels=certification&program=sheetlux-cd&score="+encodeURIComponent(correct+"/"+QUESTIONS.length);
       document.getElementById("claim").href=url;
       document.getElementById("certForm").scrollIntoView({behavior:"smooth"});
     }
