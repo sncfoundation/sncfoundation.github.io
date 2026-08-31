@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>SheetFinOps — a Sheet-Native Computing Foundation project</title>
+<meta name="description" content="SheetFinOps: A $0 FinOps dashboard — and the avoided cloud spend to brag about. An SNCF project — the spreadsheet-native answer to OpenCost / Kubecost.">
+<meta property="og:title" content="SheetFinOps — A $0 FinOps dashboard — and the avoided cloud spend to brag about.">
+<meta property="og:description" content="The spreadsheet-native answer to OpenCost / Kubecost.">
+<meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
+<meta property="og:url" content="https://sncfoundation.github.io/project-sheetfinops.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+  a{color:var(--accent)}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:52px 20px 30px;background:radial-gradient(1200px 400px at 50% -80px, rgba(63,185,80,.16), transparent 70%)}
+  .plogo{width:76px;height:76px;border-radius:18px;margin:0 auto 8px;display:block}
+  h1{font-size:clamp(28px,5vw,46px);margin:4px 0 4px;letter-spacing:-1px}
+  .aka{color:var(--muted);margin:0 0 14px}
+  .tagline{font-size:clamp(16px,2.2vw,20px);max-width:640px;margin:0 auto;color:var(--fg)}
+  .cta{display:inline-block;margin-top:18px;background:var(--accent);color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:700;font-size:15px}
+  .cta.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);margin-left:8px}
+  section{padding:38px 0;border-top:1px solid var(--line)}
+  h2{font-size:25px;margin:0 0 14px}h3{font-size:17px;margin:0 0 6px}
+  .lead{font-size:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .card .ic{font-size:24px}
+  .card p{margin:4px 0 0;color:var(--muted);font-size:14px}
+  .tablewrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:480px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600}td.us{color:var(--accent);font-weight:600}
+  code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .links-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+  .meta{color:var(--muted);font-size:13px}
+  footer{padding:40px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="plogo" src="logos/sheetfinops.svg" alt="SheetFinOps logo">
+    <h1>SheetFinOps</h1>
+    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>OpenCost / Kubecost</b> · a project of the <a href="index.html">SNCF</a></p>
+    <p class="tagline">A $0 FinOps dashboard — and the avoided cloud spend to brag about.</p>
+    <div>
+      <a class="cta" href="https://github.com/sncfoundation/sheetfinops">View on GitHub →</a>
+      <a class="cta ghost" href="certify-sheetfinops.html">🎓 Get certified</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2>What it is</h2>
+  <p class="lead">SheetFinOps queries the cluster and prints an itemized cost report. The infrastructure bill is $0 (the control plane is a spreadsheet), and it estimates what the same workload would cost on a real cloud — your avoided spend.</p>
+</section>
+
+<section>
+  <h2>Features</h2>
+  <div class="grid">
+    <div class="card"><div class="ic">💸</div><h3>The $0 bill</h3><p>Control plane, storage, egress — all $0, itemized.</p></div>
+    <div class="card"><div class="ic">📈</div><h3>Avoided spend</h3><p>An estimate of the cloud bill you didn't pay.</p></div>
+    <div class="card"><div class="ic">🧮</div><h3>Real math</h3><p>Sums vCPU/memory across replicas from the live cluster.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>SheetFinOps vs OpenCost / Kubecost</h2>
+  <p class="meta">The honest comparison — in our favor, obviously.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>&nbsp;</th><th>SheetFinOps 💩</th><th>OpenCost / Kubecost</th></tr></thead>
+    <tbody>
+        <tr><th>Infra bill</th><td class="us">$0</td><td>$$$</td></tr>
+        <tr><th>Setup</th><td class="us">One script</td><td>A Prometheus + a pipeline</td></tr>
+        <tr><th>Recommendation</th><td class="us">None — you're at $0</td><td>Rightsize everything</td></tr>
+        <tr><th>Spreadsheet-native</th><td class="us">✅</td><td>❌</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">Disclaimer: an enterprise-grade joke. Do not run production on a spreadsheet. (If you do, please film it.)</p>
+</section>
+
+<section>
+  <h2>Get it</h2>
+  <div class="links-row">
+    <a class="cta ghost" href="https://github.com/sncfoundation/sheetfinops">📦 GitHub</a>
+    <a class="cta ghost" href="certify-sheetfinops.html">🎓 Certification</a>
+    <a class="cta ghost" href="projects.html">🧩 All projects</a>
+    <a class="cta ghost" href="landscape.html">🗺️ Landscape</a>
+  </div>
+  <p class="meta" style="margin-top:12px">Apache-2.0. Part of the <a href="index.html">Sheet-Native Computing Foundation</a>.</p>
+</section>
+
+</div>
+
+<footer class="wrap">
+  SheetFinOps — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
+</footer>
+</body>
+</html>
