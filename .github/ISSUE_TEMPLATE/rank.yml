@@ -1,0 +1,27 @@
+name: "🚀 Apply for a rank"
+description: "Claim a rank (SheetCadet → SheetAdmiral). The registry is checked automatically for your credentials."
+title: "Rank: evaluate my rank"
+labels: ["rank"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ranks are **earned by evidence**. When you submit this, an automated workflow reads the
+        public registry, counts the exam credentials issued to **your GitHub account**, and awards
+        the highest rank you qualify for — no self-declaration.
+
+        | Rank | Requires |
+        |------|----------|
+        | 🚀 SheetCadet | 1 exam credential |
+        | 👨‍🚀 SheetAstronaut | 3 exam credentials |
+        | 🛰️ SheetCommander | 6 exam credentials |
+        | 🌌 SheetAdmiral | 10 exam credentials |
+
+        Don't have credentials yet? [Take an exam first.](https://sncfoundation.github.io/certification.html)
+  - type: checkboxes
+    id: oath
+    attributes:
+      label: The Oath of Ascension
+      options:
+        - label: "I understand my rank is determined by the credentials in the registry, not by belief alone."
+          required: true

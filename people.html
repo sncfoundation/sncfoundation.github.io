@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>People — Sheet-Native Computing Foundation</title>
+<meta name="description" content="The SNCF Hall of Fame: SheetAstronauts, ranked engineers, and ambassadors of spreadsheet-native computing.">
+<meta property="og:title" content="SNCF People — SheetAstronauts & Ambassadors">
+<meta property="og:description" content="The Hall of Fame of spreadsheet-native computing: ranked engineers and ambassadors.">
+<meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
+<meta property="og:url" content="https://sncfoundation.github.io/people.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.55}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:54px 20px 26px;background:radial-gradient(1200px 400px at 50% -80px, rgba(210,153,34,.18), transparent 70%)}
+  .logo{font-size:52px}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,44px);margin:8px 0 6px;letter-spacing:-1px}
+  .tagline{max-width:640px;margin:0 auto;color:var(--muted)}
+  section{padding:32px 0;border-top:1px solid var(--line)}
+  h2{font-size:22px;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+  .people{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .person{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .person img{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);flex:0 0 auto}
+  .person .n{font-weight:700;font-size:15px}
+  .person .m{color:var(--muted);font-size:12px}
+  .person a{text-decoration:none;color:var(--fg)}
+  .empty{color:var(--muted);font-size:14px}
+  .cta{display:inline-block;margin-top:8px;background:var(--accent);color:#fff;text-decoration:none;padding:11px 20px;border-radius:10px;font-weight:700;font-size:15px}
+  .cta.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+  .meta{color:var(--muted);font-size:13px}
+  footer{padding:36px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="logo">🧑‍🚀</div>
+    <p class="kicker">Sheet-Native Computing Foundation</p>
+    <h1>People</h1>
+    <p class="tagline">The Hall of Fame of spreadsheet-native computing — ranked engineers,
+      SheetAstronauts, and ambassadors. Ranks are pulled live from the public registry.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2>🎖️ Ranked engineers</h2>
+  <p class="sub">Earned by evidence — the registry counts each person's exam credentials.
+    <a href="certification.html">Apply for a rank →</a></p>
+  <div id="ranks"><p class="empty">Loading the registry…</p></div>
+</section>
+
+<section>
+  <h2>🎓 Certified engineers</h2>
+  <p class="sub">Everyone who has passed at least one exam. <a href="verify.html">Verify a credential →</a></p>
+  <div id="certified"><p class="empty">Loading…</p></div>
+</section>
+
+<section>
+  <h2>🙌 Ambassadors <span class="meta" style="font-weight:400">· SNCF Believers</span></h2>
+  <p class="sub">People who evangelize spreadsheet-native computing — talks, posts, running the lab,
+    mentoring new SheetCadets.</p>
+  <p class="empty">The Believers roster is just getting started.
+    <a href="https://github.com/sncfoundation/sheeternetes/issues/40">Nominate an ambassador →</a></p>
+</section>
+
+<section>
+  <p class="meta">Not on this page yet? <a href="certification.html">Take an exam</a>, then
+    <a href="certification.html">apply for a rank</a>. It reconciles.</p>
+</section>
+
+</div>
+
+<footer class="wrap">
+  SNCF People · <a href="index.html">Foundation</a> · <a href="certification.html">Certification</a> ·
+  <a href="https://github.com/sncfoundation">GitHub</a>
+</footer>
+
+<script>
+(function(){
+  var RANK_ORDER = ["SheetAdmiral","SheetCommander","SheetAstronaut","SheetCadet"];
+  var RANK_EMOJI = {SheetAdmiral:"🌌",SheetCommander:"🛰️",SheetAstronaut:"👨‍🚀",SheetCadet:"🚀"};
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function person(u, meta, serial){
+    return '<a class="person" href="verify.html?id='+encodeURIComponent(serial)+'">'+
+      '<img src="https://github.com/'+encodeURIComponent(u)+'.png?size=88" alt="" onerror="this.style.visibility=\'hidden\'">'+
+      '<span><span class="n">@'+esc(u)+'</span><br><span class="m">'+esc(meta)+'</span></span></a>';
+  }
+  fetch("registry/index.json?_="+Date.now()).then(function(r){return r.ok?r.json():{certificates:[]};}).then(function(d){
+    var certs=(d&&d.certificates)||[];
+    // highest rank per holder
+    var ranks=certs.filter(function(c){return c.type==="rank";});
+    var byHolder={};
+    ranks.forEach(function(c){
+      var cur=byHolder[c.holder];
+      if(!cur || RANK_ORDER.indexOf(c.rank)<RANK_ORDER.indexOf(cur.rank)) byHolder[c.holder]=c;
+    });
+    var rankEls=RANK_ORDER.map(function(rk){
+      var holders=Object.keys(byHolder).filter(function(h){return byHolder[h].rank===rk;});
+      if(!holders.length) return "";
+      return '<h3 style="margin:14px 0 8px">'+(RANK_EMOJI[rk]||"")+' '+rk+' <span class="m">('+holders.length+')</span></h3>'+
+        '<div class="people">'+holders.map(function(h){return person(h, byHolder[h].credentials+" credentials · "+byHolder[h].serial, byHolder[h].serial);}).join("")+'</div>';
+    }).filter(Boolean).join("");
+    document.getElementById("ranks").innerHTML = rankEls ||
+      '<p class="empty">No ranks awarded yet. Be the first — <a href="certification.html">apply for a rank</a>.</p>';
+
+    // certified engineers (exam credentials), latest first
+    var exams=certs.filter(function(c){return c.type!=="rank";}).slice().reverse();
+    document.getElementById("certified").innerHTML = exams.length ?
+      '<div class="people">'+exams.map(function(c){return person(c.holder, (c.program||"CSFE").replace(/^Certified /,"")+" · "+c.date, c.serial);}).join("")+'</div>'
+      : '<p class="empty">No one is certified yet. <a href="certify-sheeternetes.html">Take the first exam →</a></p>';
+  }).catch(function(){
+    document.getElementById("ranks").innerHTML='<p class="empty">Could not load the registry.</p>';
+    document.getElementById("certified").innerHTML='';
+  });
+})();
+</script>
+</body>
+</html>

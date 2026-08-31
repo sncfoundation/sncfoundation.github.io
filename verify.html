@@ -78,7 +78,7 @@
   <a class="brand" href="index.html">💩 SNCF</a>
   <span class="links">
     <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
-    <a href="certification.html">Certification</a><a href="trailmap.html">Trail Map</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="trailmap.html">Trail Map</a>
     <a href="https://github.com/sncfoundation">GitHub</a>
   </span>
 </div></nav>
@@ -162,6 +162,8 @@
     '</div></div>'+
     '<div class="card"><table>'+
       '<tr><th>Credential ID</th><td><code>'+esc(rec.serial)+'</code></td></tr>'+
+      '<tr><th>'+(rec.type==="rank"?"Rank":"Program")+'</th><td>'+esc(rec.program||rec.rank||"CSFE")+'</td></tr>'+
+      (rec.type==="rank" ? '<tr><th>Earned on</th><td>'+esc((rec.credentials||0))+' credentials: '+esc((rec.based_on||[]).join(", "))+'</td></tr>' : '')+
       '<tr><th>Holder</th><td><a href="https://github.com/'+encodeURIComponent(u)+'">@'+esc(u)+'</a></td></tr>'+
       '<tr><th>Issued</th><td>'+esc(rec.date)+'</td></tr>'+
       '<tr><th>Exam score</th><td>'+esc(rec.score||"—")+'</td></tr>'+
