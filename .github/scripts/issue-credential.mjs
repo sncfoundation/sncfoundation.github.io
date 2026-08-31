@@ -15,9 +15,22 @@ const PAGES_BASE = "https://sncfoundation.github.io";
 
 // Certification programs. Key must match the exam page's `program` prefill value.
 const PROGRAMS = {
-  "sheeternetes": { prefix: "SFE", name: "Certified Sheeternetes Fundamentals Engineer (CSFE)", rank: "SheetCadet" },
-  "sheetlux-cd":  { prefix: "SLX", name: "Certified Sheet-Native Delivery Engineer (Sheetlux CD)", rank: "SheetCadet" },
-  "sheetlium":    { prefix: "SLM", name: "Certified Sheet-Native Networking Engineer (Sheetlium)", rank: "SheetCadet" },
+  "sheeternetes":            { prefix: "SFE", name: "Certified Sheeternetes Fundamentals Engineer (CSFE)", rank: "SheetCadet" },
+  "sheetlux-cd":             { prefix: "SLX", name: "Certified Sheet-Native Delivery Engineer (Sheetlux CD)", rank: "SheetCadet" },
+  "sheetlium":               { prefix: "SLM", name: "Certified Sheet-Native Networking Engineer (Sheetlium)", rank: "SheetCadet" },
+  "sheetstor":               { prefix: "STO", name: "Certified Sheet-Native Storage Engineer (Sheetstor)", rank: "SheetCadet" },
+  "sheethub":                { prefix: "SHB", name: "Certified Sheet-Native Platform Engineer (SheetHub)", rank: "SheetCadet" },
+  "sheetos":                 { prefix: "SOS", name: "Certified Sheet-Native OS Engineer (SheetOS)", rank: "SheetCadet" },
+  "sheetmesh":               { prefix: "SMH", name: "Certified Sheet-Native Mesh Engineer (Sheetmesh)", rank: "SheetCadet" },
+  "sheetelligence":          { prefix: "SEL", name: "Certified Sheet-Native AI Engineer (Sheetelligence)", rank: "SheetCadet" },
+  "sheetaiops":              { prefix: "SAO", name: "Certified Sheet-Native AIOps Engineer (SheetAIOps)", rank: "SheetCadet" },
+  "sheetassembly":           { prefix: "SAS", name: "Certified Sheet-Native WebAssembly Engineer (SheetAssembly)", rank: "SheetCadet" },
+  "skctl-wasm":              { prefix: "SKW", name: "Certified Sheet-Native WASM CLI Engineer (skctl-wasm)", rank: "SheetCadet" },
+  "sheetfinops":             { prefix: "SFO", name: "Certified Sheet-Native FinOps Engineer (SheetFinOps)", rank: "SheetCadet" },
+  "cloud-connectors":        { prefix: "SCC", name: "Certified Sheet-Native Cloud Connector Engineer (Cloud connectors)", rank: "SheetCadet" },
+  "sheeternetes-powershell": { prefix: "SPS", name: "Certified Sheet-Native PowerShell Engineer", rank: "SheetCadet" },
+  "sheeternetes-lisp":       { prefix: "SLP", name: "Certified Sheet-Native Lisp Engineer", rank: "SheetCadet" },
+  "sheeternetes-brainfuck":  { prefix: "SBF", name: "Certified Sheet-Native Brainfuck Engineer", rank: "SheetCadet" },
 };
 const DEFAULT_PROGRAM = "sheeternetes";
 
