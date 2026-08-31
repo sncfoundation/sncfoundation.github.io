@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **31** credentials issued to date, across 19 programs.
+- **32** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -37,6 +37,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SLX000003` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native Delivery Engineer (Sheetlux CD) | 2026-08-31 | 7/8 | [#45](https://github.com/sncfoundation/sncfoundation.github.io/issues/45) |
 | `SMH000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Mesh Engineer (Sheetmesh) | 2026-08-31 | 10/10 | [#28](https://github.com/sncfoundation/sncfoundation.github.io/issues/28) |
 | `SOS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-08-31 | 10/10 | [#27](https://github.com/sncfoundation/sncfoundation.github.io/issues/27) |
+| `SOS000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-08-31 | 5/7 | [#48](https://github.com/sncfoundation/sncfoundation.github.io/issues/48) |
 | `SPS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native PowerShell Engineer | 2026-08-31 | 10/10 | [#35](https://github.com/sncfoundation/sncfoundation.github.io/issues/35) |
 | `STO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Storage Engineer (Sheetstor) | 2026-08-31 | 10/10 | [#12](https://github.com/sncfoundation/sncfoundation.github.io/issues/12) |
 | `STO000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native Storage Engineer (Sheetstor) | 2026-08-31 | 7/7 | [#46](https://github.com/sncfoundation/sncfoundation.github.io/issues/46) |
