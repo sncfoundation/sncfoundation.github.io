@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sheet-Native Trail Map — from Docker refugee to Load-Bearing</title>
+<meta name="description" content="The Sheet-Native Trail Map: the recommended path from Kubernetes refugee to a Load-Bearing spreadsheet, one reconcile at a time.">
+<meta property="og:title" content="Sheet-Native Trail Map">
+<meta property="og:description" content="The recommended path from Kubernetes refugee to a Load-Bearing spreadsheet.">
+<meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
+<meta property="og:url" content="https://sncfoundation.github.io/trailmap.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.55}
+  a{color:var(--accent)}
+  .wrap{max-width:800px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap;max-width:1040px}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}
+  nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}
+  nav.nav .links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 400px at 50% -80px, rgba(63,185,80,.18), transparent 70%)}
+  .logo{font-size:56px}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,44px);margin:8px 0 8px;letter-spacing:-1px}
+  .tagline{max-width:600px;margin:0 auto;color:var(--muted)}
+  .trail{position:relative;margin:30px 0 10px;padding-left:34px}
+  .trail:before{content:"";position:absolute;left:12px;top:8px;bottom:8px;width:3px;background:linear-gradient(var(--accent2),var(--accent))}
+  .step{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:0 0 18px}
+  .step:before{content:"";position:absolute;left:-27px;top:22px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
+  .step .n{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .step h3{margin:2px 0 6px;font-size:20px}
+  .step p{margin:6px 0;color:var(--fg)}
+  .step .do{color:var(--muted);font-size:14px}
+  .step .tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--accent2);margin-top:8px}
+  footer{padding:36px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 Sheeternetes</a>
+  <span class="links">
+    <a href="product.html">Product</a><a href="foundation.html">Foundation</a><a href="landscape.html">Landscape</a>
+    <a href="trailmap.html">Trail Map</a><a href="index.html#certify">Certify</a><a href="verify.html">Verify</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="logo">🗺️</div>
+    <p class="kicker">Sheet-Native Computing Foundation</p>
+    <h1>The Sheet-Native Trail Map</h1>
+    <p class="tagline">The recommended journey from Kubernetes refugee to a Load-Bearing
+      spreadsheet. Each step reconciles into the next. Do not skip ahead; the loop will notice.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="trail">
+
+    <div class="step"><div class="n">Step 1 · Acceptance</div>
+      <h3>Admit the cluster was too much</h3>
+      <p>You did not need a distributed consensus database to run three containers. Say it out loud.</p>
+      <p class="do">Do: uninstall one thing that has "operator" in its name. Feel the relief.</p>
+      <span class="tag">Prerequisite: a laptop</span></div>
+
+    <div class="step"><div class="n">Step 2 · Substrate</div>
+      <h3>Open a spreadsheet</h3>
+      <p>Create a blank Google Sheet and run <code>setup()</code>. It becomes your control plane:
+        Deployments, Nodes, Pods, Events. This is your etcd now, and it autosaves.</p>
+      <p class="do">Do: read the <a href="product.html">Product</a> page. Marvel that it reconciles.</p>
+      <span class="tag">Project: Sheeternetes</span></div>
+
+    <div class="step"><div class="n">Step 3 · Hands on keys</div>
+      <h3>Learn skctl and deploy something</h3>
+      <p>Point a <code>kubelet.sh</code> at a Docker host, then <code>skctl apply</code> a workload.
+        Watch a container get scheduled, self-heal, and roll out — from a spreadsheet.</p>
+      <p class="do">Do: run the lab. Break a node on purpose. Watch it come back.</p>
+      <span class="tag">Projects: skctl · Sheetlium · Sheetlux CD</span></div>
+
+    <div class="step"><div class="n">Step 4 · Certification</div>
+      <h3>Become a CSFE</h3>
+      <p>Pass the Sheeternetes Fundamentals exam and claim a verifiable credential with a
+        sequential serial in the public registry. HR can look you up for real.</p>
+      <p class="do">Do: <a href="index.html#certify">take the exam</a>, then <a href="verify.html">verify yourself</a>.</p>
+      <span class="tag">Program: CSFE</span></div>
+
+    <div class="step"><div class="n">Step 5 · Contribution</div>
+      <h3>Adopt an Unsaved Draft</h3>
+      <p>Pick a project from the <a href="landscape.html">landscape</a> — storage, WASM, AI, a
+        Brainfuck client — and open a PR. Move it one tier up the maturity ladder.</p>
+      <p class="do">Do: grab a <a href="https://github.com/sncfoundation/sheeternetes/issues?q=is%3Aissue+label%3A%22good+first+issue%22">good first issue</a>.</p>
+      <span class="tag">Tier: Unsaved Draft → Autosaving</span></div>
+
+    <div class="step"><div class="n">Step 6 · Enlightenment</div>
+      <h3>Run something Load-Bearing</h3>
+      <p>A whole workflow now secretly depends on your spreadsheet. Nobody dares delete the tab.
+        You say "it reconciles" at parties. You have arrived.</p>
+      <p class="do">Do: do not run this in production. (If you do, please film it.)</p>
+      <span class="tag">Tier: Load-Bearing 🏛️</span></div>
+
+  </div>
+
+  <p class="tagline" style="text-align:center;margin:20px auto 40px">
+    Lost on the trail? Every step maps to a project on the
+    <a href="landscape.html">SNCF Landscape</a>.
+  </p>
+</div>
+
+<footer class="wrap">
+  Sheet-Native Computing Foundation · <a href="foundation.html">Foundation</a> ·
+  <a href="https://github.com/sncfoundation">GitHub</a>
+</footer>
+</body>
+</html>
