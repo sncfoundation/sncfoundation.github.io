@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
-<title>Lisp client — a Sheet-Native Computing Foundation project</title>
-<meta name="description" content="Lisp client: Homoiconic orchestration from the REPL. An SNCF project — the spreadsheet-native answer to client-go.">
-<meta property="og:title" content="Lisp client — Homoiconic orchestration from the REPL.">
-<meta property="og:description" content="The spreadsheet-native answer to client-go.">
+<title>MySheet — a Sheet-Native Computing Foundation project</title>
+<meta name="description" content="MySheet: The relational store, MySQL flavour — simple, ubiquitous, on a tab. An SNCF project — the spreadsheet-native answer to MySQL.">
+<meta property="og:title" content="MySheet — The relational store, MySQL flavour — simple, ubiquitous, on a tab.">
+<meta property="og:description" content="The spreadsheet-native answer to MySQL.">
 <meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
-<meta property="og:url" content="https://sncfoundation.github.io/project-sheeternetes-lisp.html">
+<meta property="og:url" content="https://sncfoundation.github.io/project-mysheet.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
@@ -60,13 +60,13 @@
 
 <header class="hero">
   <div class="wrap">
-    <img class="plogo" src="logos/lisp.svg" alt="Lisp client logo">
-    <h1>Lisp client</h1>
-    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>client-go</b> · a project of the <a href="index.html">SNCF</a></p>
-    <p class="tagline">Homoiconic orchestration from the REPL.</p>
+    <img class="plogo" src="logos/mysheet.svg" alt="MySheet logo">
+    <h1>MySheet</h1>
+    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>MySQL</b> · a project of the <a href="index.html">SNCF</a></p>
+    <p class="tagline">The relational store, MySQL flavour — simple, ubiquitous, on a tab.</p>
     <div>
-      <a class="cta" href="https://github.com/sncfoundation/sheeternetes-lisp">View on GitHub →</a>
-      <a class="cta ghost" href="certify-sheeternetes-lisp.html">🎓 Get certified</a>
+      <a class="cta" href="https://github.com/sncfoundation/mysheet">View on GitHub →</a>
+      
     </div>
   </div>
 </header>
@@ -75,27 +75,27 @@
 
 <section>
   <h2>What it is</h2>
-  <p class="lead">A Common Lisp client over the apiserver (dexador + yason). Drive the cluster from <code>sbcl</code> or the REPL — because the control plane is already a set of cells, and cells want to be s-expressions.</p>
+  <p class="lead">Tabs-as-tables with SQL via QUERY(), positioned as the lightweight, ubiquitous SQL engine. Speaks the MySQL dialect through the SheetWire gateway so mysql clients connect to a spreadsheet.</p>
 </section>
 
 <section>
   <h2>Features</h2>
   <div class="grid">
-    <div class="card"><div class="ic">λ</div><h3>Real Common Lisp</h3><p>get / scale / delete / apply against the apiserver.</p></div>
-    <div class="card"><div class="ic">🔁</div><h3>REPL-driven</h3><p>Manage the cluster interactively from the Lisp prompt.</p></div>
-    <div class="card"><div class="ic">🪆</div><h3>Homoiconic</h3><p>Code and data share the same nested form. So do spreadsheets.</p></div>
+    <div class="card"><div class="ic">🐬</div><h3>Familiar SQL</h3><p>Tabs as tables; QUERY() for SELECT/GROUP BY.</p></div>
+    <div class="card"><div class="ic">🔌</div><h3>mysql client</h3><p>Connect via <a href="project-sheetwire.html">SheetWire</a>.</p></div>
+    <div class="card"><div class="ic">🪶</div><h3>Lightweight</h3><p>No server to run — the sheet is the server.</p></div>
   </div>
 </section>
 
 <section>
-  <h2>Lisp client vs client-go</h2>
+  <h2>MySheet vs MySQL</h2>
   <p class="meta">The honest comparison — in our favor, obviously.</p>
   <div class="tablewrap"><table>
-    <thead><tr><th>&nbsp;</th><th>Lisp client 💩</th><th>client-go</th></tr></thead>
+    <thead><tr><th>&nbsp;</th><th>MySheet 💩</th><th>MySQL</th></tr></thead>
     <tbody>
-        <tr><th>Paradigm</th><td class="us">Homoiconic</td><td>Imperative Go</td></tr>
-        <tr><th>Workflow</th><td class="us">REPL-driven</td><td>Compile-run</td></tr>
-        <tr><th>Joy</th><td class="us">Parentheses</td><td>Struct tags</td></tr>
+        <tr><th>Query language</th><td class="us">SQL (via QUERY)</td><td>SQL</td></tr>
+        <tr><th>Transactions/ACID</th><td class="us">No</td><td>Yes</td></tr>
+        <tr><th>Footprint</th><td class="us">A tab</td><td>mysqld</td></tr>
         <tr><th>Spreadsheet-native</th><td class="us">✅</td><td>❌</td></tr>
     </tbody>
   </table></div>
@@ -105,8 +105,8 @@
 <section>
   <h2>Get it</h2>
   <div class="links-row">
-    <a class="cta ghost" href="https://github.com/sncfoundation/sheeternetes-lisp">📦 GitHub</a>
-    <a class="cta ghost" href="certify-sheeternetes-lisp.html">🎓 Certification</a>
+    <a class="cta ghost" href="https://github.com/sncfoundation/mysheet">📦 GitHub</a>
+    
     <a class="cta ghost" href="projects.html">🧩 All projects</a>
     <a class="cta ghost" href="landscape.html">🗺️ Landscape</a>
   </div>
@@ -116,7 +116,7 @@
 </div>
 
 <footer class="wrap">
-  Lisp client — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
+  MySheet — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
 </footer>
 </body>
 </html>

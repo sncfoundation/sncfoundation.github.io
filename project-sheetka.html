@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
-<title>Lisp client — a Sheet-Native Computing Foundation project</title>
-<meta name="description" content="Lisp client: Homoiconic orchestration from the REPL. An SNCF project — the spreadsheet-native answer to client-go.">
-<meta property="og:title" content="Lisp client — Homoiconic orchestration from the REPL.">
-<meta property="og:description" content="The spreadsheet-native answer to client-go.">
+<title>Sheetka — a Sheet-Native Computing Foundation project</title>
+<meta name="description" content="Sheetka: A log-structured streaming broker on an append-only tab. An SNCF project — the spreadsheet-native answer to Kafka.">
+<meta property="og:title" content="Sheetka — A log-structured streaming broker on an append-only tab.">
+<meta property="og:description" content="The spreadsheet-native answer to Kafka.">
 <meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
-<meta property="og:url" content="https://sncfoundation.github.io/project-sheeternetes-lisp.html">
+<meta property="og:url" content="https://sncfoundation.github.io/project-sheetka.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
@@ -60,13 +60,13 @@
 
 <header class="hero">
   <div class="wrap">
-    <img class="plogo" src="logos/lisp.svg" alt="Lisp client logo">
-    <h1>Lisp client</h1>
-    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>client-go</b> · a project of the <a href="index.html">SNCF</a></p>
-    <p class="tagline">Homoiconic orchestration from the REPL.</p>
+    <img class="plogo" src="logos/sheetka.svg" alt="Sheetka logo">
+    <h1>Sheetka</h1>
+    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>Kafka</b> · a project of the <a href="index.html">SNCF</a></p>
+    <p class="tagline">A log-structured streaming broker on an append-only tab.</p>
     <div>
-      <a class="cta" href="https://github.com/sncfoundation/sheeternetes-lisp">View on GitHub →</a>
-      <a class="cta ghost" href="certify-sheeternetes-lisp.html">🎓 Get certified</a>
+      <a class="cta" href="https://github.com/sncfoundation/sheetka">View on GitHub →</a>
+      
     </div>
   </div>
 </header>
@@ -75,27 +75,27 @@
 
 <section>
   <h2>What it is</h2>
-  <p class="lead">A Common Lisp client over the apiserver (dexador + yason). Drive the cluster from <code>sbcl</code> or the REPL — because the control plane is already a set of cells, and cells want to be s-expressions.</p>
+  <p class="lead">A topic is a sheet, a partition is an append-only tab, ordering is row order. Producers append rows; consumers poll from a stored offset; consumer groups track offsets in a tab; retention trims old rows. An append-only tab is a near-perfect log.</p>
 </section>
 
 <section>
   <h2>Features</h2>
   <div class="grid">
-    <div class="card"><div class="ic">λ</div><h3>Real Common Lisp</h3><p>get / scale / delete / apply against the apiserver.</p></div>
-    <div class="card"><div class="ic">🔁</div><h3>REPL-driven</h3><p>Manage the cluster interactively from the Lisp prompt.</p></div>
-    <div class="card"><div class="ic">🪆</div><h3>Homoiconic</h3><p>Code and data share the same nested form. So do spreadsheets.</p></div>
+    <div class="card"><div class="ic">🌊</div><h3>Append-only log</h3><p>Partitions as tabs; ordering is row order.</p></div>
+    <div class="card"><div class="ic">🎯</div><h3>Offsets &amp; groups</h3><p>Consumers poll from a stored offset; groups in an offsets tab.</p></div>
+    <div class="card"><div class="ic">🧹</div><h3>Retention</h3><p>Trim old rows; compaction on the roadmap.</p></div>
   </div>
 </section>
 
 <section>
-  <h2>Lisp client vs client-go</h2>
+  <h2>Sheetka vs Kafka</h2>
   <p class="meta">The honest comparison — in our favor, obviously.</p>
   <div class="tablewrap"><table>
-    <thead><tr><th>&nbsp;</th><th>Lisp client 💩</th><th>client-go</th></tr></thead>
+    <thead><tr><th>&nbsp;</th><th>Sheetka 💩</th><th>Kafka</th></tr></thead>
     <tbody>
-        <tr><th>Paradigm</th><td class="us">Homoiconic</td><td>Imperative Go</td></tr>
-        <tr><th>Workflow</th><td class="us">REPL-driven</td><td>Compile-run</td></tr>
-        <tr><th>Joy</th><td class="us">Parentheses</td><td>Struct tags</td></tr>
+        <tr><th>Storage model</th><td class="us">Append-only log</td><td>Append-only log</td></tr>
+        <tr><th>Throughput</th><td class="us">Modest (API rate)</td><td>Very high</td></tr>
+        <tr><th>Ordering</th><td class="us">Per-partition</td><td>Per-partition</td></tr>
         <tr><th>Spreadsheet-native</th><td class="us">✅</td><td>❌</td></tr>
     </tbody>
   </table></div>
@@ -105,8 +105,8 @@
 <section>
   <h2>Get it</h2>
   <div class="links-row">
-    <a class="cta ghost" href="https://github.com/sncfoundation/sheeternetes-lisp">📦 GitHub</a>
-    <a class="cta ghost" href="certify-sheeternetes-lisp.html">🎓 Certification</a>
+    <a class="cta ghost" href="https://github.com/sncfoundation/sheetka">📦 GitHub</a>
+    
     <a class="cta ghost" href="projects.html">🧩 All projects</a>
     <a class="cta ghost" href="landscape.html">🗺️ Landscape</a>
   </div>
@@ -116,7 +116,7 @@
 </div>
 
 <footer class="wrap">
-  Lisp client — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
+  Sheetka — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
 </footer>
 </body>
 </html>
