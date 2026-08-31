@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>Projects — Sheet-Native Computing Foundation</title>
+<meta name="description" content="Projects of the Sheet-Native Computing Foundation: descriptions, GitHub repos, certifications, and analog comparisons.">
+<meta property="og:title" content="SNCF Projects">
+<meta property="og:description" content="Projects of the Sheet-Native Computing Foundation — descriptions, repos, and certifications.">
+<meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
+<meta property="og:url" content="https://sncfoundation.github.io/projects.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.55}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:54px 20px 26px;background:radial-gradient(1200px 400px at 50% -80px, rgba(63,185,80,.18), transparent 70%)}
+  .logo{font-size:52px}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,44px);margin:8px 0 6px;letter-spacing:-1px}
+  .tagline{max-width:620px;margin:0 auto;color:var(--muted)}
+  section{padding:30px 0;border-top:1px solid var(--line)}
+  h2{font-size:20px;margin:0 0 14px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-weight:600}
+  .proj{display:flex;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:0 0 14px}
+  .proj .ico{width:52px;height:52px;border-radius:12px;flex:0 0 auto}
+  .proj .body{flex:1;min-width:0}
+  .proj h3{margin:0 0 2px;font-size:19px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .pill{display:inline-block;font-size:11px;border-radius:999px;padding:2px 8px;border:1px solid var(--line);white-space:nowrap}
+  .pill.draft{color:#d29922}.pill.save{color:#e3b341}.pill.load{color:var(--accent)}
+  .proj p{margin:6px 0 10px;color:var(--fg)}
+  .proj .analog{color:var(--muted);font-size:13px}
+  .proj .links a{margin-right:14px;font-size:14px;white-space:nowrap}
+  .meta{color:var(--muted);font-size:13px}
+  footer{padding:36px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="trailmap.html">Trail Map</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="logo">🧩</div>
+    <p class="kicker">Sheet-Native Computing Foundation</p>
+    <h1>Projects</h1>
+    <p class="tagline">The spreadsheet-native stack. Each project has a description, a repository,
+      an analog it parodies, and — where it exists — a certification. The full set is on the
+      <a href="landscape.html">Landscape</a>.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2>Core</h2>
+
+  <div class="proj">
+    <img class="ico" src="logos/sheeternetes.svg" alt="">
+    <div class="body">
+      <h3>Sheeternetes <span class="pill load">🏛️ Load-Bearing</span></h3>
+      <p>Spreadsheet-native container orchestration. The flagship: scheduling, self-healing, rolling updates — all from a Google Sheet.</p>
+      <p class="analog">Analog of: <b>Kubernetes</b></p>
+      <p class="links"><a href="sheeternetes.html">Project page →</a> <a href="https://github.com/sncfoundation/sheeternetes">GitHub</a> <a href="certification.html#exam">Certification (CSFE)</a></p>
+    </div>
+  </div>
+
+  <div class="proj">
+    <img class="ico" src="logos/sheetlium.svg" alt="">
+    <div class="body">
+      <h3>Sheetlium <span class="pill save">💾 Autosaving</span></h3>
+      <p>Service discovery, DNS, and load balancing over a shared network. Being extracted into its own component.</p>
+      <p class="analog">Analog of: <b>Cilium</b></p>
+      <p class="links"><a href="https://github.com/sncfoundation/sheeternetes/issues/31">Extraction issue #31</a> <a href="certification.html">Certification (proposed)</a></p>
+    </div>
+  </div>
+
+  <div class="proj">
+    <img class="ico" src="logos/sheetlux-cd.svg" alt="">
+    <div class="body">
+      <h3>Sheetlux CD <span class="pill save">💾 Autosaving</span></h3>
+      <p>GitOps delivery: sync a directory of manifests into the cluster's desired state.</p>
+      <p class="analog">Analog of: <b>Argo CD</b></p>
+      <p class="links"><a href="https://github.com/sncfoundation/sheeternetes/issues/32">Extraction issue #32</a> <a href="certification.html">Certification (proposed)</a></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Emerging</h2>
+
+  <div class="proj">
+    <img class="ico" src="logos/sheetstor.svg" alt="">
+    <div class="body">
+      <h3>Sheetstor <span class="pill draft">📝 Unsaved Draft</span></h3>
+      <p>Distributed, replicated block storage; volume metadata lives in a Volumes tab.</p>
+      <p class="analog">Analog of: <b>LINSTOR</b></p>
+      <p class="links"><a href="https://github.com/sncfoundation/sheeternetes/issues/30">Proposal #30</a></p>
+    </div>
+  </div>
+
+  <div class="proj">
+    <img class="ico" src="logos/sheethub.svg" alt="">
+    <div class="body">
+      <h3>SheetHub <span class="pill draft">📝 Unsaved Draft</span></h3>
+      <p>An all-in-one DevOps forge — repos, issues, merge requests, releases, and CI — in one workbook.</p>
+      <p class="analog">Analog of: <b>GitLab</b></p>
+      <p class="links"><a href="https://github.com/sncfoundation/sheeternetes/issues/35">Proposal #35</a></p>
+    </div>
+  </div>
+
+  <div class="proj">
+    <img class="ico" src="logos/sheetos.svg" alt="">
+    <div class="body">
+      <h3>SheetOS <span class="pill draft">📝 Unsaved Draft</span></h3>
+      <p>A minimal, API-only, declarative node OS whose single job is to bootstrap and run Sheeternetes — distributable across many sheets.</p>
+      <p class="analog">Analog of: <b>Talos Linux</b></p>
+      <p class="links"><a href="https://github.com/sncfoundation/sheeternetes/issues/26">Proposal #26</a></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="meta">This is the highlight reel. See every project — AI, WebAssembly, cloud connectors,
+    community clients — on the <a href="landscape.html">full Landscape</a>, or propose a new one via a
+    <a href="https://github.com/sncfoundation/governance/issues/new?template=new-project-proposal.yml">New Project Proposal</a>.</p>
+</section>
+
+</div>
+
+<footer class="wrap">
+  SNCF Projects · <a href="index.html">Foundation</a> · <a href="landscape.html">Landscape</a> ·
+  <a href="https://github.com/sncfoundation">GitHub</a>
+</footer>
+</body>
+</html>
