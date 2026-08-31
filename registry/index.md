@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **10** credentials issued to date, across 16 programs.
+- **11** credentials issued to date, across 16 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -19,4 +19,5 @@ The public, tamper-evident registry of everyone certified by the
 | `SLM000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Networking Engineer (Sheetlium) | 2026-08-31 | 10/10 | [#7](https://github.com/sncfoundation/sncfoundation.github.io/issues/7) |
 | `SLP000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Lisp Engineer | 2026-08-31 | 10/10 | [#23](https://github.com/sncfoundation/sncfoundation.github.io/issues/23) |
 | `SLX000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Delivery Engineer (Sheetlux CD) | 2026-08-31 | 10/10 | [#8](https://github.com/sncfoundation/sncfoundation.github.io/issues/8) |
+| `SOS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-08-31 | 10/10 | [#27](https://github.com/sncfoundation/sncfoundation.github.io/issues/27) |
 | `STO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Storage Engineer (Sheetstor) | 2026-08-31 | 10/10 | [#12](https://github.com/sncfoundation/sncfoundation.github.io/issues/12) |
