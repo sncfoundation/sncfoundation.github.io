@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
 <title>Verify a CSFE credential — Sheeternetes</title>
 <meta name="description" content="Verify a Certified Sheeternetes Fundamentals Engineer (CSFE) credential against the public registry.">
 <meta property="og:title" content="Verify a CSFE credential — Sheeternetes">
@@ -74,14 +75,10 @@
 <body>
 
 <nav class="nav"><div class="wrap">
-  <a class="brand" href="index.html">💩 Sheeternetes</a>
+  <a class="brand" href="index.html">💩 SNCF</a>
   <span class="links">
-    <a href="product.html">Product</a>
-    <a href="foundation.html">Foundation</a>
-    <a href="landscape.html">Landscape</a>
-    <a href="trailmap.html">Trail Map</a>
-    <a href="index.html#certify">Certify</a>
-    <a href="verify.html">Verify</a>
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="trailmap.html">Trail Map</a>
     <a href="https://github.com/sncfoundation">GitHub</a>
   </span>
 </div></nav>
@@ -201,7 +198,7 @@
   function showNotFound(q){
     result.innerHTML = '<div class="status bad">✗ No credential found for “'+esc(q)+'”.</div>'+
       '<p class="meta">Either it was never issued, or the serial is mistyped. '+
-      'Anyone can get one at <a href="index.html#certify">the exam</a>.</p>';
+      'Anyone can get one at <a href="certification.html#exam">the exam</a>.</p>';
   }
 
   function show(rec){

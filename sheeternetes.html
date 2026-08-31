@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>Sheeternetes — Spreadsheet-Native Orchestration (a SNCF project)</title>
+<meta name="description" content="Sheeternetes: the world's first Spreadsheet-Native Orchestration Platform. Description, how it works, and an honest comparison with Kubernetes, Nomad, Swarm, and Cloud Foundry.">
+<meta property="og:title" content="Sheeternetes — Spreadsheet-Native Orchestration">
+<meta property="og:description" content="A container orchestrator whose control plane is a Google Sheet. Compared with Kubernetes, Nomad, Swarm, Cloud Foundry.">
+<meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
+<meta property="og:url" content="https://sncfoundation.github.io/sheeternetes.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+  a{color:var(--accent)}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 32px;background:radial-gradient(1200px 400px at 50% -80px, rgba(63,185,80,.18), transparent 70%)}
+  .plogo{width:76px;height:76px;border-radius:18px;margin:0 auto 6px;display:block}
+  h1{font-size:clamp(30px,5vw,50px);margin:6px 0 4px;letter-spacing:-1px}
+  .aka{color:var(--muted);font-style:italic;margin:0 0 14px}
+  .tagline{font-size:clamp(16px,2.2vw,20px);max-width:640px;margin:0 auto;color:var(--fg)}
+  .badge{display:inline-block;margin:14px 6px 0;padding:6px 14px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:14px}
+  .cta{display:inline-block;margin-top:20px;background:var(--accent);color:#fff;text-decoration:none;padding:13px 24px;border-radius:10px;font-weight:700;font-size:16px}
+  .cta.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);margin-left:8px}
+  section{padding:40px 0;border-top:1px solid var(--line)}
+  h2{font-size:26px;margin:0 0 16px}h3{font-size:18px;margin:0 0 6px}
+  p.lead{font-size:18px}
+  .manifesto{font-size:18px}.manifesto strong{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card .ic{font-size:26px}
+  .tablewrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:720px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600}td.us{color:var(--accent);font-weight:600}
+  code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .links-row{display:flex;gap:12px;flex-wrap:wrap}
+  .meta{color:var(--muted);font-size:13px}
+  footer{padding:40px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="trailmap.html">Trail Map</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="plogo" src="logos/sheeternetes.svg" alt="Sheeternetes logo">
+    <h1>Sheeternetes</h1>
+    <p class="aka">also known as <b>Shiternetes</b> · a project of the <a href="index.html">SNCF</a></p>
+    <p class="tagline">The world's first Spreadsheet-Native Orchestration Platform. A container
+      orchestrator whose control plane is a Google Sheet. No clusters, no etcd, no YAML.</p>
+    <div>
+      <span class="badge" id="version">v0.0.0.0.0.2</span>
+      <span class="badge">Trusted in production by zero enterprises, and counting.</span>
+    </div>
+    <div>
+      <a class="cta" href="certification.html#exam">Get certified →</a>
+      <a class="cta ghost" href="https://github.com/sncfoundation/sheeternetes">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2>What it is</h2>
+  <p class="manifesto">For ten years the industry told you that running three containers required a
+    distributed consensus database, sixty-three resource types, a babysitter for <code>etcd</code>,
+    and a platform team with its own budget line. <strong>Sheeternetes disagrees.</strong> It
+    relocates the entire control plane to the substrate humanity already trusts with its most
+    critical data — the spreadsheet. One tab. Infinite power. Zero YAML (we use JSON, which is
+    merely YAML that has compiled).</p>
+  <p class="manifesto">And it is not a mockup: real Docker containers, on real hosts, scheduled,
+    self-healed, and rolling-updated by a production control loop that lives, serenely, inside a
+    Google Sheet.</p>
+</section>
+
+<section>
+  <h2>How it works, in one breath</h2>
+  <p>Apps Script is the API server, scheduler, and reconcile loop. The Google Sheet (tabs:
+    Deployments, Nodes, Pods, Events) is etcd. <code>kubelet.sh</code> on your Docker hosts is the
+    kubelet; <code>skctl</code> is your kubectl. Nodes heartbeat the API server, the scheduler
+    bin-packs by CPU <em>and</em> memory, and the loop keeps desired state and reality in agreement.
+    Networking comes from <b>Sheetlium</b>; GitOps delivery from <b>Sheetlux CD</b>.</p>
+  <div class="grid">
+    <div class="card"><div class="ic">🔁</div><h3>It reconciles</h3><p>Heartbeat scheduling, self-healing on node loss, restart-on-crash, rolling updates with <code>maxUnavailable=1</code>.</p></div>
+    <div class="card"><div class="ic">🚫</div><h3>No YAML, no etcd</h3><p>Workloads are rows; state is cells. Indentation-related outages: eliminated.</p></div>
+    <div class="card"><div class="ic">👀</div><h3>Observability by staring</h3><p>Your dashboard is the Deployments tab. Conditional formatting is your alerting stack.</p></div>
+    <div class="card"><div class="ic">💸</div><h3>$0 control plane</h3><p>The most cost-optimized orchestrator in the industry, because the industry forgot to check whether a spreadsheet counts.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Honest comparison</h2>
+  <p class="meta">Every column is a real, respectable orchestrator. One of them is a spreadsheet.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>&nbsp;</th><th>Sheeternetes 💩</th><th>Kubernetes</th><th>HashiCorp Nomad</th><th>Docker Swarm</th><th>Cloud Foundry</th></tr></thead>
+      <tbody>
+        <tr><th>Control plane</th><td class="us">A Google Sheet</td><td>etcd + API server + controllers + scheduler</td><td>Raft + server nodes</td><td>Raft-backed managers</td><td>BOSH + Diego</td></tr>
+        <tr><th>Lines of YAML for hello-world</th><td class="us">0 (we use JSON)</td><td>~40</td><td>~15 (HCL)</td><td>~12</td><td>a manifest and a prayer</td></tr>
+        <tr><th>Consensus DB required</th><td class="us">No — it's a Sheet</td><td>Yes (etcd)</td><td>Yes (Raft)</td><td>Yes (Raft)</td><td>Yes</td></tr>
+        <tr><th>Editable by your CFO</th><td class="us">Yes</td><td>No</td><td>No</td><td>No</td><td>Absolutely not</td></tr>
+        <tr><th>Learning curve</th><td class="us">One afternoon</td><td>One career</td><td>One week</td><td>One weekend</td><td>One reorg</td></tr>
+        <tr><th>Spreadsheet-native</th><td class="us">✅ Only us</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+        <tr><th>Control-plane cost</th><td class="us">$0</td><td>$$$</td><td>$$</td><td>$</td><td>$$$</td></tr>
+        <tr><th>Time travel (undo)</th><td class="us">Ctrl+Z</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+        <tr><th>Safe for production at scale</th><td class="us">Please don't</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="meta">Disclaimer: an enterprise-grade joke. Do not run production on a spreadsheet. (If you do, please film it.)</p>
+</section>
+
+<section>
+  <h2>Get it</h2>
+  <div class="links-row">
+    <a class="cta ghost" href="https://github.com/sncfoundation/sheeternetes">📦 Source &amp; lab (GitHub)</a>
+    <a class="cta ghost" href="certification.html#exam">🎓 Get certified (CSFE)</a>
+    <a class="cta ghost" href="https://github.com/sncfoundation/sheeternetes/blob/master/ROADMAP.md">🗺️ Roadmap</a>
+    <a class="cta ghost" href="landscape.html">🧩 The rest of the landscape</a>
+  </div>
+  <p class="meta" style="margin-top:12px">Apache-2.0. Part of the <a href="index.html">Sheet-Native Computing Foundation</a>.</p>
+</section>
+
+</div>
+
+<footer class="wrap">
+  Sheeternetes — an enterprise-grade joke that reconciles. 💩 · <span id="footver"></span>
+</footer>
+
+<script>
+(function(){
+  var REPO="sncfoundation/sheeternetes";
+  fetch("https://api.github.com/repos/"+REPO+"/releases/latest")
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){ if(d&&d.tag_name){
+      document.getElementById("version").textContent=d.tag_name;
+      document.getElementById("footver").textContent="Latest release: "+d.tag_name;
+    }}).catch(function(){});
+})();
+</script>
+</body>
+</html>
