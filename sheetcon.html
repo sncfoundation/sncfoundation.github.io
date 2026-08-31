@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SheetCon + Spreadsheet-Native Con — the SNCF flagship event</title>
+<meta name="description" content="SheetCon + Spreadsheet-Native Con: the flagship event of the Sheet-Native Computing Foundation. Talks, a CFP, and an astrology track.">
+<meta property="og:title" content="SheetCon + Spreadsheet-Native Con">
+<meta property="og:description" content="The flagship SNCF event. Talks, a CFP, and an astrology track. Venue: one shared tab.">
+<meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
+<meta property="og:url" content="https://sncfoundation.github.io/sheetcon.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.55}
+  a{color:var(--accent)}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap;max-width:1040px}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:60px 20px 34px;background:radial-gradient(1200px 400px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .logo{font-size:56px}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5.5vw,48px);margin:8px 0 6px;letter-spacing:-1px}
+  .when{color:var(--muted);font-size:18px}
+  .cta{display:inline-block;margin-top:22px;background:var(--accent);color:#fff;text-decoration:none;padding:13px 24px;border-radius:10px;font-weight:700}
+  section{padding:38px 0;border-top:1px solid var(--line)}
+  h2{font-size:24px;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card h3{margin:0 0 6px;font-size:17px}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  .agenda{width:100%;border-collapse:collapse;font-size:14.5px}
+  .agenda td,.agenda th{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  .agenda th{color:var(--muted);font-weight:600}
+  .track{color:var(--accent2);font-size:12px;border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+  .meta{color:var(--muted);font-size:13px}
+  footer{padding:36px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 Sheeternetes</a>
+  <span class="links">
+    <a href="product.html">Product</a><a href="foundation.html">Foundation</a><a href="landscape.html">Landscape</a>
+    <a href="trailmap.html">Trail Map</a><a href="index.html#certify">Certify</a><a href="verify.html">Verify</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="logo">🎤</div>
+    <p class="kicker">The SNCF flagship event</p>
+    <h1>SheetCon + Spreadsheet-Native Con</h1>
+    <p class="when">Cell A1 · The time is <b>now</b> · Venue: one shared tab (unlimited capacity)</p>
+    <div><a class="cta" href="#cfp">Submit a talk →</a></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2>Why attend</h2>
+  <div class="grid">
+    <div class="card"><h3>Zero travel</h3><p>The conference is a spreadsheet. You are already there. Networking happens in the comments.</p></div>
+    <div class="card"><h3>$0 tickets</h3><p>The most cost-optimized event in the industry. Swag is a 💩 sticker you make yourself.</p></div>
+    <div class="card"><h3>Infinite hallway track</h3><p>Every tab is a hallway. Every cell is a conversation. Nobody can find the room, as tradition demands.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Agenda (single-track, because there is only one project)</h2>
+  <table class="agenda">
+    <thead><tr><th>Time</th><th>Talk</th><th>Track</th></tr></thead>
+    <tbody>
+      <tr><td>A1</td><td>Keynote: The Post-Kubernetes Era Begins in Cell A1</td><td><span class="track">Keynote</span></td></tr>
+      <tr><td>A2</td><td>etcd Was a Phase: Migrating State to a Range</td><td><span class="track">Core</span></td></tr>
+      <tr><td>A3</td><td>Zero-YAML Delivery with Sheetlux CD</td><td><span class="track">GitOps</span></td></tr>
+      <tr><td>A4</td><td>Scheduling WASI Modules From a Spreadsheet</td><td><span class="track">WASM</span></td></tr>
+      <tr><td>A5</td><td>Reading the Events Tab by Moon Phase</td><td><span class="track">🔮 Astrology</span></td></tr>
+      <tr><td>A6</td><td>Is Mercury in Retrograde, or Is It Your Reconcile Loop?</td><td><span class="track">🔮 Astrology</span></td></tr>
+      <tr><td>A7</td><td>Load-Bearing: Confessions of a Spreadsheet That Runs Payroll</td><td><span class="track">End User</span></td></tr>
+      <tr><td>A8</td><td>Closing: It Reconciles. Verifiably.</td><td><span class="track">Keynote</span></td></tr>
+    </tbody>
+  </table>
+  <p class="meta">The 🔮 Astrology track is peer-reviewed by the stars. Submissions are accepted if the stars align (they always do; the loop reconciles them).</p>
+</section>
+
+<section id="cfp">
+  <h2>Call for Proposals</h2>
+  <p>We accept talks on orchestration, networking, storage, CD, WASM, AI, and the movement of
+    celestial bodies as they relate to uptime. First-time speakers especially welcome — everyone
+    starts as an Unsaved Draft.</p>
+  <p><a class="cta" href="https://github.com/sncfoundation/sheeternetes/issues/new?title=SheetCon%20CFP%3A%20%3Ctalk%20title%3E&body=Track%3A%20%0AAbstract%3A%20&labels=sncf">Submit a proposal →</a></p>
+  <p class="meta">Selection criteria: does it reconcile? Bonus points if you film it running in production.</p>
+</section>
+
+</div>
+
+<footer class="wrap">
+  SheetCon — a SNCF production. <a href="foundation.html">Foundation</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+</footer>
+</body>
+</html>
