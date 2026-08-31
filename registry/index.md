@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **21** credentials issued to date, across 19 programs.
+- **22** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -19,6 +19,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SEL000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native AI Engineer (Sheetelligence) | 2026-08-31 | 10/10 | [#29](https://github.com/sncfoundation/sncfoundation.github.io/issues/29) |
 | `SFE000001` | [@tym83](https://github.com/tym83) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 10/10 | [#5](https://github.com/tym83/sheeternetes/issues/5) |
 | `SFE000002` | [@GoodDingo](https://github.com/GoodDingo) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 9/10 | [#37](https://github.com/tym83/sheeternetes/issues/37) |
+| `SFN000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-08-31 | 10/10 | [#40](https://github.com/sncfoundation/sncfoundation.github.io/issues/40) |
 | `SFO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native FinOps Engineer (SheetFinOps) | 2026-08-31 | 10/10 | [#33](https://github.com/sncfoundation/sncfoundation.github.io/issues/33) |
 | `SHB000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Platform Engineer (SheetHub) | 2026-08-31 | 10/10 | [#26](https://github.com/sncfoundation/sncfoundation.github.io/issues/26) |
 | `SHU000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Metrics Engineer (Sheetheus) | 2026-08-31 | 10/10 | [#39](https://github.com/sncfoundation/sncfoundation.github.io/issues/39) |
