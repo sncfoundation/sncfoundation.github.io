@@ -1,6 +1,6 @@
 {
   "program": "Certified Sheeternetes Fundamentals Engineer (CSFE)",
-  "count": 16,
+  "count": 17,
   "certificates": [
     {
       "serial": "RNK000001",
@@ -54,6 +54,18 @@
       "release": null,
       "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/24",
       "issue_number": 24
+    },
+    {
+      "serial": "SCC000001",
+      "seq": 1,
+      "holder": "tym83",
+      "date": "2026-08-31",
+      "score": "10/10",
+      "program": "Certified Sheet-Native Cloud Connector Engineer (Cloud connectors)",
+      "program_key": "cloud-connectors",
+      "release": null,
+      "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/34",
+      "issue_number": 34
     },
     {
       "serial": "SEL000001",
