@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>Live Demo — Sheet-Native Computing Foundation</title>
+<meta name="description" content="A live reference demo: three real Google Sheets running a federated app across web, data, and edge clusters — Sheeternetes, Sheetstor, SheetAssembly, Sheetmesh in action.">
+<meta property="og:title" content="SNCF Live Demo — three spreadsheet clusters, one app">
+<meta property="og:description" content="Three real Google Sheets running a federated workload. Open them and watch it reconcile.">
+<meta property="og:image" content="https://sncfoundation.github.io/social-sncf.png">
+<meta property="og:url" content="https://sncfoundation.github.io/demo.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/social-sncf.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.55}
+  a{color:var(--accent)}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:48px 20px 24px;background:radial-gradient(1200px 400px at 50% -80px, rgba(63,185,80,.16), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,44px);margin:8px 0 6px;letter-spacing:-1px}
+  .tagline{max-width:680px;margin:0 auto;color:var(--muted)}
+  section{padding:30px 0;border-top:1px solid var(--line)}
+  h2{font-size:22px;margin:0 0 6px;display:flex;align-items:center;gap:8px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+  .cluster{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0}
+  .cluster h3{margin:0 0 2px;font-size:19px}
+  .cluster .role{color:var(--muted);font-size:13px;margin:0 0 10px}
+  .runs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+  .chip{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px;color:var(--fg)}
+  .frame{width:100%;height:340px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .cta{display:inline-block;margin-top:10px;background:var(--accent);color:#fff;text-decoration:none;padding:9px 16px;border-radius:9px;font-weight:700;font-size:14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card b{color:var(--fg)}.card p{margin:4px 0 0;color:var(--muted);font-size:13px}
+  .meta{color:var(--muted);font-size:13px}
+  code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  footer{padding:34px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="dashboards.html">Dashboards</a>
+    <a href="demo.html">Live Demo</a><a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Sheet-Native Computing Foundation</p>
+    <h1>🖥️ Live Demo</h1>
+    <p class="tagline">Three <b>real Google Sheets</b>, each a Sheeternetes cluster, running one
+      federated application across web, data and edge tiers. The spreadsheet <em>is</em> the
+      cluster — open them and read the running state. It reconciles.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2>The application</h2>
+  <p class="sub">A classic three-tier app, spread across three spreadsheet clusters and stitched
+    together by <a href="project-sheetmesh.html">Sheetmesh</a>. Traffic flows
+    <b>web → api → data</b>, with WASM functions at the edge.</p>
+  <div class="grid">
+    <div class="card"><b>🌐 cluster-a — web tier</b><p>web · api · frontend (nginx, httpbin). Services via Sheetlium DNS aliases.</p></div>
+    <div class="card"><b>💾 cluster-b — data tier</b><p>postgres (on a Sheetstor volume) · redis. Persistent storage, spreadsheet-native.</p></div>
+    <div class="card"><b>⚡ cluster-c — edge / WASM</b><p>wasm-fn (SheetAssembly, wasmtime) · cdn · ai-router (Sheetelligence).</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>🌐 cluster-a <span class="meta" style="font-weight:400">· web tier</span></h2>
+  <p class="role">3 deployments · 2 nodes · 7 pods running. Demonstrates <b>Sheeternetes</b> (scheduling, replicas), <b>Sheetlium</b> (service DNS).</p>
+  <div class="runs"><span class="chip">💩 Sheeternetes</span><span class="chip">🕸️ Sheetlium</span></div>
+  <iframe class="frame" src="https://docs.google.com/spreadsheets/d/1LazMcYZL3CUZ9jV4IhfPBP-gYNokN5C6LDNTphGmjso/preview" loading="lazy" title="cluster-a"></iframe>
+  <div><a class="cta" href="https://docs.google.com/spreadsheets/d/1LazMcYZL3CUZ9jV4IhfPBP-gYNokN5C6LDNTphGmjso/edit" target="_blank" rel="noopener">Open cluster-a →</a></div>
+</section>
+
+<section>
+  <h2>💾 cluster-b <span class="meta" style="font-weight:400">· data tier</span></h2>
+  <p class="role">postgres + redis · 2 nodes · a <b>Sheetstor</b> volume (<code>pgdata</code>, 1 GiB, replica factor 2). Demonstrates <b>Sheetstor</b> (storage) and cross-cluster <b>Sheetmesh</b>.</p>
+  <div class="runs"><span class="chip">💾 Sheetstor</span><span class="chip">🔗 Sheetmesh</span><span class="chip">💩 Sheeternetes</span></div>
+  <iframe class="frame" src="https://docs.google.com/spreadsheets/d/1u5jfyvL3oaIhE-tWXB2bYq0Q66dw-vRlKVGHHTMr0kw/preview" loading="lazy" title="cluster-b"></iframe>
+  <div><a class="cta" href="https://docs.google.com/spreadsheets/d/1u5jfyvL3oaIhE-tWXB2bYq0Q66dw-vRlKVGHHTMr0kw/edit" target="_blank" rel="noopener">Open cluster-b →</a></div>
+</section>
+
+<section>
+  <h2>⚡ cluster-c <span class="meta" style="font-weight:400">· edge / WASM</span></h2>
+  <p class="role">wasm-fn runs as WASI modules via <b>SheetAssembly</b> (<code>runtime: wasm</code>), plus a CDN and an AI router. <b>SheetAIOps</b> reports no anomalies.</p>
+  <div class="runs"><span class="chip">🧩 SheetAssembly</span><span class="chip">🤖 Sheetelligence</span><span class="chip">🔮 SheetAIOps</span></div>
+  <iframe class="frame" src="https://docs.google.com/spreadsheets/d/1EIcpt3l-d0xdXR-_ngxhoHK_9MdMd7MJRMkYIypcFMQ/preview" loading="lazy" title="cluster-c"></iframe>
+  <div><a class="cta" href="https://docs.google.com/spreadsheets/d/1EIcpt3l-d0xdXR-_ngxhoHK_9MdMd7MJRMkYIypcFMQ/edit" target="_blank" rel="noopener">Open cluster-c →</a></div>
+</section>
+
+<section>
+  <h2>How to make it fully live</h2>
+  <p class="meta">These Sheets hold the real control-plane state (Deployments, Nodes, Pods, Events,
+    Volumes). To drive them for real: deploy the Apps Script apiserver on each Sheet, point
+    <code>kubelet.sh</code> at your Docker hosts, and manage with <code>skctl</code> — or install
+    the whole toolbox at once with <a href="project-sheetystack.html">SheetyStack</a>. Then
+    <a href="dashboards.html">Sheetfana</a> renders it and <a href="project-sheetheus.html">Sheetheus</a>
+    scrapes it. It reconciles.</p>
+</section>
+
+</div>
+
+<footer class="wrap">
+  SNCF Live Demo · <a href="index.html">Foundation</a> · <a href="projects.html">Projects</a> ·
+  <a href="https://github.com/sncfoundation">GitHub</a>
+</footer>
+</body>
+</html>

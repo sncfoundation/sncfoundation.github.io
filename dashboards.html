@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>Dashboards — Sheet-Native Computing Foundation</title>
+<meta name="description" content="Live SNCF dashboards — credentials, ranks, and programs, rendered from the public registry. Powered by Sheetheus & Sheetfana.">
+<meta property="og:title" content="SNCF Dashboards">
+<meta property="og:description" content="Live foundation metrics — credentials, ranks, programs — our Grafana over a spreadsheet.">
+<meta property="og:image" content="https://sncfoundation.github.io/social-sncf.png">
+<meta property="og:url" content="https://sncfoundation.github.io/dashboards.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/social-sncf.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922;--b1:#3fb950;--b2:#58a6ff;--b3:#d29922;--b4:#db61a2}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5}
+  a{color:var(--accent)}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:46px 20px 22px;background:radial-gradient(1200px 400px at 50% -80px, rgba(88,166,255,.16), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(26px,5vw,42px);margin:8px 0 6px;letter-spacing:-1px}
+  .tagline{max-width:640px;margin:0 auto;color:var(--muted)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:22px 0}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .tile .n{font-size:34px;font-weight:800;line-height:1}
+  .tile .l{color:var(--muted);font-size:13px;margin-top:6px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0}
+  .panel h2{font-size:16px;margin:0 0 14px;color:var(--fg);display:flex;justify-content:space-between;align-items:center}
+  .panel h2 .sub{color:var(--muted);font-size:12px;font-weight:400}
+  .bar{display:grid;grid-template-columns:170px 1fr 42px;align-items:center;gap:10px;margin:6px 0;font-size:13px}
+  .bar .t{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar .track{background:rgba(127,127,127,.14);border-radius:6px;height:16px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:6px}
+  .bar .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--fg)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600}
+  code{background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .meta{color:var(--muted);font-size:13px}
+  footer{padding:34px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a>
+    <a href="dashboards.html">Dashboards</a><a href="demo.html">Live Demo</a><a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Sheet-Native Computing Foundation</p>
+    <h1>📊 Dashboards</h1>
+    <p class="tagline">Live foundation metrics, rendered from the public registry — our Grafana over a
+      spreadsheet. Powered by <a href="project-sheetheus.html">Sheetheus</a> &amp;
+      <a href="project-sheetfana.html">Sheetfana</a>.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <div class="panel">
+    <h2>Credentials by program <span class="sub" id="progsub"></span></h2>
+    <div id="programs"><p class="meta">Loading the registry…</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Ranks awarded <span class="sub">by tier</span></h2>
+    <div id="ranks"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Recently issued <span class="sub">latest credentials</span></h2>
+    <div style="overflow-x:auto"><table id="recent"><thead><tr><th>Serial</th><th>Holder</th><th>Program / Rank</th><th>Issued</th></tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <p class="meta" style="margin:18px 0">This dashboard reads
+    <a href="registry/index.json">registry/index.json</a> live. Want cluster dashboards (nodes,
+    replicas, pod phases)? That's <a href="project-sheetfana.html">Sheetfana</a> — including a
+    beautiful UI right inside your Google Sheet.</p>
+</div>
+
+<footer class="wrap">
+  SNCF Dashboards · <a href="index.html">Foundation</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+</footer>
+
+<script>
+(function(){
+  var COLORS=["#3fb950","#58a6ff","#d29922","#db61a2","#a371f7","#39c5cf","#f0883e","#e3b341"];
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function tile(n,l){return '<div class="tile"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>';}
+  function bars(el, rows, color){
+    var max=Math.max(1,Math.max.apply(null,rows.map(function(r){return r.v;})));
+    el.innerHTML=rows.map(function(r,i){
+      var c=typeof color==="function"?color(r,i):color;
+      return '<div class="bar"><span class="t" title="'+esc(r.t)+'">'+esc(r.t)+'</span>'+
+        '<span class="track"><span class="fill" style="width:'+(r.v/max*100).toFixed(1)+'%;background:'+c+'"></span></span>'+
+        '<span class="v">'+r.v+'</span></div>';
+    }).join("");
+  }
+  fetch("registry/index.json?_="+Date.now()).then(function(r){return r.ok?r.json():{certificates:[]};}).then(function(d){
+    var certs=(d&&d.certificates)||[];
+    var exams=certs.filter(function(c){return c.type!=="rank";});
+    var ranks=certs.filter(function(c){return c.type==="rank";});
+    var holders={}; exams.forEach(function(c){holders[(c.holder||"").toLowerCase()]=1;});
+    // tiles
+    document.getElementById("tiles").innerHTML=
+      tile(certs.length,"credentials issued")+
+      tile(Object.keys(holders).length,"certified engineers")+
+      tile(ranks.length,"ranks awarded")+
+      tile("19","live exam programs")+
+      tile("20","foundation projects")+
+      tile("$0","infrastructure spend");
+    // by program
+    var byProg={}; exams.forEach(function(c){var k=(c.program||"CSFE").replace(/^Certified\s+/,"").replace(/\s+Engineer.*/,"").replace(/\s*\(.*\)/,"");byProg[k]=(byProg[k]||0)+1;});
+    var progRows=Object.keys(byProg).map(function(k){return {t:k,v:byProg[k]};}).sort(function(a,b){return b.v-a.v;});
+    document.getElementById("progsub").textContent=progRows.length+" programs";
+    if(progRows.length) bars(document.getElementById("programs"),progRows,function(_,i){return COLORS[i%COLORS.length];});
+    else document.getElementById("programs").innerHTML='<p class="meta">No credentials yet.</p>';
+    // ranks by tier
+    var order=["SheetAdmiral","SheetCommander","SheetAstronaut","SheetCadet"];
+    var byRank={}; ranks.forEach(function(c){byRank[c.rank]=(byRank[c.rank]||0)+1;});
+    var rankRows=order.filter(function(k){return byRank[k];}).map(function(k){return {t:k,v:byRank[k]};});
+    if(rankRows.length) bars(document.getElementById("ranks"),rankRows,"#d29922");
+    else document.getElementById("ranks").innerHTML='<p class="meta">No ranks awarded yet.</p>';
+    // recent
+    var tb=document.querySelector("#recent tbody");
+    var recent=certs.slice().reverse().slice(0,12);
+    tb.innerHTML=recent.map(function(c){
+      return '<tr><td><a href="verify.html?id='+encodeURIComponent(c.serial)+'"><code>'+esc(c.serial)+'</code></a></td>'+
+        '<td><a href="https://github.com/'+encodeURIComponent(c.holder)+'">@'+esc(c.holder)+'</a></td>'+
+        '<td>'+esc(c.type==="rank"?("🏅 "+c.rank):(c.program||"CSFE"))+'</td><td>'+esc(c.date)+'</td></tr>';
+    }).join("")||'<tr><td colspan="4" class="meta">Nothing yet.</td></tr>';
+  }).catch(function(){document.getElementById("programs").innerHTML='<p class="meta">Could not load the registry.</p>';});
+})();
+</script>
+</body>
+</html>
