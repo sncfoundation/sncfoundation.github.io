@@ -1,0 +1,30 @@
+{
+  "serial": "RNK000002",
+  "type": "rank",
+  "rank": "SheetAdmiral",
+  "rank_key": "sheetadmiral",
+  "holder": "tym83",
+  "date": "2026-08-31",
+  "program": "Rank: SheetAdmiral",
+  "credentials": 16,
+  "based_on": [
+    "SAO000001",
+    "SAS000001",
+    "SBF000001",
+    "SCC000001",
+    "SEL000001",
+    "SFE000001",
+    "SFO000001",
+    "SHB000001",
+    "SKW000001",
+    "SLM000001",
+    "SLP000001",
+    "SLX000001",
+    "SMH000001",
+    "SOS000001",
+    "SPS000001",
+    "STO000001"
+  ],
+  "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/36",
+  "issue_number": 36
+}
