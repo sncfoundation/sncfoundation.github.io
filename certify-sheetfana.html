@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
-<title>SheetFinOps exam (CSFO) — SNCF Certification</title>
-<meta name="description" content="Take the Certified Sheet-Native FinOps Engineer (CSFE) exam. Pass and earn a verifiable credential with a serial number.">
-<meta property="og:title" content="SheetFinOps exam (CSFO)">
+<title>Sheetfana Dashboards exam (CSFE-D) — SNCF Certification</title>
+<meta name="description" content="Take the Certified Sheet-Native Dashboards Engineer (Sheetfana) (CSFE) exam. Pass and earn a verifiable credential with a serial number.">
+<meta property="og:title" content="Sheetfana Dashboards exam (CSFE-D)">
 <meta property="og:description" content="Pass the exam, earn a verifiable credential and the rank of SheetCadet.">
 <meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
-<meta property="og:url" content="https://sncfoundation.github.io/certify-sheetfinops.html">
+<meta property="og:url" content="https://sncfoundation.github.io/certify-sheetfana.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
@@ -58,9 +58,9 @@
 
 <header class="hero">
   <div class="wrap">
-    <img class="plogo" src="logos/sheetfinops.svg" alt="Sheeternetes logo">
-    <p class="kicker">SNCF Certification · FinOps</p>
-    <h1>Certified Sheet-Native FinOps Engineer</h1>
+    <img class="plogo" src="logos/sheetfana.svg" alt="Sheeternetes logo">
+    <p class="kicker">SNCF Certification · Dashboards (Sheetfana)</p>
+    <h1>Certified Sheet-Native Dashboards Engineer (Sheetfana)</h1>
     <p class="tagline">Pass the exam (7/10) and a verifiable credential is issued to your GitHub
       identity — a sequential serial in the public registry, and the rank of 🚀 <b>SheetCadet</b>.</p>
   </div>
@@ -116,20 +116,20 @@
 (function(){
   var CERT_REPO = "sncfoundation/sncfoundation.github.io";
   var QUESTIONS = [
-    { q:"SheetFinOps reports an infra bill of…",
-      a:["$0", "$1M", "Priceless", "Your soul"], c:0 },
-    { q:"It is the analog of…",
-      a:["OpenCost / Kubecost", "QuickBooks", "a slot machine", "a piggy bank"], c:0 },
-    { q:"Besides $0, it estimates…",
-      a:["Avoided cloud spend", "Your horoscope", "Rainfall", "Nothing"], c:0 },
-    { q:"The control plane costs…",
-      a:["$0 (it's a spreadsheet)", "$$$", "a kidney", "a yacht"], c:0 },
-    { q:"Avoided spend is computed from…",
-      a:["vCPU/mem × a cloud rate", "dice", "the moon phase", "vibes"], c:0 },
-    { q:"The FinOps recommendation is…",
-      a:["None — you're already at $0", "Buy more nodes", "Panic", "Hire consultants"], c:0 },
-    { q:"Egress cost is…",
-      a:["$0 (there is no egress)", "$$$", "classified", "a surprise"], c:0 },
+    { q:"Sheetfana is the analog of…",
+      a:["Grafana", "Prometheus", "Excel 97", "MS Paint"], c:0 },
+    { q:"Its most on-brand UI is…",
+      a:["Dashboards inside Google Sheets", "A neon sign", "A billboard", "A tattoo"], c:0 },
+    { q:"The in-Sheet dashboard is built by…",
+      a:["Apps Script (Dashboard.gs)", "Magic", "A human intern", "Nobody"], c:0 },
+    { q:"`sheetfana render` prints…",
+      a:["An ASCII terminal dashboard", "A hologram", "A fax", "Silence"], c:0 },
+    { q:"Its datasource is…",
+      a:["The apiserver + Sheetheus", "A crystal ball", "A weather API", "A guess"], c:0 },
+    { q:"The browser dashboard uses…",
+      a:["Self-contained inline SVG (no CDNs)", "jQuery 1.0", "A Java applet", "Flash"], c:0 },
+    { q:"Dashboards over a spreadsheet is…",
+      a:["Grafana where the datasource is a workbook", "Impossible", "Illegal", "A myth"], c:0 },
   ];
   function shuffle(arr){ for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; } return arr; }
   var CORRECT=[], quiz=document.getElementById("quiz");
@@ -161,7 +161,7 @@
     score.style.color=pass?"var(--accent)":"#f85149";
     document.getElementById("certForm").classList.toggle("hidden", !pass);
     if(pass){
-      var url="https://github.com/"+CERT_REPO+"/issues/new?template=certify.yml&labels=certification&program=sheetfinops&score="+encodeURIComponent(correct+"/"+QUESTIONS.length);
+      var url="https://github.com/"+CERT_REPO+"/issues/new?template=certify.yml&labels=certification&program=sheetfana&score="+encodeURIComponent(correct+"/"+QUESTIONS.length);
       document.getElementById("claim").href=url;
       document.getElementById("certForm").scrollIntoView({behavior:"smooth"});
     }

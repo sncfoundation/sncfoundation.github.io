@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
-<title>PowerShell IaC — a Sheet-Native Computing Foundation project</title>
-<meta name="description" content="PowerShell IaC: Declarative cmdlets for the cluster. An SNCF project — the spreadsheet-native answer to PowerShell DSC.">
-<meta property="og:title" content="PowerShell IaC — Declarative cmdlets for the cluster.">
-<meta property="og:description" content="The spreadsheet-native answer to PowerShell DSC.">
+<title>Sheetheus — a Sheet-Native Computing Foundation project</title>
+<meta name="description" content="Sheetheus: Metrics and a tiny TSDB for Sheeternetes. An SNCF project — the spreadsheet-native answer to Prometheus.">
+<meta property="og:title" content="Sheetheus — Metrics and a tiny TSDB for Sheeternetes.">
+<meta property="og:description" content="The spreadsheet-native answer to Prometheus.">
 <meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
-<meta property="og:url" content="https://sncfoundation.github.io/project-sheeternetes-powershell.html">
+<meta property="og:url" content="https://sncfoundation.github.io/project-sheetheus.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
@@ -60,13 +60,13 @@
 
 <header class="hero">
   <div class="wrap">
-    <img class="plogo" src="logos/powershell.svg" alt="PowerShell IaC logo">
-    <h1>PowerShell IaC</h1>
-    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>PowerShell DSC</b> · a project of the <a href="index.html">SNCF</a></p>
-    <p class="tagline">Declarative cmdlets for the cluster.</p>
+    <img class="plogo" src="logos/sheetheus.svg" alt="Sheetheus logo">
+    <h1>Sheetheus</h1>
+    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>Prometheus</b> · a project of the <a href="index.html">SNCF</a></p>
+    <p class="tagline">Metrics and a tiny TSDB for Sheeternetes.</p>
     <div>
-      <a class="cta" href="https://github.com/sncfoundation/sheeternetes-powershell">View on GitHub →</a>
-      <a class="cta ghost" href="certify-sheeternetes-powershell.html">🎓 Get certified</a>
+      <a class="cta" href="https://github.com/sncfoundation/sheetheus">View on GitHub →</a>
+      <a class="cta ghost" href="certify-sheetheus.html">🎓 Get certified</a>
     </div>
   </div>
 </header>
@@ -75,27 +75,27 @@
 
 <section>
   <h2>What it is</h2>
-  <p class="lead">A PowerShell module with idiomatic cmdlets — <code>Get-SheetPod</code>, <code>Set-SheetScale</code>, <code>Invoke-SheetApply</code> — over the apiserver via Invoke-RestMethod. IaC on a spreadsheet, from PowerShell: enterprise-grade on both ends of the joke.</p>
+  <p class="lead">Sheetheus scrapes the cluster on an interval and records Prometheus-style time-series samples into an append-only TSDB. Query recent series or export in the Prometheus text format — pull-based monitoring, spreadsheet-native.</p>
 </section>
 
 <section>
   <h2>Features</h2>
   <div class="grid">
-    <div class="card"><div class="ic">🔷</div><h3>Verb-Noun cmdlets</h3><p>Get-/Set-/Remove-Sheet* with pipeline-friendly objects.</p></div>
-    <div class="card"><div class="ic">🧱</div><h3>IaC</h3><p>Apply manifests; -WhatIf/-Confirm supported.</p></div>
-    <div class="card"><div class="ic">🖥️</div><h3>Meets you where you are</h3><p>Windows admins, welcome to the spreadsheet.</p></div>
+    <div class="card"><div class="ic">🔥</div><h3>Pull-based scraping</h3><p><code>sheetheus scrape/run</code> collects node, deployment and pod metrics on an interval.</p></div>
+    <div class="card"><div class="ic">🗃️</div><h3>A tiny TSDB</h3><p>Append-only samples you can <code>query</code> and <code>export</code>.</p></div>
+    <div class="card"><div class="ic">📤</div><h3>Prometheus format</h3><p><code>sheetheus export</code> emits standard text exposition.</p></div>
   </div>
 </section>
 
 <section>
-  <h2>PowerShell IaC vs PowerShell DSC</h2>
+  <h2>Sheetheus vs Prometheus</h2>
   <p class="meta">The honest comparison — in our favor, obviously.</p>
   <div class="tablewrap"><table>
-    <thead><tr><th>&nbsp;</th><th>PowerShell IaC 💩</th><th>PowerShell DSC</th></tr></thead>
+    <thead><tr><th>&nbsp;</th><th>Sheetheus 💩</th><th>Prometheus</th></tr></thead>
     <tbody>
-        <tr><th>Interface</th><td class="us">Idiomatic cmdlets</td><td>Idiomatic cmdlets</td></tr>
-        <tr><th>Backend</th><td class="us">A spreadsheet</td><td>A real system</td></tr>
-        <tr><th>Objects</th><td class="us">Pipeline-friendly</td><td>Pipeline-friendly</td></tr>
+        <tr><th>Scrape model</th><td class="us">Pull</td><td>Pull</td></tr>
+        <tr><th>Storage</th><td class="us">Append-only TSDB</td><td>A real TSDB</td></tr>
+        <tr><th>Setup</th><td class="us">One script</td><td>A server + config + retention</td></tr>
         <tr><th>Spreadsheet-native</th><td class="us">✅</td><td>❌</td></tr>
     </tbody>
   </table></div>
@@ -105,8 +105,8 @@
 <section>
   <h2>Get it</h2>
   <div class="links-row">
-    <a class="cta ghost" href="https://github.com/sncfoundation/sheeternetes-powershell">📦 GitHub</a>
-    <a class="cta ghost" href="certify-sheeternetes-powershell.html">🎓 Certification</a>
+    <a class="cta ghost" href="https://github.com/sncfoundation/sheetheus">📦 GitHub</a>
+    <a class="cta ghost" href="certify-sheetheus.html">🎓 Certification</a>
     <a class="cta ghost" href="projects.html">🧩 All projects</a>
     <a class="cta ghost" href="landscape.html">🗺️ Landscape</a>
   </div>
@@ -116,7 +116,7 @@
 </div>
 
 <footer class="wrap">
-  PowerShell IaC — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
+  Sheetheus — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
 </footer>
 </body>
 </html>

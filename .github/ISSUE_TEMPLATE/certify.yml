@@ -34,6 +34,9 @@ body:
         - sheeternetes-powershell
         - sheeternetes-lisp
         - sheeternetes-brainfuck
+        - sheetystack
+        - sheetheus
+        - sheetfana
     validations:
       required: true
   - type: input

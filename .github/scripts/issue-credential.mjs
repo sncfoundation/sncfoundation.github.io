@@ -31,6 +31,9 @@ const PROGRAMS = {
   "sheeternetes-powershell": { prefix: "SPS", name: "Certified Sheet-Native PowerShell Engineer", rank: "SheetCadet" },
   "sheeternetes-lisp":       { prefix: "SLP", name: "Certified Sheet-Native Lisp Engineer", rank: "SheetCadet" },
   "sheeternetes-brainfuck":  { prefix: "SBF", name: "Certified Sheet-Native Brainfuck Engineer", rank: "SheetCadet" },
+  "sheetystack":             { prefix: "SYS", name: "Certified Sheet-Native Platform Engineer (SheetyStack)", rank: "SheetCadet" },
+  "sheetheus":               { prefix: "SHU", name: "Certified Sheet-Native Metrics Engineer (Sheetheus)", rank: "SheetCadet" },
+  "sheetfana":               { prefix: "SFN", name: "Certified Sheet-Native Dashboards Engineer (Sheetfana)", rank: "SheetCadet" },
 };
 const DEFAULT_PROGRAM = "sheeternetes";
 
