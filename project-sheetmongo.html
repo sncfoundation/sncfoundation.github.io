@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
-<title>Lisp client — a Sheet-Native Computing Foundation project</title>
-<meta name="description" content="Lisp client: Homoiconic orchestration from the REPL. An SNCF project — the spreadsheet-native answer to client-go.">
-<meta property="og:title" content="Lisp client — Homoiconic orchestration from the REPL.">
-<meta property="og:description" content="The spreadsheet-native answer to client-go.">
+<title>SheetMongo — a Sheet-Native Computing Foundation project</title>
+<meta name="description" content="SheetMongo: A document store — each row is a JSON document. An SNCF project — the spreadsheet-native answer to MongoDB.">
+<meta property="og:title" content="SheetMongo — A document store — each row is a JSON document.">
+<meta property="og:description" content="The spreadsheet-native answer to MongoDB.">
 <meta property="og:image" content="https://sncfoundation.github.io/social-card.png">
-<meta property="og:url" content="https://sncfoundation.github.io/project-sheeternetes-lisp.html">
+<meta property="og:url" content="https://sncfoundation.github.io/project-sheetmongo.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sncfoundation.github.io/social-card.png">
@@ -60,13 +60,13 @@
 
 <header class="hero">
   <div class="wrap">
-    <img class="plogo" src="logos/lisp.svg" alt="Lisp client logo">
-    <h1>Lisp client</h1>
-    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>client-go</b> · a project of the <a href="index.html">SNCF</a></p>
-    <p class="tagline">Homoiconic orchestration from the REPL.</p>
+    <img class="plogo" src="logos/sheetmongo.svg" alt="SheetMongo logo">
+    <h1>SheetMongo</h1>
+    <p class="aka">📝 Unsaved Draft · the spreadsheet-native <b>MongoDB</b> · a project of the <a href="index.html">SNCF</a></p>
+    <p class="tagline">A document store — each row is a JSON document.</p>
     <div>
-      <a class="cta" href="https://github.com/sncfoundation/sheeternetes-lisp">View on GitHub →</a>
-      <a class="cta ghost" href="certify-sheeternetes-lisp.html">🎓 Get certified</a>
+      <a class="cta" href="https://github.com/sncfoundation/sheetmongo">View on GitHub →</a>
+      
     </div>
   </div>
 </header>
@@ -75,27 +75,27 @@
 
 <section>
   <h2>What it is</h2>
-  <p class="lead">A Common Lisp client over the apiserver (dexador + yason). Drive the cluster from <code>sbcl</code> or the REPL — because the control plane is already a set of cells, and cells want to be s-expressions.</p>
+  <p class="lead">Collections are tabs; each document is a row holding a JSON blob. find/aggregate run via QUERY() + Apps Script JSON parsing; indexes are helper columns; sharding is multiple tabs. Flexible-schema documents, spreadsheet-native.</p>
 </section>
 
 <section>
   <h2>Features</h2>
   <div class="grid">
-    <div class="card"><div class="ic">λ</div><h3>Real Common Lisp</h3><p>get / scale / delete / apply against the apiserver.</p></div>
-    <div class="card"><div class="ic">🔁</div><h3>REPL-driven</h3><p>Manage the cluster interactively from the Lisp prompt.</p></div>
-    <div class="card"><div class="ic">🪆</div><h3>Homoiconic</h3><p>Code and data share the same nested form. So do spreadsheets.</p></div>
+    <div class="card"><div class="ic">🍃</div><h3>Documents</h3><p>JSON documents as rows; collections as tabs.</p></div>
+    <div class="card"><div class="ic">🔎</div><h3>Query &amp; aggregate</h3><p>find/aggregate via QUERY() + JSON parsing.</p></div>
+    <div class="card"><div class="ic">🔌</div><h3>mongosh</h3><p>Connect via <a href="project-sheetwire.html">SheetWire</a>.</p></div>
   </div>
 </section>
 
 <section>
-  <h2>Lisp client vs client-go</h2>
+  <h2>SheetMongo vs MongoDB</h2>
   <p class="meta">The honest comparison — in our favor, obviously.</p>
   <div class="tablewrap"><table>
-    <thead><tr><th>&nbsp;</th><th>Lisp client 💩</th><th>client-go</th></tr></thead>
+    <thead><tr><th>&nbsp;</th><th>SheetMongo 💩</th><th>MongoDB</th></tr></thead>
     <tbody>
-        <tr><th>Paradigm</th><td class="us">Homoiconic</td><td>Imperative Go</td></tr>
-        <tr><th>Workflow</th><td class="us">REPL-driven</td><td>Compile-run</td></tr>
-        <tr><th>Joy</th><td class="us">Parentheses</td><td>Struct tags</td></tr>
+        <tr><th>Model</th><td class="us">Documents (JSON)</td><td>Documents (BSON)</td></tr>
+        <tr><th>Doc size</th><td class="us">50k chars/cell</td><td>16 MB</td></tr>
+        <tr><th>Secondary indexes</th><td class="us">Helper column / scan</td><td>Native</td></tr>
         <tr><th>Spreadsheet-native</th><td class="us">✅</td><td>❌</td></tr>
     </tbody>
   </table></div>
@@ -105,8 +105,8 @@
 <section>
   <h2>Get it</h2>
   <div class="links-row">
-    <a class="cta ghost" href="https://github.com/sncfoundation/sheeternetes-lisp">📦 GitHub</a>
-    <a class="cta ghost" href="certify-sheeternetes-lisp.html">🎓 Certification</a>
+    <a class="cta ghost" href="https://github.com/sncfoundation/sheetmongo">📦 GitHub</a>
+    
     <a class="cta ghost" href="projects.html">🧩 All projects</a>
     <a class="cta ghost" href="landscape.html">🗺️ Landscape</a>
   </div>
@@ -116,7 +116,7 @@
 </div>
 
 <footer class="wrap">
-  Lisp client — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
+  SheetMongo — a spreadsheet-native project that reconciles. 💩 · <a href="index.html">SNCF</a>
 </footer>
 </body>
 </html>
