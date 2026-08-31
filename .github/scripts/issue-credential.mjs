@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Issues a sequential CSFE credential from a `certification` issue.
 // Serial format: SFE + 6-digit zero-padded running number (9 chars, e.g. SFE000042).
-// The registry lives in docs/registry so it is browsable on GitHub *and* served on Pages.
+// The registry lives in registry/ so it is browsable on GitHub *and* served on Pages.
 // Serialized by the workflow `concurrency` group, so the counter is race-free.
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
