@@ -135,29 +135,34 @@
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 
+  function credTitle(rec){
+    if(rec.type==="rank") return rec.rank||"Rank";
+    return String(rec.program||"Certified Sheeternetes Fundamentals Engineer (CSFE)")
+      .replace(/^Certified\s+/,'').replace(/\s+Engineer\b.*$/,'').replace(/\s*\(.*\)\s*$/,'') || "Sheeternetes Fundamentals";
+  }
   function renderCert(rec){
-    var u = rec.holder;
+    var u = rec.holder, isRank = rec.type==="rank", title = credTitle(rec);
+    var full = rec.program || "Certified Sheeternetes Fundamentals Engineer (CSFE)";
     return ''+
-    '<div class="status ok">✔ Valid credential — recorded in the registry.</div>'+
+    '<div class="status ok">✔ Valid '+(isRank?"rank":"credential")+' — recorded in the registry.</div>'+
     '<div class="certwrap"><div class="cert">'+
-      '<div class="seal">💩</div>'+
-      '<h3>Official Credential · CSFE Program</h3>'+
-      '<div class="title">Sheeternetes Fundamentals</div>'+
-      '<p class="awarded">This credential is conferred upon</p>'+
+      '<div class="seal">'+(isRank?"🚀":"💩")+'</div>'+
+      '<h3>Official '+(isRank?"Rank":"Credential")+' · SNCF</h3>'+
+      '<div class="title">'+esc(title)+'</div>'+
+      '<p class="awarded">This '+(isRank?"rank":"credential")+' is conferred upon</p>'+
       '<div class="name"><img src="https://github.com/'+encodeURIComponent(u)+'.png?size=88" alt="" onerror="this.style.display=\'none\'"> @'+esc(u)+'</div>'+
       '<div class="body">'+
-        '<p>who, having satisfied the requirements of the examination, is hereby recognized as a '+
-          '<b>Certified Sheeternetes Fundamentals Engineer (CSFE)</b>,</p>'+
+        (isRank
+          ? '<p>who, on the evidence of <b>'+esc(rec.credentials||0)+'</b> Sheet-Native certifications recorded in the public registry, is hereby elevated to the rank of <b>'+esc(rec.rank)+'</b>,</p>'
+          : '<p>who, having satisfied the requirements of the examination, is hereby recognized as a <b>'+esc(full)+'</b>,</p>')+
         '<p>with all rights, privileges, and reconciliation loops appertaining thereto, '+
           'including the right to say the words <b>&ldquo;it reconciles&rdquo;</b> at parties.</p>'+
         '<p style="font-size:13px;color:#6b5a44">Valid from the date of issue until the heat death '+
           'of the universe. Non-transferable across parallel spreadsheets.</p>'+
       '</div>'+
       '<div class="sign">'+
-        '<div>Issued '+esc(rec.date)+'<br>Credential ID '+esc(rec.serial)+'<br>'+
-          (rec.release ? 'Release '+esc(rec.release)+'<br>' : '')+
-          'Registry: verified</div>'+
-        '<div style="text-align:right"><b>The Spreadsheet</b>Chief Reconciliation Officer<br>Sheeternetes Accreditation Board</div>'+
+        '<div>Issued '+esc(rec.date)+'<br>ID '+esc(rec.serial)+'<br>Registry: verified</div>'+
+        '<div style="text-align:right"><b>The Spreadsheet</b>Chief Reconciliation Officer<br>Sheet-Native Computing Foundation</div>'+
       '</div>'+
     '</div></div>'+
     '<div class="card"><table>'+
@@ -175,25 +180,28 @@
   }
 
   function svgFor(rec){
-    var u=rec.holder;
+    var u=rec.holder, isRank=rec.type==="rank", title=credTitle(rec);
+    var full = isRank ? ("Rank · earned on "+(rec.credentials||0)+" certifications") : (rec.program||"Certified Sheeternetes Fundamentals Engineer (CSFE)");
+    var line = isRank
+      ? "was elevated by evidence recorded in the public registry"
+      : "having satisfied the requirements of the examination, is recognized by the Foundation";
     return ''+
 '<svg xmlns="http://www.w3.org/2000/svg" width="720" height="470" viewBox="0 0 720 470">'+
 '<rect width="720" height="470" fill="#fff5e6"/>'+
 '<rect x="10" y="10" width="700" height="450" fill="none" stroke="#8b5a2b" stroke-width="4"/>'+
 '<rect x="18" y="18" width="684" height="434" fill="none" stroke="#8b5a2b" stroke-width="1"/>'+
-'<text x="360" y="70" text-anchor="middle" font-family="Georgia" font-size="60">💩</text>'+
-'<text x="360" y="120" text-anchor="middle" font-family="Georgia" font-size="13" letter-spacing="3" fill="#8b5a2b">CERTIFICATE OF COMPETENCE</text>'+
-'<text x="360" y="160" text-anchor="middle" font-family="Georgia" font-size="30" font-weight="bold" fill="#2a2118">Sheeternetes Fundamentals</text>'+
+'<text x="360" y="70" text-anchor="middle" font-family="Georgia" font-size="60">'+(isRank?"🚀":"💩")+'</text>'+
+'<text x="360" y="120" text-anchor="middle" font-family="Georgia" font-size="13" letter-spacing="3" fill="#8b5a2b">'+(isRank?"CERTIFICATE OF RANK":"CERTIFICATE OF COMPETENCE")+'</text>'+
+'<text x="360" y="160" text-anchor="middle" font-family="Georgia" font-size="30" font-weight="bold" fill="#2a2118">'+esc(title)+'</text>'+
 '<text x="360" y="200" text-anchor="middle" font-family="Georgia" font-size="15" fill="#6b5a44">This certifies that</text>'+
 '<text x="360" y="235" text-anchor="middle" font-family="Georgia" font-size="26" font-weight="bold" fill="#2a2118">@'+esc(u)+'</text>'+
-'<text x="360" y="278" text-anchor="middle" font-family="Georgia" font-size="14" fill="#3a2f22">believes, unconditionally, that a spreadsheet is a fine place</text>'+
-'<text x="360" y="298" text-anchor="middle" font-family="Georgia" font-size="14" fill="#3a2f22">to run production containers, and may say &#8220;it reconciles&#8221; at parties.</text>'+
-'<text x="360" y="322" text-anchor="middle" font-family="Georgia" font-size="12" fill="#6b5a44">Certified Sheeternetes Fundamentals Engineer (CSFE) · valid until the heat death of the universe</text>'+
+'<text x="360" y="285" text-anchor="middle" font-family="Georgia" font-size="14" fill="#3a2f22">'+esc(line)+',</text>'+
+'<text x="360" y="322" text-anchor="middle" font-family="Georgia" font-size="12" fill="#6b5a44">'+esc(full)+' · valid until the heat death of the universe</text>'+
 '<text x="150" y="400" text-anchor="middle" font-family="Georgia" font-size="12" fill="#6b5a44">Issued '+esc(rec.date)+'</text>'+
 '<text x="150" y="418" text-anchor="middle" font-family="Georgia" font-size="11" fill="#6b5a44">'+esc(rec.serial)+'</text>'+
 '<text x="150" y="434" text-anchor="middle" font-family="Georgia" font-size="9" fill="#6b5a44">sncfoundation.github.io/verify.html</text>'+
 '<text x="560" y="392" text-anchor="middle" font-family="cursive" font-size="20" fill="#2a2118">The Spreadsheet</text>'+
-'<text x="560" y="412" text-anchor="middle" font-family="Georgia" font-size="10" fill="#6b5a44">on behalf of no one at the CNCF</text>'+
+'<text x="560" y="412" text-anchor="middle" font-family="Georgia" font-size="10" fill="#6b5a44">Sheet-Native Computing Foundation</text>'+
 '</svg>';
   }
 
@@ -210,7 +218,7 @@
       var blob=new Blob([svgFor(rec)],{type:"image/svg+xml"});
       var a=document.createElement("a");
       a.href=URL.createObjectURL(blob);
-      a.download="csfe-"+rec.serial+"-"+rec.holder+".svg";
+      a.download="sncf-"+rec.serial+"-"+rec.holder+".svg";
       a.click();
     }); }
   }
