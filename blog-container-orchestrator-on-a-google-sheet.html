@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>Running a container orchestrator on a Google Sheet — SNCF Blog</title>
+<meta name="description" content="How I built a real container orchestrator with a spreadsheet as the control plane — scheduler, on-prem Excel, federation, and packing a container image (DOOM) into the cells.">
+<meta property="og:title" content="Running a container orchestrator on a Google Sheet">
+<meta property="og:description" content="How I built a real container orchestrator with a spreadsheet as the control plane — scheduler, on-prem Excel, federation, and packing a container image (DOOM) into the cells.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/blog/screenshot-sheet.png">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-container-orchestrator-on-a-google-sheet.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/blog/screenshot-sheet.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:36px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .postcard{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0;text-decoration:none;color:var(--fg)}
+  .postcard:hover{border-color:var(--accent)}
+  .postcard h3{margin:6px 0 6px;font-size:22px;color:var(--fg)}
+  .postcard p{margin:0;color:var(--muted)}
+  .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--muted);margin:8px 6px 0 0}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">SNCF Blog</p>
+  <h1>Running a container orchestrator on a Google Sheet</h1>
+  <p class="meta">September 2, 2026 · by Timur Tukaev</p>
+</div></header>
+<div class="wrap">
+<article class="post">
+<p>Some projects start as a bad idea you can't shake. Mine was: what if
+the only rule was "keep everything inside a spreadsheet"?</p>
+<p>Not "export metadata to a CSV." Not "log to Sheets." I mean the whole
+control plane. Deployments, Nodes, Pods, Events. They're tabs. A
+scheduler reads and writes cells. A <code>kubectl</code>-style CLI talks
+to the sheet. And on the other end, real Docker containers actually
+start.</p>
+<p>The spreadsheet doesn't pretend to be a cluster. It <em>is</em> the
+cluster.</p>
+<p>I called it <strong>Sheeternetes</strong>. It's a joke. It also
+compiles, has tests, and survives a node dying. Let me show you how it
+works, how to run it in five minutes, how it goes air-gapped on a
+desktop Excel file, and the part I'm weirdly proud of: you can store a
+whole container image inside the cells and even boot DOOM from
+there.</p>
+<h2 id="first-the-obligatory-disclaimer">First, the obligatory
+disclaimer</h2>
+<p>Don't run production on this. If you do, film the save dialog.</p>
+<p>Everything below is real code though. The scheduler does bin-packing
+and failover. There's HMAC request signing, make-before-break live
+migration, and a container image format that lives in cells. The
+substrate is cursed. The engineering isn't.</p>
+<h2 id="the-idea-in-one-picture">The idea in one picture</h2>
+<p>Kubernetes, squinting: desired state in etcd, controllers that drag
+reality toward it. Swap etcd for a Sheets tab and the controller for a
+reconcile loop, and you've got Sheeternetes.</p>
+<p><img src="img/blog/architecture.png"
+alt="How Sheeternetes fits together" /></p>
+<ul>
+<li><strong>The sheet</strong> is the store and the source of truth.
+Four tabs: <code>Deployments</code>, <code>Nodes</code>,
+<code>Pods</code>, <code>Events</code>.</li>
+<li><strong>The apiserver</strong> serves the data and runs the
+scheduler. In the cloud that's Google Apps Script bound to the sheet.
+On-prem it's a small Python server over an <code>.xlsx</code>.</li>
+<li><strong>The kubelet</strong> is a bash script. It turns any Docker
+host into a node: sends a heartbeat, gets the pods it should run, and
+makes local Docker match.</li>
+<li><strong>skctl</strong> is a tiny kubectl. Just <code>curl</code> and
+<code>jq</code>.</li>
+</ul>
+<p>The contract is small enough to fit in a tweet:</p>
+<pre><code>GET  ?token=T&amp;kind=pods|nodes|deployments|events   -&gt;  { &quot;items&quot;: [...] }
+POST { token, action: &quot;apply&quot;|&quot;scale&quot;|&quot;delete&quot;, ... }
+POST { token, node, pods:[...] }                    # kubelet heartbeat -&gt; desired pods</code></pre>
+<h2 id="five-minutes-to-a-cluster">Five minutes to a cluster</h2>
+<p>Cloud version, on Google Sheets. You need a Google account, a Docker
+host, and <code>bash curl jq</code>. All the code is in <a
+href="https://github.com/sncfoundation/sheeternetes">github.com/sncfoundation/sheeternetes</a>.</p>
+<p>There's no template to copy, on purpose. A blank sheet turns itself
+into a cluster:</p>
+<ol type="1">
+<li>Create a blank Google Sheet.</li>
+<li>Extensions, then Apps Script, and paste in
+<code>Code.gs</code>.</li>
+<li>Set a <code>TOKEN</code> at the top.</li>
+<li>Run <code>setup()</code> once. It builds the four tabs, seeds a
+couple of sample workloads, and starts a one-minute reconcile
+trigger.</li>
+<li>Deploy as a Web app and copy the <code>/exec</code> URL.</li>
+</ol>
+<p>Now bring up a node on any Docker box:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">WEBAPP_URL</span><span class="op">=</span>https://script.google.com/macros/s/XXXX/exec</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TOKEN</span><span class="op">=</span>secret</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">NODE_NAME</span><span class="op">=</span>node-a <span class="va">CPU_TOTAL</span><span class="op">=</span>4000 <span class="va">MEM_TOTAL</span><span class="op">=</span>8192 <span class="ex">./kubelet.sh</span></span></code></pre></div>
+<p>No spare machines? <code>./local-cluster.sh</code> fakes three nodes
+on one Docker daemon.</p>
+<p>Deploy something. The manifest is plain JSON:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;deployments&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">{</span> <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;web&quot;</span><span class="fu">,</span>   <span class="dt">&quot;image&quot;</span><span class="fu">:</span> <span class="st">&quot;nginx:alpine&quot;</span><span class="fu">,</span>        <span class="dt">&quot;replicas&quot;</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span> <span class="dt">&quot;cpu_req&quot;</span><span class="fu">:</span> <span class="dv">100</span><span class="fu">,</span> <span class="dt">&quot;mem_req&quot;</span><span class="fu">:</span> <span class="dv">32</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">{</span> <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;hello&quot;</span><span class="fu">,</span> <span class="dt">&quot;image&quot;</span><span class="fu">:</span> <span class="st">&quot;hashicorp/http-echo&quot;</span><span class="fu">,</span>  <span class="dt">&quot;replicas&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span> <span class="dt">&quot;cpu_req&quot;</span><span class="fu">:</span> <span class="dv">50</span><span class="fu">,</span>  <span class="dt">&quot;mem_req&quot;</span><span class="fu">:</span> <span class="dv">16</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;-text=hello-from-a-spreadsheet -listen=:8080&quot;</span> <span class="fu">}</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ot">]</span><span class="fu">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skctl</span> apply lab/hello-web.json</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">skctl</span> get pods</span></code></pre></div>
+<p>Here's the moment that got me. You open the sheet and your cluster is
+<em>right there</em> as rows. Change <code>replicas</code> in a cell and
+the next reconcile spins up the pods. It's <code>kubectl edit</code>,
+except the editor is your cursor.</p>
+<p><img src="img/blog/screenshot-sheet.png"
+alt="Your cluster is a spreadsheet" /></p>
+<p>And in the terminal it looks suspiciously grown-up:</p>
+<p><img src="img/blog/screenshot-term.png"
+alt="skctl doing kubectl things" /></p>
+<p>The containers are real. <code>docker ps</code> on the node proves
+it. Sheetlium (our Cilium) drops them on a shared Docker network and
+gives each deployment a DNS alias, which is basically a Service.</p>
+<h2 id="the-scheduler-is-not-a-toy">The scheduler is not a toy</h2>
+<p>The usual reaction is "it's just a list." It isn't. On every
+heartbeat the apiserver actually places replicas, and it's a pure
+function with unit tests behind it:</p>
+<ul>
+<li><strong>Bin-packing</strong> by <code>cpu_req</code> and
+<code>mem_req</code>. Fits nowhere, gets marked
+<code>Unschedulable</code>.</li>
+<li><strong>Sticky placement</strong>, so pods don't wander between
+nodes for no reason.</li>
+<li><strong>Failover</strong>. A node stops sending heartbeats, goes
+<code>NotReady</code>, and its pods land on the survivors.</li>
+<li><strong>cordon, drain, migrate</strong>, the kubectl way.</li>
+<li><strong>Affinity and taints/tolerations</strong>, so GPU jobs go to
+GPU nodes.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skctl</span> drain node-a          <span class="co"># pods evacuate to other nodes</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">skctl</span> taint node-a gpu=true:NoSchedule</span></code></pre></div>
+<p>Watching pods hop off a dying node, in a spreadsheet, live, is a
+genuinely good time.</p>
+<h2 id="sheetos-because-the-node-needs-an-os">SheetOS, because the node
+needs an OS</h2>
+<p>If you have an orchestrator, you want a node OS to go with it.
+<strong>SheetOS</strong> is our Talos: minimal, immutable, declaratively
+configured, and self-bootstrapping. <code>sheetstrap</code> reads the
+node's desired image from a sheet, brings up the runtime, registers as a
+Node, and if you ask nicely, installs a Sheeternetes cluster on top of
+itself.</p>
+<p>Yes, that's a spreadsheet OS bootstrapping a spreadsheet cluster. Try
+not to think about it too hard.</p>
+<h2 id="bare-metal-no-cloud-no-internet">Bare metal: no cloud, no
+internet</h2>
+<p>The cloud version is fun, but the real flex is running this
+air-gapped on a desktop file. That's the
+<code>sheeternetes-onprem</code> edition. The apiserver is a local
+Python process over an <code>.xlsx</code>, same contract as the cloud,
+so <code>kubelet.sh</code> and <code>skctl</code> point at it
+unchanged.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install openpyxl</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> .skctl.env.example .skctl.env</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> up      <span class="co"># apiserver over cluster.xlsx</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> node    <span class="co"># this host becomes a node</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> apply   <span class="co"># deploy the demo</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> pods    <span class="co"># watch it schedule</span></span></code></pre></div>
+<p>It bin-packs and fails over between LAN nodes, on a
+<code>.xlsx</code>. About Excel vs LibreOffice: openpyxl reads
+<code>.xlsx</code>, so in LibreOffice Calc just Save As
+<code>.xlsx</code>. Native <code>.ods</code> is on the list. And this
+edition ships with 52 tests and CI, because a joke with no tests is just
+a liability.</p>
+<h2 id="wiring-sheets-together">Wiring sheets together</h2>
+<p>One cluster is boring. The good part is federating several, including
+different kinds: a local Excel cluster talking to a cloud Google Sheets
+cluster.</p>
+<p>On-prem boxes can't be reached from outside, so the bridge dials out.
+It reads the local apiserver and reconciles against a peer, giving you
+cross-substrate service discovery. Then the fun one, live migration,
+make-before-break:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> bridge.py migrate web <span class="at">--from</span> local <span class="at">--to</span> peer <span class="at">--rollback-window</span> 30 <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--local</span> http://localhost:8787 <span class="at">--local-token</span> secret <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--peer</span>  https://script.google.com/macros/s/XXXX/exec <span class="at">--peer-token</span> secret2</span></code></pre></div>
+<p>Copy the spec to the target, wait until it's actually up, then drain
+the source. If the target never comes up, the source is left alone, so
+there's no downtime. Add <code>--rollback-window</code> and it watches
+the target after cutover and rolls back if it degrades.</p>
+<p>There's also two-way <code>sync</code> as a daemon, and optional HMAC
+signing on requests (timestamp plus signature, checked within a TTL) for
+when your peer is exposed across substrates. We have HMAC on
+spreadsheets now. I'm not sure how to feel about it either.</p>
+<h2 id="two-kinds-of-containers-and-yes-doom">Two kinds of containers,
+and yes, DOOM</h2>
+<p>This is my favorite part. Sheeternetes runs containers two ways, and
+they're interchangeable.</p>
+<p><strong>OCI mode.</strong> Put <code>image: nginx:alpine</code> in
+the manifest and the node pulls it from a normal registry. Full
+compatibility with the entire container world, working today. The sheet
+just holds desired state; the bytes come from Docker Hub.</p>
+<p><strong>SICF native mode.</strong> Put
+<code>image: sicf:web:v1</code> and the image is resolved from
+<em>inside the workbook</em>. Layers are stored as base64, split across
+cells, addressed by sha256. No registry. The kubelet pulls the layers
+out of the sheet, checks every digest, and runs it.</p>
+<p>There's a lossless bridge between the two:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sheetbuild</span> import nginx:alpine   <span class="co"># OCI image  -&gt; rows in the sheet</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sheetbuild</span> export web:v1 ...     <span class="co"># rows       -&gt; OCI image</span></span></code></pre></div>
+<p>Same digests round-trip, so import then export gets you back exactly
+what you started with.</p>
+<p>Which brings us to the question every infra project must answer. Can
+it run DOOM? It can, and the whole game lives in the cells. Shareware
+DOOM plus a tiny web front-end is a few hundred base64 cells, nowhere
+near the 10M-cell limit. The demo that makes people blink:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> doom:shareware . <span class="kw">&amp;&amp;</span> <span class="ex">docker</span> save doom:shareware <span class="at">-o</span> doom.tar</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sheetbuild</span> import doom.tar <span class="at">--name</span> doom:shareware <span class="at">--store</span> cluster.xlsx</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> rmi doom:shareware        <span class="co"># gone locally. it only exists in the spreadsheet now.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">skctl</span> apply doom.json            <span class="co"># image: sicf:doom:shareware</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">skctl</span> get pods                   <span class="co"># doom-1  Running</span></span></code></pre></div>
+<p>The kubelet saw <code>sicf:</code>, fetched the layers from the
+sheet, verified the hashes, <code>docker load</code>ed the image back
+into existence, and ran it. The game came out of a spreadsheet. Code is
+at <a
+href="https://github.com/sncfoundation/sheetdoom">github.com/sncfoundation/sheetdoom</a>.</p>
+<p>One honest note: the game still runs on the node's real CPU. The
+sheet stores the image and schedules the pod. It's the coordinator,
+never the executor.</p>
+<h2 id="dashboards-in-cells">Dashboards, in cells</h2>
+<p>Of course there are dashboards. <strong>Sheetheus</strong> scrapes
+metrics into a tab, <strong>Sheetfana</strong> renders them with
+conditional formatting and sparklines, in the sheet.</p>
+<p><img src="img/blog/screenshot-dash.png" alt="Sheetfana" /></p>
+<p>Pods running, nodes ready, CPU allocated, a bar chart, a time series.
+All cells.</p>
+<h2 id="it-grew-a-foundation">It grew a foundation</h2>
+<p>At some point there were enough projects that they asked for a
+foundation. So there's the <strong>Sheet-Native Computing
+Foundation</strong>, a straight-faced parody of the CNCF that happens to
+work.</p>
+<p>There's a real standard, the <strong>Sheet Container
+Initiative</strong>, modeled on the OCI: SCRI for the runtime interface
+and SICF for images, both written from shipping code, with a conformance
+suite. Where you have two implementations, you should have a spec, and
+we had two.</p>
+<p>There's verifiable certification. You open an issue, a GitHub Action
+mints a serial like <code>SFE000001</code> into a public registry, and
+you collect credentials toward ranks: SheetCadet, SheetAstronaut,
+SheetCommander, SheetAdmiral.</p>
+<p><img src="img/blog/cert-csfe.png"
+alt="Certified Sheeternetes Fundamentals Engineer" /></p>
+<p><img src="img/blog/cert-admiral.png" alt="SheetAdmiral" /></p>
+<p>And it's genuinely open. A community contributor recently built
+SheetHub, our GitLab-on-a-spreadsheet, from scratch: apiserver, web UI,
+CLI, tests. It went through a real review, picked up a couple of
+security findings, got fixed in hours, and shipped. That's the whole
+point.</p>
+<h2 id="come-build-weird-things">Come build weird things</h2>
+<p>The community is international and English-speaking, so join from
+anywhere.</p>
+<ul>
+<li>Get <a
+href="https://sncfoundation.github.io/certification.html">certified</a>,
+serial number included.</li>
+<li>Grab a good first issue on <a
+href="https://github.com/sncfoundation">GitHub</a>.</li>
+<li>Say hi on <a
+href="https://sncfoundation.github.io/slack.html">Slack</a>.</li>
+</ul>
+<h2 id="the-actual-point">The actual point</h2>
+<p>None of this belongs in production. But building a working
+cloud-native stack on a ridiculous substrate turned out to be a great
+way to explain the real thing. People finally <em>see</em> reconcile
+happen. They get why make-before-break matters, what a digest is for,
+why a control plane is separate from execution. Sometimes the fastest
+way to teach a serious idea is to build it somewhere silly.</p>
+<p>It reconciles.</p>
+
+<p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+  Also on <a href="https://dev.to">dev.to</a> and <a href="https://habr.com">Habr</a> (RU).
+  Join the community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+  <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+</p>
+</article>
+</div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
