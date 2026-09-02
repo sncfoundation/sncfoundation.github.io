@@ -1,6 +1,6 @@
 {
   "program": "Certified Sheeternetes Fundamentals Engineer (CSFE)",
-  "count": 34,
+  "count": 35,
   "certificates": [
     {
       "serial": "RNK000001",
@@ -145,6 +145,18 @@
       "release": null,
       "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/29",
       "issue_number": 29
+    },
+    {
+      "serial": "SEL000002",
+      "seq": 2,
+      "holder": "oysterme1ster",
+      "date": "2026-09-02",
+      "score": "7/7",
+      "program": "Certified Sheet-Native AI Engineer (Sheetelligence)",
+      "program_key": "sheetelligence",
+      "release": null,
+      "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/55",
+      "issue_number": 55
     },
     {
       "serial": "SFE000001",
