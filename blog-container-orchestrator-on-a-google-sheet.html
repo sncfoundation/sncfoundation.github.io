@@ -258,6 +258,10 @@ sheet, verified the hashes, <code>docker load</code>ed the image back
 into existence, and ran it. The game came out of a spreadsheet. Code is
 at <a
 href="https://github.com/sncfoundation/sheetdoom">github.com/sncfoundation/sheetdoom</a>.</p>
+<figure>
+<img src="img/blog/doom.gif" alt="Real Freedoom/Chocolate Doom running from an image that lived inside a spreadsheet">
+<figcaption class="meta">Real Freedoom/Chocolate Doom, running from an image that was packed into <code>cluster.xlsx</code>, deleted locally, then rebuilt from the cells (every layer sha256-verified) and run.</figcaption>
+</figure>
 <p>One honest note: the game still runs on the node's real CPU. The
 sheet stores the image and schedules the pod. It's the coordinator,
 never the executor.</p>
