@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **32** credentials issued to date, across 19 programs.
+- **34** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -13,6 +13,7 @@ The public, tamper-evident registry of everyone certified by the
 | `RNK000001` | [@tym83](https://github.com/tym83) | Rank: SheetAstronaut | 2026-08-31 | — | [#9](https://github.com/sncfoundation/sncfoundation.github.io/issues/9) |
 | `RNK000002` | [@tym83](https://github.com/tym83) | Rank: SheetAdmiral | 2026-08-31 | — | [#36](https://github.com/sncfoundation/sncfoundation.github.io/issues/36) |
 | `RNK000003` | [@Enkilangel](https://github.com/Enkilangel) | Rank: SheetAstronaut | 2026-08-31 | — | [#41](https://github.com/sncfoundation/sncfoundation.github.io/issues/41) |
+| `RNK000004` | [@oysterme1ster](https://github.com/oysterme1ster) | Rank: SheetCommander | 2026-09-02 | — | [#52](https://github.com/sncfoundation/sncfoundation.github.io/issues/52) |
 | `SAO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native AIOps Engineer (SheetAIOps) | 2026-08-31 | 10/10 | [#17](https://github.com/sncfoundation/sncfoundation.github.io/issues/17) |
 | `SAS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native WebAssembly Engineer (SheetAssembly) | 2026-08-31 | 10/10 | [#31](https://github.com/sncfoundation/sncfoundation.github.io/issues/31) |
 | `SBF000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Brainfuck Engineer | 2026-08-31 | 10/10 | [#24](https://github.com/sncfoundation/sncfoundation.github.io/issues/24) |
@@ -36,6 +37,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SLX000002` | [@Enkilangel](https://github.com/Enkilangel) | Certified Sheet-Native Delivery Engineer (Sheetlux CD) | 2026-08-31 | honorary | [#41](https://github.com/sncfoundation/sncfoundation.github.io/issues/41) |
 | `SLX000003` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native Delivery Engineer (Sheetlux CD) | 2026-08-31 | 7/8 | [#45](https://github.com/sncfoundation/sncfoundation.github.io/issues/45) |
 | `SMH000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Mesh Engineer (Sheetmesh) | 2026-08-31 | 10/10 | [#28](https://github.com/sncfoundation/sncfoundation.github.io/issues/28) |
+| `SMH000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native Mesh Engineer (Sheetmesh) | 2026-09-02 | 6/7 | [#54](https://github.com/sncfoundation/sncfoundation.github.io/issues/54) |
 | `SOS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-08-31 | 10/10 | [#27](https://github.com/sncfoundation/sncfoundation.github.io/issues/27) |
 | `SOS000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-08-31 | 5/7 | [#48](https://github.com/sncfoundation/sncfoundation.github.io/issues/48) |
 | `SPS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native PowerShell Engineer | 2026-08-31 | 10/10 | [#35](https://github.com/sncfoundation/sncfoundation.github.io/issues/35) |
