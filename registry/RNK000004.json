@@ -1,0 +1,20 @@
+{
+  "serial": "RNK000004",
+  "type": "rank",
+  "rank": "SheetCommander",
+  "rank_key": "sheetcommander",
+  "holder": "oysterme1ster",
+  "date": "2026-09-02",
+  "program": "Rank: SheetCommander",
+  "credentials": 6,
+  "based_on": [
+    "SFE000004",
+    "SHB000002",
+    "SLM000003",
+    "SLX000003",
+    "SOS000002",
+    "STO000002"
+  ],
+  "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/52",
+  "issue_number": 52
+}
