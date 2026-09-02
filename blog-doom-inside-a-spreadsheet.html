@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>DOOM that lives inside a spreadsheet — SNCF Blog</title>
+<meta name="description" content="Packing a whole DOOM container image into spreadsheet cells, booting it back out sha256-verified, and what breaks when you push real bytes into Google Sheets.">
+<meta property="og:title" content="DOOM that lives inside a spreadsheet">
+<meta property="og:description" content="Packing a whole DOOM container image into spreadsheet cells, booting it back out sha256-verified, and what breaks when you push real bytes into Google Sheets.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/blog/cluster-tabs.png">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-doom-inside-a-spreadsheet.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/blog/cluster-tabs.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:36px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .postcard{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0;text-decoration:none;color:var(--fg)}
+  .postcard:hover{border-color:var(--accent)}
+  .postcard h3{margin:6px 0 6px;font-size:22px;color:var(--fg)}
+  .postcard p{margin:0;color:var(--muted)}
+  .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--muted);margin:8px 6px 0 0}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">SNCF Blog</p>
+  <h1>DOOM that lives inside a spreadsheet</h1>
+  <p class="meta">September 3, 2026 · by Timur Tukaev</p>
+</div></header>
+<div class="wrap">
+<article class="post">
+<p>There is a reliable law of the universe: if a thing has a screen and
+a little memory, someone will eventually run DOOM on it. Oscilloscopes,
+pregnancy tests, coffee machines, tractors. Let me raise the stakes. My
+DOOM boots <strong>out of spreadsheet cells</strong>. Not “a link to a
+sheet opens a browser toy.” I mean the container image physically lives
+in the cells, gets rebuilt back into a Docker image from there, is
+verified by sha256, and runs.</p>
+<p>In <a href="LINK">the first article</a> I wrote about Sheeternetes, a
+container orchestrator whose entire control plane (Deployments, Nodes,
+Pods, Events) lives inside a Google Sheet or an Excel file, while real
+Docker containers run on the other end. That piece mentioned our image
+format in passing: SICF, “an image that lives in a sheet.” This article
+is that idea in full. How it works, how to reproduce it step by step,
+how it goes air-gapped with no internet, and the surprisingly
+interesting things that showed up once we started shoving real bytes
+into Google Sheets cells.</p>
+<p>Spoiler: the DOOM is real. Chocolate Doom plus the free Freedoom WAD,
+in a Linux container, played in the browser with a keyboard.</p>
+<figure>
+<img src="img/blog/doom.gif"
+alt="DOOM running from an image that lives inside a spreadsheet" />
+<figcaption aria-hidden="true">DOOM running from an image that lives
+inside a spreadsheet</figcaption>
+</figure>
+<h2 id="disclaimer">Disclaimer</h2>
+<p>Do not run this in production. And yes, id Software owns DOOM. We
+package only the <code>chocolate-doom</code> engine and the free
+<code>freedoom</code> IWAD, both of which come from Debian main. No
+piracy, just heresy.</p>
+<h2 id="why-an-image-would-live-in-a-sheet-at-all">Why an image would
+live in a sheet at all</h2>
+<p>A normal container works like this: the manifest says
+<code>image: nginx:alpine</code>, the kubelet goes to a registry (Docker
+Hub, ghcr.io), pulls the layers, unpacks, runs. Sheeternetes does this
+too. It is the default mode and it is fully compatible with the
+ecosystem. The image bytes come from a registry; the sheet only holds
+<em>desired state</em>.</p>
+<p>But there is a second mode, the heretical one. What if there is no
+registry at all, and the image is stored <strong>inside the
+sheet</strong>? Then the sheet is not just the control plane, it is the
+registry. Fully air-gapped: one workbook that is both the cluster and
+the image store. That is what our <strong>SICF</strong> standard
+(Sheet-Native Image Container Format) describes, and it is what
+SheetDoom runs on.</p>
+<p>The idea is almost insultingly simple:</p>
+<ul>
+<li>An image layer is a <code>.tar</code>. Take its bytes, base64-encode
+them, cut them into chunks, and drop the chunks into cells on a
+<code>Layers</code> tab, addressed by <code>sha256</code> digest.</li>
+<li>The image manifest (name, config, list of layers) is one row on an
+<code>Images</code> tab.</li>
+<li>The puller reassembles the layers from the cells, joins them,
+<strong>verifies the digest</strong>, unpacks, and
+<code>docker load</code>s.</li>
+</ul>
+<p>Content-addressable storage, except the blob store is Google Sheets.
+Same principle as OCI, same sha256, just the least appropriate medium
+imaginable.</p>
+<figure>
+<img src="img/blog/sicf-flow.png"
+alt="SICF: an OCI image round-trips through a spreadsheet, losslessly" />
+<figcaption aria-hidden="true">SICF: an OCI image round-trips through a
+spreadsheet, losslessly</figcaption>
+</figure>
+<h2 id="build-real-doom-and-hide-it-in-a-sheet">Build real DOOM and hide
+it in a sheet</h2>
+<p>Here is the fun part, step by step, all reproducible. You need
+Docker, <code>python3</code> with <code>openpyxl</code>, and two of our
+repos side by side: <a
+href="https://github.com/sncfoundation/sheetdoom"><code>sheetdoom</code></a>
+(the game’s Dockerfile) and <a
+href="https://github.com/sncfoundation/sci"><code>sci</code></a> (which
+ships <code>sheetbuild</code>, the reference SICF tool).</p>
+<p>The image is an honest Linux DOOM. Here is the whole Dockerfile:</p>
+<pre class="dockerfile"><code>FROM debian:stable-slim
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
+      chocolate-doom freedoom \
+      xvfb x11vnc fluxbox novnc websockify tini ca-certificates \
+ &amp;&amp; rm -rf /var/lib/apt/lists/*
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+EXPOSE 8080
+ENTRYPOINT [&quot;/usr/bin/tini&quot;,&quot;--&quot;]
+CMD [&quot;/usr/local/bin/start.sh&quot;]</code></pre>
+<p><code>start.sh</code> brings up a virtual display (Xvfb), a window
+manager (fluxbox), the engine itself, and a VNC-to-web bridge (noVNC) so
+you can play in a browser:</p>
+<pre class="sh"><code>export DISPLAY=:0
+Xvfb :0 -screen 0 1024x768x24 &amp;
+fluxbox &amp;
+/usr/games/chocolate-doom -iwad /usr/share/games/doom/freedoom1.wad -window -geometry 1024x768 &amp;
+x11vnc -display :0 -forever -shared -nopw -quiet &amp;
+exec websockify --web /usr/share/novnc 8080 localhost:5900</code></pre>
+<p>(One trap that cost me half an hour: on Debian
+<code>chocolate-doom</code> installs into <code>/usr/games</code>, which
+is not on the <code>PATH</code> of the container’s non-interactive
+shell. That gives you a black screen. The fix is the full path to the
+binary, which is what you see above.)</p>
+<p>Now the trick. Build the image, pack it whole into
+<code>cluster.xlsx</code>, <strong>delete it locally</strong>, bring it
+back out of the sheet, and run it. This is the entire
+<code>demo.sh</code>, verbatim:</p>
+<pre class="bash"><code># 1. build real DOOM and save it to a tar
+docker build -t doom:shareware .
+docker save  doom:shareware -o /tmp/doom.tar
+
+# 2. pack the WHOLE image into cluster.xlsx (layers -&gt; base64 in cells, sha256-addressed)
+python3 ../sci/tools/sheetbuild.py import /tmp/doom.tar --name doom:shareware --store cluster.xlsx
+python3 ../sci/tools/sheetbuild.py ls --store cluster.xlsx
+
+# 3. delete the local image. it now exists ONLY in the spreadsheet.
+docker rmi doom:shareware
+
+# 4. rebuild the image FROM THE SPREADSHEET (every layer sha256-verified)
+python3 ../sci/tools/sheetbuild.py export doom:shareware --store cluster.xlsx --out /tmp/back.tar
+docker load -i /tmp/back.tar
+
+# 5. run DOOM, materialized from the sheet
+docker run --rm -p 8080:8080 doom:shareware
+# open http://localhost:8080/vnc.html -&gt; Connect -&gt; rip and tear</code></pre>
+<p>Step 3 is the whole point. After <code>docker rmi</code> the image is
+<strong>gone</strong> locally. It exists only as base64 in the cells of
+<code>cluster.xlsx</code>. Step 4 pulls it back, and
+<code>docker load</code> does not complain, because the bytes are
+identical down to the bit. The digest check inside
+<code>sheetbuild export</code> guarantees that. If a single cell had
+rotted, the export would fail with a sha256 error instead of handing you
+a broken image. The <code>import -&gt; export</code> round-trip is
+honest precisely because both ends address content by the same
+<code>sha256:</code>.</p>
+<p>And there you are, playing DOOM that was just assembled out of a
+spreadsheet.</p>
+<h2 id="the-same-trick-but-inside-the-cluster">The same trick, but
+inside the cluster</h2>
+<p>Running it by hand with <code>docker run</code> is a proof of
+concept. The real goal is for the <strong>cluster itself</strong> to
+schedule and run an image straight from the sheet. In Sheeternetes you
+do that by writing a <code>sicf:</code> scheme instead of a normal image
+name.</p>
+<pre class="json"><code>{
+  &quot;deployments&quot;: [
+    { &quot;name&quot;: &quot;doom&quot;, &quot;image&quot;: &quot;sicf:doom:shareware&quot;, &quot;replicas&quot;: 1, &quot;cpu_req&quot;: 200, &quot;mem_req&quot;: 128 }
+  ]
+}</code></pre>
+<p>Bring up an on-prem cluster (that is a separate edition, <a
+href="https://github.com/sncfoundation/sheeternetes-onprem"><code>sheeternetes-onprem</code></a>,
+which runs over an <code>.xlsx</code> with no internet at all) and apply
+the manifest:</p>
+<pre class="bash"><code># terminal 1:  apiserver over cluster.xlsx
+WORKBOOK=cluster.xlsx TOKEN=secret python3 apiserver.py
+# terminal 2:  kubelet. this host becomes a node
+./kubelet.sh
+# terminal 3:
+./skctl apply doom.json      # image: sicf:doom:shareware
+./skctl get pods             # doom-1  Running</code></pre>
+<p>What happened under the hood: the scheduler placed the pod on a node,
+the kubelet saw the <code>sicf:</code> prefix, and instead of going to
+Docker Hub it went into the <strong>same sheet</strong>. It pulled the
+layers out of the cells, verified each sha256, ran
+<code>docker load</code>, and started the container. Not one external
+request. Image store, registry, scheduler, and desired state, all in one
+workbook.</p>
+<p>Resolving a <code>sicf:</code> image is literally a few lines in the
+kubelet:</p>
+<pre class="bash"><code>case &quot;$image&quot; in
+  sicf:*) image=&quot;$(python3 &quot;$here/sicf.py&quot; &quot;$WEBAPP_URL&quot; &quot;$TOKEN&quot; &quot;$image&quot;)&quot; \
+            || { echo &quot;[kubelet] FAILED to resolve $image&quot;; continue; } ;;
+esac</code></pre>
+<p>After that it is a plain <code>docker run</code> with the resolved
+local tag. Execution is always on the node. The sheet stores the image
+and schedules the pod, but it never executes anything itself.</p>
+<figure>
+<img src="img/blog/cluster-tabs.png"
+alt="The cluster as spreadsheet tabs, same contract as the cloud version" />
+<figcaption aria-hidden="true">The cluster as spreadsheet tabs, same
+contract as the cloud version</figcaption>
+</figure>
+<h2
+id="findings-what-happens-when-you-seriously-push-bytes-into-google-sheets">Findings:
+what happens when you seriously push bytes into Google Sheets</h2>
+<p>This is where it got educational. An Excel file on disk is one thing
+(<code>openpyxl</code> writes cells and everything is predictable). A
+<strong>live Google Sheet</strong> is another animal with its own
+temperament. I moved the SICF store into Google Sheets and collected a
+set of gotchas, each one a small lesson about distributed systems.</p>
+<h3 id="google-sheets-silently-corrupts-long-single-cell-strings">1.
+Google Sheets silently corrupts long single-cell strings</h3>
+<p>The first version wrote a whole base64 layer into one cell. On paper
+that is fine: the docs promise <strong>50,000 characters per
+cell</strong>. In practice, somewhere past ~2,000 characters Google
+Sheets starts silently mangling a long string, and reading it back gives
+you the wrong bytes. Not an error, not a truncation with a warning, just
+quiet corruption. For a content-addressable store that is fatal: you
+join the layer, compute the sha256, it does not match,
+<code>export</code> fails.</p>
+<p>The fix is sharding. Cut the base64 into ~500-character chunks, one
+per cell, and join on read. After that the digest matches, the layer
+reassembles, the container boots.</p>
+<figure>
+<img src="img/blog/corruption-shard.png"
+alt="Why layers are sharded into ~500-char cells" />
+<figcaption aria-hidden="true">Why layers are sharded into ~500-char
+cells</figcaption>
+</figure>
+<p>Here is what it looks like on a real example. I imported a tiny
+<code>hello-world</code> image (a ~2.6 KB layer) into a Google Sheet.
+Its single layer landed on the <code>Layers</code> tab as nine
+500-character chunks:</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 25%" />
+<col style="width: 34%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr>
+<th>digest</th>
+<th>ordinal</th>
+<th>media_type</th>
+<th>data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sha256:58dee6a4…cfb6d6</code></td>
+<td>0</td>
+<td><code>application/vnd.oci.image.layer.v1.tar</code></td>
+<td><code>H4sIAAAAAAAA…</code> (500 chars)</td>
+</tr>
+<tr>
+<td><code>sha256:58dee6a4…cfb6d6</code></td>
+<td>1</td>
+<td><code>…</code></td>
+<td><code>…</code> (500 chars)</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td><code>sha256:58dee6a4…cfb6d6</code></td>
+<td>8</td>
+<td><code>…</code></td>
+<td><code>…</code> (tail)</td>
+</tr>
+</tbody>
+</table>
+<p>The puller reads the chunks in <code>ordinal</code> order, joins
+them, computes <code>sha256</code> over the reassembled
+<code>.tar</code>, checks it against the <code>digest</code> from the
+row, and only then hands the bytes to the runtime. Same layer Docker
+had, exactly the same bytes.</p>
+<h3 id="the-real-per-cell-limit-is-a-thousand-not-50000">2. The real
+per-cell limit is a thousand, not 50,000</h3>
+<p>After the corruption I stopped trusting documented limits and started
+measuring. The practical safe cell size for binary base64 in Google
+Sheets is around <strong>1,000 characters</strong>, not 50,000. We keep
+a conservative ~500 with headroom. <code>sheetbuild</code> even exposes
+this as an env var, <code>SICF_MAX_CELL</code> (default 30,000, safe for
+<code>.xlsx</code> where Excel’s limit is 32,767), but for the Google
+backend we shard far smaller.</p>
+<h3 id="the-real-ceiling-on-image-size-is-quotas-not-cells">3. The real
+ceiling on image size is quotas, not cells</h3>
+<p>A Google Sheets workbook holds <strong>10 million cells</strong>.
+Sounds like a lot. But sharded at 500 chars, one megabyte of image is
+~2,000 cells of data alone. A real DOOM image (Debian + X + noVNC + the
+engine) is a couple hundred megabytes, which is <strong>many thousands
+of cells</strong>, and the file starts to feel heavy. On top of that the
+Sheets API has write quotas (on the order of <strong>60 requests per
+minute per user</strong>), so uploading a big image is also an exercise
+in batching and patience.</p>
+<p>The honest takeaway: native SICF mode in Google Sheets is for
+<strong>small images</strong>. Static Go/Rust binaries,
+<code>scratch</code>/<code>alpine</code>, and especially WASM modules
+(which fit beautifully). Full DOOM is happy in an <code>.xlsx</code> on
+disk (no network quotas there), but in a cloud sheet it is a heavy
+guest. Exactly how many images fit in Excel before it begs for mercy is
+something we are measuring for real in <a
+href="https://github.com/sncfoundation/sci/issues/5">sci#5</a>. It is a
+proper load test and it is worth doing.</p>
+<h3 id="bonus-concurrent-editing-just-works">4. Bonus: concurrent
+editing just works</h3>
+<p>A pleasant surprise. Google Sheets uses operational transformation
+under the hood for collaborative editing, and that maps unexpectedly
+well onto our use case. Dozens of people can open a cluster sheet
+read-only at once, and the live running state (pods coming and going,
+nodes changing status) updates for all of them at the same time. We
+watched ~100 simultaneous viewers with no degradation. We got a free
+multiplayer dashboard, the rare case where a cursed substrate hands you
+a feature you would otherwise have to build by hand.</p>
+<h2 id="about-size-honestly">About size, honestly</h2>
+<p>A full Linux DOOM in base64 is thousands of cells. It fits under the
+10M-cell limit, but the file is heavy and Excel/Sheets feel it. For a
+snappier demo a minimal framebuffer or ASCII DOOM build shrinks it a
+lot, and the WAD alone is only a few megabytes. We deliberately built
+the <strong>heavy, real</strong> one, because the point was to prove
+that what lives in the cells is not a toy but a genuine image with a
+whole Linux userland. It lives there. It comes back out. It runs.</p>
+<h2 id="what-this-actually-proves-besides-that-i-need-sleep">What this
+actually proves (besides that I need sleep)</h2>
+<p>Under the absurdity there is perfectly ordinary engineering, and it
+is a great way to explain serious things:</p>
+<ul>
+<li><strong>Content-addressable storage.</strong> Why image layers have
+digests, and why that is not decoration: a single rotted cell is caught
+at <code>sha256</code> before it can corrupt the runtime.</li>
+<li><strong>A registry is just a content-addressed blob store.</strong>
+We swapped the blob store for cells and got a working registry. Docker
+Hub does the same thing, its blobs just live in S3 instead of Google
+Sheets.</li>
+<li><strong>Air-gapped distribution.</strong> One workbook is cluster
+plus registry. Zero external calls, which is exactly what closed
+environments need (normal people use an isolated Harbor, we use an
+<code>.xlsx</code>).</li>
+<li><strong>The medium’s limits decide everything.</strong> The
+documented limit and the practical limit are different numbers. Measure,
+do not take the docs at their word.</li>
+</ul>
+<p>None of this belongs in production. But as a way to genuinely
+understand OCI and CRI from the inside, it works surprisingly well. And
+now I have a DOOM that reconciles.</p>
+<p>Next up: <a href="LINK">SheetsOperator</a>, a real operator for
+Google Sheets (control plane, controller, self-healing), and a public
+sheet that is always the 3rd of September and repairs a pixel portrait
+of a Russian singer no matter what you do to it.</p>
+<h2 id="join-in">Join in</h2>
+<p>All of this is open source and alive. The community is international
+and English-speaking, so join from anywhere.</p>
+<ul>
+<li>🔫 SheetDoom: <a
+href="https://github.com/sncfoundation/sheetdoom">github.com/sncfoundation/sheetdoom</a></li>
+<li>📦 The SICF/SCRI standard: <a
+href="https://github.com/sncfoundation/sci">github.com/sncfoundation/sci</a></li>
+<li>💬 Slack <a
+href="https://sncfoundation.github.io/slack.html">sheetncf</a>, Telegram
+<a href="https://t.me/stncf">t.me/stncf</a>, LinkedIn <a
+href="https://www.linkedin.com/company/sheetncf">company/sheetncf</a></li>
+<li>🌐 All the code: <a
+href="https://github.com/sncfoundation">github.com/sncfoundation</a></li>
+</ul>
+<p>It reconciles. Rip and tear.</p>
+
+<p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+  Companion piece: <a href="blog-a-spreadsheet-that-is-always-september-3rd.html">A spreadsheet that is always September 3rd</a>. Also on <a href="https://dev.to">dev.to</a> and <a href="https://habr.com">Habr</a> (RU).
+  Join the community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+  <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+</p>
+</article>
+</div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
