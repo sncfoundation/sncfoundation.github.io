@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>We load-tested a spreadsheet against Kubernetes, Docker Swarm and Nomad — SNCF Blog</title>
+<meta name="description" content="A real load test of the spreadsheet control plane — pods, SICF image capacity, cluster count, cell limits — next to Kubernetes, Swarm and Nomad.">
+<meta property="og:title" content="We load-tested a spreadsheet against Kubernetes, Docker Swarm and Nomad">
+<meta property="og:description" content="A real load test of the spreadsheet control plane — pods, SICF image capacity, cluster count, cell limits — next to Kubernetes, Swarm and Nomad.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/blog/showdown.png">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-we-load-tested-a-spreadsheet-vs-kubernetes.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/blog/showdown.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:36px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .postcard{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0;text-decoration:none;color:var(--fg)}
+  .postcard:hover{border-color:var(--accent)}
+  .postcard h3{margin:6px 0 6px;font-size:22px;color:var(--fg)}
+  .postcard p{margin:0;color:var(--muted)}
+  .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--muted);margin:8px 6px 0 0}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">SNCF Blog</p>
+  <h1>We load-tested a spreadsheet against Kubernetes, Docker Swarm and Nomad</h1>
+  <p class="meta">September 4, 2026 · by Timur Tukaev</p>
+</div></header>
+<div class="wrap">
+<article class="post">
+<p>Somebody in the comments of <a
+href="blog-container-orchestrator-on-a-google-sheet.html">the first
+article</a> asked the only question that matters once you’ve built a
+container orchestrator inside a spreadsheet: <strong>how much does it
+actually hold?</strong> How many pods before it falls over. How big an
+image fits in the cells. How many clusters one machine runs. And, since
+we’re a foundation with a straight face, how it stacks up against the
+real thing — Kubernetes, Docker Swarm, Nomad.</p>
+<p>So we ran a proper load test. Four dimensions, two backends
+(<code>.xlsx</code> on disk and a live Google Sheet), synthetic payloads
+on a laptop and <strong>real Docker images on a cloud VM</strong>. Then
+we put the numbers next to the grown-up orchestrators.</p>
+<p>The short version: on every axis that matters, we lose by three to
+five orders of magnitude. On the axes that don’t matter, we win clean.
+And one of our long-standing “facts” turned out to be wrong — the
+benchmark corrected us. Let’s go.</p>
+<blockquote>
+<p><strong>New here? What is this.</strong>
+<strong>Sheeternetes</strong> is a container orchestrator whose entire
+control plane lives inside a spreadsheet — Deployments, Nodes, Pods and
+Events are tabs in a Google Sheet or Excel file, a scheduler reads and
+writes cells, and real Docker containers run on the other end. The
+spreadsheet doesn’t simulate a cluster; it <em>is</em> the cluster. It
+belongs to the <strong>Sheet-Native Computing Foundation (SNCF)</strong>
+— a vendor-neutral, actually-working parody of the CNCF: 30+ projects, a
+container standard (SICF), verifiable engineer certification, and live
+demos on real spreadsheets. Links: <a
+href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
+href="https://github.com/sncfoundation">github.com/sncfoundation</a> ·
+Telegram <a href="https://t.me/stncf">t.me/stncf</a> · Slack <a
+href="https://sncfoundation.github.io/slack.html">sheetncf</a> ·
+LinkedIn <a
+href="https://www.linkedin.com/company/sheetncf">company/sheetncf</a></p>
+</blockquote>
+<h2 id="what-we-actually-measured">What we actually measured</h2>
+<p><code>apiserver.py</code> is the whole control plane —
+<code>kube-apiserver</code> + <code>kube-scheduler</code> in one small
+Python process. It reads and writes the workbook (tabs
+<code>Deployments/Nodes/Pods/Events/Images/Layers</code>) with openpyxl,
+runs the scheduler on every kubelet heartbeat, and writes desired pods
+back. <strong>One process, one workbook, one cluster</strong> — and it’s
+a single writer, which is the whole story of where the ceiling is.</p>
+<p>Four tests:</p>
+<ul>
+<li><strong>A — objects in one book.</strong> Reconcile time (load +
+schedule + write + save) vs pod count.</li>
+<li><strong>B — SICF images in cells.</strong> How many MB of container
+image fit, at what cost.</li>
+<li><strong>C — cluster count.</strong> How many independent cluster
+workbooks one host reconciles.</li>
+<li><strong>D — cell string length.</strong> How long a value survives
+before it’s corrupted.</li>
+</ul>
+<p>Machines: a Mac (light points), a Cozystack cloud VM with Docker
+(real-image round-trip), and the <a
+href="https://github.com/sncfoundation/sci">sci</a>
+<code>sheetbuild</code> tool for packing images.</p>
+<h2 id="a-pods-in-one-workbook">A — pods in one workbook</h2>
+<p>Reconcile is dead linear: about <strong>0.022 ms per pod</strong>.
+Ten thousand pods reconcile in <strong>0.22 s</strong>, and the file is
+a rounding error — 0.21 MB.</p>
+<figure>
+<img src="img/blog/bench-lines.png"
+alt="Reconcile time vs pods, and SICF import time vs image size" />
+<figcaption aria-hidden="true">Reconcile time vs pods, and SICF import
+time vs image size</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">pods</th>
+<th style="text-align: right;">reconcile</th>
+<th style="text-align: right;">file</th>
+<th style="text-align: right;">peak RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1,000</td>
+<td style="text-align: right;">0.030 s</td>
+<td style="text-align: right;">0.03 MB</td>
+<td style="text-align: right;">0.9 MB</td>
+</tr>
+<tr>
+<td style="text-align: right;">5,000</td>
+<td style="text-align: right;">0.110 s</td>
+<td style="text-align: right;">0.11 MB</td>
+<td style="text-align: right;">8.9 MB</td>
+</tr>
+<tr>
+<td style="text-align: right;">10,000</td>
+<td style="text-align: right;">0.224 s</td>
+<td style="text-align: right;">0.21 MB</td>
+<td style="text-align: right;">12.9 MB</td>
+</tr>
+</tbody>
+</table>
+<p>The Excel format isn’t the limit here — millions of rows fit. The
+limit is the <strong>reconcile time of a single openpyxl
+process</strong>, because it re-reads and re-writes the whole book on
+every heartbeat. Extrapolating the line: 100k pods ≈ 2.2 s per cycle.
+That’s when the cluster starts feeling like it’s wading through
+treacle.</p>
+<h2 id="b-how-big-an-image-fits-in-the-cells">B — how big an image fits
+in the cells</h2>
+<p>This is the SICF question — an image stored <em>as base64 in
+cells</em>, addressed by sha256. On the Mac we packed synthetic
+incompressible layers; on the VM we packed <strong>real Docker images
+and ran them back out</strong>. Both land on the same line:
+<strong>~0.06 s/MB to import, export 2–3× faster, and the
+<code>.xlsx</code> ends up roughly the same size as the
+<code>docker save</code> tar</strong> (base64 expansion cancels out
+against the workbook’s zip compression).</p>
+<p>The real round-trip is the part I care about. Pull a real image, save
+it into a workbook, <strong>delete the local copy</strong>, rebuild it
+purely from the cells, and start it:</p>
+<figure>
+<img src="img/blog/terminal-roundtrip.png"
+alt="A real nginx image round-tripped through an Excel workbook and started" />
+<figcaption aria-hidden="true">A real nginx image round-tripped through
+an Excel workbook and started</figcaption>
+</figure>
+<p>Three real images, three independent integrity gates each —
+sheetbuild’s internal sha256, Docker’s own <code>docker load</code>
+validation, and the container actually executing:</p>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>image</th>
+<th style="text-align: right;">tar</th>
+<th style="text-align: right;">import</th>
+<th style="text-align: right;">export</th>
+<th style="text-align: right;">store .xlsx</th>
+<th style="text-align: right;">Layers rows</th>
+<th style="text-align: center;">verify</th>
+<th style="text-align: center;">ran</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alpine:latest</code></td>
+<td style="text-align: right;">4 MB</td>
+<td style="text-align: right;">0.30 s</td>
+<td style="text-align: right;">0.15 s</td>
+<td style="text-align: right;">4 MB</td>
+<td style="text-align: right;">172</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><code>nginx:alpine</code></td>
+<td style="text-align: right;">29 MB</td>
+<td style="text-align: right;">1.67 s</td>
+<td style="text-align: right;">0.68 s</td>
+<td style="text-align: right;">28 MB</td>
+<td style="text-align: right;">1,285</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><code>python:3.12-slim</code></td>
+<td style="text-align: right;">47 MB</td>
+<td style="text-align: right;">2.88 s</td>
+<td style="text-align: right;">0.96 s</td>
+<td style="text-align: right;">45 MB</td>
+<td style="text-align: right;">2,056</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<p>Because the local image was <code>docker rmi</code>-removed between
+import and export, the rebuilt image provably came <em>out of the
+spreadsheet</em>, not a cache. Here’s what it looks like sitting in the
+cells — layers chunked into base64, one row per chunk, addressed by
+digest:</p>
+<figure>
+<img src="img/blog/image-in-cells.png"
+alt="A container image living in the cells of a Google Sheet" />
+<figcaption aria-hidden="true">A container image living in the cells of
+a Google Sheet</figcaption>
+</figure>
+<p>RAM stayed modest (peak 191 MB for the 47 MB image, ~4× the tar). The
+honest ceiling is total bytes → import seconds and RAM; a 500 MB image
+would be ~30 s import on a 1-vCPU box. Native SICF is for small images —
+static binaries, <code>scratch</code>/<code>alpine</code>, WASM — which
+is exactly what the format was always for.</p>
+<h2 id="c-how-many-clusters-on-one-host-and-heres-the-real-gap">C — how
+many clusters on one host — and here’s the real gap</h2>
+<p>One workbook (200 pods) reconciles in ~15 ms, so a single host clears
+<strong>~650 cluster-workbooks inside a 10-second interval</strong>.
+Excel scales sideways beautifully.</p>
+<p>Google Sheets does not. One reconcile there is <strong>1.47
+s</strong> (network + a couple of API calls), and you’re capped by the
+hard <strong>60-writes-per-minute-per-user quota</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">reconcile interval</th>
+<th style="text-align: right;">max Google cluster-sheets per
+account</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">every 10 s</td>
+<td style="text-align: right;">~5</td>
+</tr>
+<tr>
+<td style="text-align: right;">every 30 s</td>
+<td style="text-align: right;">~15</td>
+</tr>
+<tr>
+<td style="text-align: right;">every 60 s</td>
+<td style="text-align: right;">~30</td>
+</tr>
+<tr>
+<td style="text-align: right;">every 5 min</td>
+<td style="text-align: right;">~150</td>
+</tr>
+</tbody>
+</table>
+<p>So: <strong>~650 Excel clusters per host, ~5 Google clusters per
+account.</strong> The quota, not capacity, is the ceiling in the cloud —
+a ~130× difference and a genuinely useful thing to know if you ever
+(please don’t) build on this.</p>
+<h2 id="d-how-long-a-string-survives-in-a-cell-and-the-myth-we-busted">D
+— how long a string survives in a cell, and the myth we busted</h2>
+<p>This one corrected us. We’d been repeating, including in <a
+href="blog-container-orchestrator-on-a-google-sheet.html">the DOOM
+article</a>, that Google Sheets <em>silently corrupts</em> long strings
+past ~2,000 characters. The benchmark says: <strong>not through the
+API.</strong></p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 40%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th>backend</th>
+<th style="text-align: right;">intact up to</th>
+<th>beyond</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Excel / openpyxl</td>
+<td style="text-align: right;"><strong>32,767</strong></td>
+<td>silent truncation to exactly 32,767</td>
+</tr>
+<tr>
+<td>Google Sheets API v4</td>
+<td style="text-align: right;"><strong>50,000</strong></td>
+<td>explicit HTTP 400, <em>not</em> corruption</td>
+</tr>
+</tbody>
+</table>
+<p>Round-tripping base64 and checking sha256, Google Sheets held
+<strong>perfect integrity up to exactly 50,000 characters</strong> (its
+documented cell limit), and rejected 55,000 with a loud
+<code>"more than the maximum of 50000 characters"</code> — an error, not
+a quiet mangle. The corruption we saw before was an artifact of the
+<strong>Apps Script backend</strong> (the cloud <code>Code.gs</code>
+path), not Google Sheets itself. Good. A benchmark that only confirms
+your priors isn’t a benchmark.</p>
+<h2 id="the-showdown">The showdown</h2>
+<p>Now the part you scrolled down for. Here is a spreadsheet next to the
+real orchestrators, on the metrics they’re actually built for:</p>
+<figure>
+<img src="img/blog/scale-gap.png"
+alt="Publicly stated container ceilings, log scale" />
+<figcaption aria-hidden="true">Publicly stated container ceilings, log
+scale</figcaption>
+</figure>
+<p>Those are public numbers: Kubernetes’ own <a
+href="https://github.com/kubernetes/community/blob/master/sig-scalability/configs-and-limits/thresholds.md">SIG
+Scalability thresholds</a> (150,000 pods, 5,000 nodes, 300,000
+containers per cluster); Docker’s 2015 demo of Swarm at 30,000
+containers on 1,000 nodes; and HashiCorp’s 2020 <a
+href="https://www.hashicorp.com/c2m">C2M run</a> — <strong>two million
+containers</strong> across 6,100 nodes, scheduled in about 22 minutes.
+We top out around 10,000 pods in one linear workbook.</p>
+<p>We are not last on that chart. We are merely <strong>200× behind the
+second-to-last.</strong></p>
+<figure>
+<img src="img/blog/showdown.png"
+alt="The full comparison — honest axes and the ones we ‘win’ on" />
+<figcaption aria-hidden="true">The full comparison — honest axes and the
+ones we ‘win’ on</figcaption>
+</figure>
+<h3 id="where-we-honestly-lose">Where we honestly lose</h3>
+<p>No hand-waving — this is where a spreadsheet has no business anywhere
+near your infrastructure:</p>
+<ul>
+<li><strong>Scale:</strong> ~10k pods/book vs 150k (K8s) vs 2M (Nomad).
+Four to five orders of magnitude.</li>
+<li><strong>Latency:</strong> 0.22 s per reconcile at 10k pods, and 1.47
+s per reconcile on Google Sheets. Kubernetes schedules in milliseconds
+and starts pre-pulled pods within its 5-second SLO.</li>
+<li><strong>No HA control plane.</strong> A single openpyxl writer per
+book. etcd, Swarm’s Raft managers, and Nomad’s Raft servers all run
+3–5-node quorums. We run one file and a prayer.</li>
+<li><strong>The cloud backend is quota-bound</strong> to a handful of
+clusters per account.</li>
+</ul>
+<h3 id="where-we-win">Where we “win”</h3>
+<p>And yet:</p>
+<ul>
+<li><strong>Cost of the control plane: $0.</strong> LibreOffice is free.
+No etcd cluster, no control-plane nodes.</li>
+<li><strong>Dependencies:</strong> LibreOffice or a browser — versus
+etcd + kubelet + kube-proxy + a CNI + CoreDNS.</li>
+<li><strong>Human-editable state.</strong> You edit a pod with a
+<em>mouse</em>. <code>kubectl edit</code> is a cursor. Try that on
+etcd.</li>
+<li><strong>Registry included.</strong> The image lives in the same file
+as the cluster (<a
+href="https://github.com/sncfoundation/sci">SICF</a>). No Harbor, no
+external registry.</li>
+<li><strong>Onboarding:</strong> every finance intern on earth can read
+the control plane. Nobody needs to learn HCL or
+<code>kubectl</code>.</li>
+<li><strong>Disaster recovery: Ctrl+Z.</strong> Google Sheets keeps full
+revision history for free. Restore your cluster to 9:41 this morning by
+clicking “restore this version.”</li>
+</ul>
+<p>None of these matter. That’s the joke. But every one of them is
+<em>true</em>, and a couple of them (registry-in-the-artifact,
+human-readable desired state, free revision-history DR) are ideas the
+serious systems make you work for.</p>
+<h2 id="bottom-line">Bottom line</h2>
+<p>A spreadsheet is a four-to-five-orders-of-magnitude worse
+orchestrator than Kubernetes, and we can now prove it with numbers
+instead of vibes. Along the way the load test showed the format itself
+is barely the bottleneck — the single-writer reconcile loop is — that
+real images round-trip losslessly and <em>run</em>, that the
+<code>.xlsx</code> costs about what the tar costs, and that the “silent
+corruption” we’d blamed on Google Sheets was our own Apps Script all
+along.</p>
+<p>That last part is the actual point of a benchmark. Do not run
+production on this. Do run the benchmark — it’s honest, and it will
+correct you.</p>
+<p>Reproduce it yourself: the harness (Excel + Google backends, all four
+tests) and the raw <code>results.csv</code> are in <a
+href="https://github.com/sncfoundation/sci">sci</a>; the real-image
+round-trip is four commands on any Docker host.</p>
+<h2 id="join-in">Join in</h2>
+<ul>
+<li>Benchmark harness + SICF standard: <a
+href="https://github.com/sncfoundation/sci">github.com/sncfoundation/sci</a></li>
+<li>Sheeternetes: <a
+href="https://github.com/sncfoundation/sheeternetes">github.com/sncfoundation/sheeternetes</a></li>
+<li>Slack <a
+href="https://sncfoundation.github.io/slack.html">sheetncf</a>, Telegram
+<a href="https://t.me/stncf">t.me/stncf</a>, LinkedIn <a
+href="https://www.linkedin.com/company/sheetncf">company/sheetncf</a></li>
+</ul>
+<p>It reconciles.</p>
+
+<p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+  Also on <a href="https://dev.to">dev.to</a> and <a href="https://habr.com">Habr</a> (RU).
+  Join the community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+  <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+</p>
+</article>
+</div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
