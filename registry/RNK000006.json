@@ -1,0 +1,23 @@
+{
+  "serial": "RNK000006",
+  "type": "rank",
+  "rank": "SheetCommander",
+  "rank_key": "sheetcommander",
+  "holder": "Maximus-ACB",
+  "date": "2026-09-05",
+  "program": "Rank: SheetCommander",
+  "credentials": 9,
+  "based_on": [
+    "SFE000005",
+    "SFN000002",
+    "SHB000003",
+    "SHU000002",
+    "SLM000004",
+    "SLX000004",
+    "SMH000003",
+    "SOS000003",
+    "STO000003"
+  ],
+  "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/71",
+  "issue_number": 71
+}
