@@ -1,0 +1,24 @@
+{
+  "serial": "RNK000007",
+  "type": "rank",
+  "rank": "SheetAdmiral",
+  "rank_key": "sheetadmiral",
+  "holder": "Maximus-ACB",
+  "date": "2026-09-05",
+  "program": "Rank: SheetAdmiral",
+  "credentials": 10,
+  "based_on": [
+    "SBF000002",
+    "SFE000005",
+    "SFN000002",
+    "SHB000003",
+    "SHU000002",
+    "SLM000004",
+    "SLX000004",
+    "SMH000003",
+    "SOS000003",
+    "STO000003"
+  ],
+  "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/73",
+  "issue_number": 73
+}
