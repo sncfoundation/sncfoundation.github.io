@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **45** credentials issued to date, across 19 programs.
+- **46** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -29,6 +29,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SFE000004` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 9/10 | [#43](https://github.com/sncfoundation/sncfoundation.github.io/issues/43) |
 | `SFE000005` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-09-05 | 9/10 | [#62](https://github.com/sncfoundation/sncfoundation.github.io/issues/62) |
 | `SFN000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-08-31 | 10/10 | [#40](https://github.com/sncfoundation/sncfoundation.github.io/issues/40) |
+| `SFN000002` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-09-05 | 6/7 | [#69](https://github.com/sncfoundation/sncfoundation.github.io/issues/69) |
 | `SFO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native FinOps Engineer (SheetFinOps) | 2026-08-31 | 10/10 | [#33](https://github.com/sncfoundation/sncfoundation.github.io/issues/33) |
 | `SHB000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Platform Engineer (SheetHub) | 2026-08-31 | 10/10 | [#26](https://github.com/sncfoundation/sncfoundation.github.io/issues/26) |
 | `SHB000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native Platform Engineer (SheetHub) | 2026-08-31 | 5/7 | [#47](https://github.com/sncfoundation/sncfoundation.github.io/issues/47) |
