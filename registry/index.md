@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **44** credentials issued to date, across 19 programs.
+- **45** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -46,6 +46,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SLX000004` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native Delivery Engineer (Sheetlux CD) | 2026-09-05 | 7/8 | [#65](https://github.com/sncfoundation/sncfoundation.github.io/issues/65) |
 | `SMH000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Mesh Engineer (Sheetmesh) | 2026-08-31 | 10/10 | [#28](https://github.com/sncfoundation/sncfoundation.github.io/issues/28) |
 | `SMH000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native Mesh Engineer (Sheetmesh) | 2026-09-02 | 6/7 | [#54](https://github.com/sncfoundation/sncfoundation.github.io/issues/54) |
+| `SMH000003` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native Mesh Engineer (Sheetmesh) | 2026-09-05 | 6/7 | [#68](https://github.com/sncfoundation/sncfoundation.github.io/issues/68) |
 | `SOS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-08-31 | 10/10 | [#27](https://github.com/sncfoundation/sncfoundation.github.io/issues/27) |
 | `SOS000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-08-31 | 5/7 | [#48](https://github.com/sncfoundation/sncfoundation.github.io/issues/48) |
 | `SOS000003` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-09-05 | 6/7 | [#64](https://github.com/sncfoundation/sncfoundation.github.io/issues/64) |
