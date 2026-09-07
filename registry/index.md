@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **49** credentials issued to date, across 19 programs.
+- **51** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -16,6 +16,7 @@ The public, tamper-evident registry of everyone certified by the
 | `RNK000004` | [@oysterme1ster](https://github.com/oysterme1ster) | Rank: SheetCommander | 2026-09-02 | — | [#52](https://github.com/sncfoundation/sncfoundation.github.io/issues/52) |
 | `RNK000005` | [@oysterme1ster](https://github.com/oysterme1ster) | Rank: SheetAdmiral | 2026-09-02 | — | [#58](https://github.com/sncfoundation/sncfoundation.github.io/issues/58) |
 | `RNK000006` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Rank: SheetCommander | 2026-09-05 | — | [#71](https://github.com/sncfoundation/sncfoundation.github.io/issues/71) |
+| `RNK000007` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Rank: SheetAdmiral | 2026-09-05 | — | [#73](https://github.com/sncfoundation/sncfoundation.github.io/issues/73) |
 | `SAO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native AIOps Engineer (SheetAIOps) | 2026-08-31 | 10/10 | [#17](https://github.com/sncfoundation/sncfoundation.github.io/issues/17) |
 | `SAO000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native AIOps Engineer (SheetAIOps) | 2026-09-02 | 7/7 | [#56](https://github.com/sncfoundation/sncfoundation.github.io/issues/56) |
 | `SAS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native WebAssembly Engineer (SheetAssembly) | 2026-08-31 | 10/10 | [#31](https://github.com/sncfoundation/sncfoundation.github.io/issues/31) |
@@ -30,6 +31,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SFE000003` | [@Enkilangel](https://github.com/Enkilangel) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | honorary | [#41](https://github.com/sncfoundation/sncfoundation.github.io/issues/41) |
 | `SFE000004` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-08-31 | 9/10 | [#43](https://github.com/sncfoundation/sncfoundation.github.io/issues/43) |
 | `SFE000005` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-09-05 | 9/10 | [#62](https://github.com/sncfoundation/sncfoundation.github.io/issues/62) |
+| `SFE000006` | [@s0rlv](https://github.com/s0rlv) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-09-07 | 10/10 | [#74](https://github.com/sncfoundation/sncfoundation.github.io/issues/74) |
 | `SFN000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-08-31 | 10/10 | [#40](https://github.com/sncfoundation/sncfoundation.github.io/issues/40) |
 | `SFN000002` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-09-05 | 6/7 | [#69](https://github.com/sncfoundation/sncfoundation.github.io/issues/69) |
 | `SFO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native FinOps Engineer (SheetFinOps) | 2026-08-31 | 10/10 | [#33](https://github.com/sncfoundation/sncfoundation.github.io/issues/33) |
