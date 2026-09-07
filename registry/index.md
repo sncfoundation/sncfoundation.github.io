@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **67** credentials issued to date, across 19 programs.
+- **68** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -47,6 +47,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SHB000004` | [@s0rlv](https://github.com/s0rlv) | Certified Sheet-Native Platform Engineer (SheetHub) | 2026-09-07 | 5/7 | [#78](https://github.com/sncfoundation/sncfoundation.github.io/issues/78) |
 | `SHU000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Metrics Engineer (Sheetheus) | 2026-08-31 | 10/10 | [#39](https://github.com/sncfoundation/sncfoundation.github.io/issues/39) |
 | `SHU000002` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native Metrics Engineer (Sheetheus) | 2026-09-05 | 7/7 | [#70](https://github.com/sncfoundation/sncfoundation.github.io/issues/70) |
+| `SHU000003` | [@s0rlv](https://github.com/s0rlv) | Certified Sheet-Native Metrics Engineer (Sheetheus) | 2026-09-07 | 6/7 | [#91](https://github.com/sncfoundation/sncfoundation.github.io/issues/91) |
 | `SKW000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native WASM CLI Engineer (skctl-wasm) | 2026-08-31 | 10/10 | [#32](https://github.com/sncfoundation/sncfoundation.github.io/issues/32) |
 | `SKW000002` | [@s0rlv](https://github.com/s0rlv) | Certified Sheet-Native WASM CLI Engineer (skctl-wasm) | 2026-09-07 | 7/7 | [#84](https://github.com/sncfoundation/sncfoundation.github.io/issues/84) |
 | `SLM000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Networking Engineer (Sheetlium) | 2026-08-31 | 10/10 | [#7](https://github.com/sncfoundation/sncfoundation.github.io/issues/7) |
