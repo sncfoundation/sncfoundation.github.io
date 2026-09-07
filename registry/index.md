@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **63** credentials issued to date, across 19 programs.
+- **64** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -68,6 +68,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SOS000003` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-09-05 | 6/7 | [#64](https://github.com/sncfoundation/sncfoundation.github.io/issues/64) |
 | `SOS000004` | [@s0rlv](https://github.com/s0rlv) | Certified Sheet-Native OS Engineer (SheetOS) | 2026-09-07 | 6/7 | [#79](https://github.com/sncfoundation/sncfoundation.github.io/issues/79) |
 | `SPS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native PowerShell Engineer | 2026-08-31 | 10/10 | [#35](https://github.com/sncfoundation/sncfoundation.github.io/issues/35) |
+| `SPS000002` | [@s0rlv](https://github.com/s0rlv) | Certified Sheet-Native PowerShell Engineer | 2026-09-07 | 7/7 | [#87](https://github.com/sncfoundation/sncfoundation.github.io/issues/87) |
 | `STO000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Storage Engineer (Sheetstor) | 2026-08-31 | 10/10 | [#12](https://github.com/sncfoundation/sncfoundation.github.io/issues/12) |
 | `STO000002` | [@oysterme1ster](https://github.com/oysterme1ster) | Certified Sheet-Native Storage Engineer (Sheetstor) | 2026-08-31 | 7/7 | [#46](https://github.com/sncfoundation/sncfoundation.github.io/issues/46) |
 | `STO000003` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native Storage Engineer (Sheetstor) | 2026-09-05 | 6/7 | [#66](https://github.com/sncfoundation/sncfoundation.github.io/issues/66) |
