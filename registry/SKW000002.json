@@ -1,0 +1,12 @@
+{
+  "serial": "SKW000002",
+  "seq": 2,
+  "holder": "s0rlv",
+  "date": "2026-09-07",
+  "score": "7/7",
+  "program": "Certified Sheet-Native WASM CLI Engineer (skctl-wasm)",
+  "program_key": "skctl-wasm",
+  "release": null,
+  "issue": "https://github.com/sncfoundation/sncfoundation.github.io/issues/84",
+  "issue_number": 84
+}
