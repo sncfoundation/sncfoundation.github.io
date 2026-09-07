@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **66** credentials issued to date, across 19 programs.
+- **67** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -76,3 +76,4 @@ The public, tamper-evident registry of everyone certified by the
 | `STO000003` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native Storage Engineer (Sheetstor) | 2026-09-05 | 6/7 | [#66](https://github.com/sncfoundation/sncfoundation.github.io/issues/66) |
 | `STO000004` | [@s0rlv](https://github.com/s0rlv) | Certified Sheet-Native Storage Engineer (Sheetstor) | 2026-09-07 | 7/7 | [#77](https://github.com/sncfoundation/sncfoundation.github.io/issues/77) |
 | `SYS000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Platform Engineer (SheetyStack) | 2026-08-31 | 10/10 | [#38](https://github.com/sncfoundation/sncfoundation.github.io/issues/38) |
+| `SYS000002` | [@s0rlv](https://github.com/s0rlv) | Certified Sheet-Native Platform Engineer (SheetyStack) | 2026-09-07 | 7/7 | [#90](https://github.com/sncfoundation/sncfoundation.github.io/issues/90) |
