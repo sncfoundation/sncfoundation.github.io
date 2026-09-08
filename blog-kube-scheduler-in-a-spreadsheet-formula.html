@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>I moved the kube-scheduler into a spreadsheet formula, and it passed the unit tests — SNCF Blog</title>
+<meta name="description" content="Rewriting the Sheeternetes scheduler as a pure Google Sheets formula — bin-packing, capacity, affinity, taints, cordon — that reproduces the Python scheduler on all 9 unit tests.">
+<meta property="og:title" content="I moved the kube-scheduler into a spreadsheet formula, and it passed the unit tests">
+<meta property="og:description" content="Rewriting the Sheeternetes scheduler as a pure Google Sheets formula — bin-packing, capacity, affinity, taints, cordon — that reproduces the Python scheduler on all 9 unit tests.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/blog/fsched-cover.png">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-kube-scheduler-in-a-spreadsheet-formula.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/blog/fsched-cover.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:36px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .postcard{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0;text-decoration:none;color:var(--fg)}
+  .postcard:hover{border-color:var(--accent)}
+  .postcard h3{margin:6px 0 6px;font-size:22px;color:var(--fg)}
+  .postcard p{margin:0;color:var(--muted)}
+  .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--muted);margin:8px 6px 0 0}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">SNCF Blog</p>
+  <h1>I moved the kube-scheduler into a spreadsheet formula, and it passed the unit tests</h1>
+  <p class="meta">September 8, 2026 · by Timur Tukaev</p>
+</div></header>
+<div class="wrap">
+<article class="post">
+<p>Here’s the thing that had been bugging me about Sheeternetes. The
+whole pitch is “the spreadsheet is the cluster” — Deployments, Nodes,
+Pods live in tabs, and the sheet is the source of truth. Except it
+wasn’t the whole truth. The <strong>scheduler</strong> — the part that
+actually decides which pod lands on which node — was a Python function
+reading the sheet from the outside. The sheet stored the state. Python
+did the thinking.</p>
+<p>That’s a cheat, and it nagged at me. So I set out to remove the last
+bit of external brain: rewrite the scheduler as a <strong>spreadsheet
+formula</strong>. No Python, no Apps Script, no bash. One
+<code>=LET(…)</code> per pod that reads the Nodes tab and decides
+placement, using nothing but the functions built into Google Sheets.</p>
+<p>It works. It reproduces bin-packing, capacity, spread, sticky
+placement, cordon, affinity, and taints — and it produces the <em>exact
+same placement</em> as the real Python scheduler on all nine of its unit
+tests.</p>
+<figure>
+<img src="img/blog/fsched-cover.png"
+alt="The kube-scheduler is now a spreadsheet formula" />
+<figcaption aria-hidden="true">The kube-scheduler is now a spreadsheet
+formula</figcaption>
+</figure>
+<h2 id="the-rule-of-the-game">The rule of the game</h2>
+<p>Sheeternetes’ scheduler is a pure function,
+<code>schedule(deployments, nodes, existing)</code>. It walks
+deployments in order, expands replicas, and for each pod picks a
+node:</p>
+<ul>
+<li><strong>sticky</strong> — if the pod’s current node is still alive,
+matches, and has room, keep it there;</li>
+<li>otherwise <strong>best-fit</strong> — the eligible node with the
+most free CPU that the pod fits into;</li>
+<li><strong>eligible</strong> means fresh, schedulable (not cordoned),
+affinity matches (<code>node_selector</code> ⊆ node labels), the pod
+tolerates the node’s <code>NoSchedule</code> taints, and both CPU and
+memory fit;</li>
+<li>nothing fits → the pod is <strong>Unschedulable</strong>.</li>
+</ul>
+<p>It’s greedy and sequential: each placement consumes capacity, which
+changes the decision for the next pod. That sequential-accumulation part
+is exactly what makes “do it in formulas” interesting, because formulas
+are supposed to be declarative, not step-by-step.</p>
+<p>The challenge, then: reproduce a greedy, stateful, order-dependent
+bin-packer using only cells.</p>
+<h2 id="the-layout">The layout</h2>
+<p>Two tabs. <strong>Nodes</strong> is the cluster’s capacity — one row
+per node:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>name</th>
+<th>cpu_total</th>
+<th>mem_total</th>
+<th>fresh</th>
+<th>schedulable</th>
+<th>labels</th>
+<th>taints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node-a</td>
+<td>4000</td>
+<td>8192</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td>disk=ssd</td>
+<td></td>
+</tr>
+<tr>
+<td>node-b</td>
+<td>2000</td>
+<td>4096</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td>disk=hdd</td>
+<td></td>
+</tr>
+<tr>
+<td>node-gpu</td>
+<td>8000</td>
+<td>16384</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td>disk=ssd</td>
+<td>gpu=true:NoSchedule</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Pods</strong> is one row per replica, in the order the
+scheduler would process them. The last column, <code>chosen</code>, is
+empty — that’s what the formula fills in.</p>
+<p>The trick to greedy accumulation is a growing range. When the formula
+in row <code>r</code> needs to know “how much CPU is already committed
+on node X,” it sums the rows <em>above it</em>:</p>
+<pre><code>SUMIFS($C$2:INDEX($C:$C, ROW()-1), $G$2:INDEX($G:$G, ROW()-1), node)</code></pre>
+<p><code>$C$2:INDEX($C:$C, ROW()-1)</code> is the classic expanding
+range — rows 2 through “one above me.” Because row <code>r</code> only
+ever looks at rows <code>&lt; r</code>, there’s no circular reference;
+the sheet just evaluates top to bottom, each pod seeing the ones already
+placed. That single idea turns a spreadsheet into a sequential
+bin-packer.</p>
+<h2 id="the-formula">The formula</h2>
+<p>For each pod, score every node scalarly, then pick the best:</p>
+<pre><code>=LET(
+  nm, FILTER(Nodes!$A$2:$A, Nodes!$A$2:$A&lt;&gt;&quot;&quot;),   /* names, capacities, flags … */
+  creq, INDEX($C:$C, ROW()), mreq, INDEX($D:$D, ROW()),
+  sel, INDEX($E:$E, ROW()),  tol, INDEX($F:$F, ROW()), prev, INDEX($H:$H, ROW()),
+  score, MAP(nm, LAMBDA(q,
+     IF( AND( fresh(q), schedulable(q), not_excluded(q),
+              affinity_ok(q), tolerates(q),
+              free_cpu(q) &gt;= creq, free_mem(q) &gt;= mreq ),
+         free_cpu(q), -1 ))),
+  best, IF(MAX(score) &lt; 0, &quot;&quot;, XLOOKUP(MAX(score), score, nm)),
+  IF(sticky_ok(prev), prev, best)
+)</code></pre>
+<p><code>MAP(nm, LAMBDA(q, …))</code> scores each node; ineligible nodes
+get <code>-1</code>; <code>XLOOKUP(MAX(score), score, nm)</code> returns
+the winner — and because XLOOKUP returns the <em>first</em> match, ties
+break toward the first node in order, exactly like Python’s
+<code>max()</code>. Then the sticky check overrides with the previous
+node when it’s still valid.</p>
+<p>Here it is running on a real cluster — one gold <code>=LET(…)</code>
+in the formula bar, and the <code>chosen</code> column filled by the
+sheet itself:</p>
+<figure>
+<img src="img/blog/fsched-sheet.png"
+alt="The Pods tab: the ‘chosen’ column is computed entirely by the formula" />
+<figcaption aria-hidden="true">The Pods tab: the ‘chosen’ column is
+computed entirely by the formula</figcaption>
+</figure>
+<p>Read that placement — it’s not random, it’s the scheduler
+thinking:</p>
+<ul>
+<li><code>web</code> (4×300m) packs onto <strong>node-a</strong>;</li>
+<li><code>db</code> needs <code>disk=ssd</code>, so it can only go to
+node-a or node-gpu — but node-gpu is tainted and <code>db</code> doesn’t
+tolerate it, so both <code>db</code> land on
+<strong>node-a</strong>;</li>
+<li><code>ml</code> tolerates <code>gpu=true</code>, so it’s the only
+thing that lands on <strong>node-gpu</strong>;</li>
+<li><code>batch</code> (1200m each) can’t touch the tainted GPU node;
+the first goes to <strong>node-b</strong> (most free CPU at that
+moment), the second back to <strong>node-a</strong>, and the third —
+<strong>fits nowhere</strong> and comes up red, Unschedulable.</li>
+</ul>
+<p>That’s affinity, taints, bin-packing, spread, and capacity — all
+decided by a formula.</p>
+<h2 id="does-it-actually-match-the-python-scheduler">Does it actually
+match the Python scheduler?</h2>
+<p>This is the part I actually cared about. The Python
+<code>schedule()</code> ships with a unit-test suite — spread, capacity
+bin-packing, memory as a constraint, cordon-keeps-existing, affinity
+pins, taint repels, toleration allows, too-big-is-unschedulable. So I
+built a harness that runs each test case through <em>both</em>
+schedulers and diffs the placement.</p>
+<figure>
+<img src="img/blog/fsched-equivalence.png"
+alt="Same scheduler, two substrates — identical output" />
+<figcaption aria-hidden="true">Same scheduler, two substrates —
+identical output</figcaption>
+</figure>
+<p><strong>Nine out of nine.</strong> Same pod on the same node, every
+case. Plus the richer multi-deployment demo above, which I also checked
+against Python: identical, down to which <code>batch</code> replica gets
+orphaned. The formula isn’t an approximation of the scheduler — on these
+cases it <em>is</em> the scheduler.</p>
+<h2 id="three-quirks-that-fought-back">Three quirks that fought
+back</h2>
+<p>Getting there meant losing an afternoon to Google Sheets’ array
+semantics, which collapse in ways that don’t announce themselves. If you
+ever do this, here’s what will bite you:</p>
+<figure>
+<img src="img/blog/fsched-quirks.png"
+alt="Three Google Sheets quirks that fought back" />
+<figcaption aria-hidden="true">Three Google Sheets quirks that fought
+back</figcaption>
+</figure>
+<ol type="1">
+<li><strong>A constant lambda collapses the array.</strong>
+<code>MAP(arr, LAMBDA(x, 0))</code> returns a single <code>0</code>, not
+a vector — if the lambda ignores its variable, Sheets quietly gives you
+a scalar. Make the lambda use it:
+<code>MAP(arr, LAMBDA(v, v*0))</code>.</li>
+<li><strong>Array-minus-array collapses too.</strong> Subtracting two
+<code>FILTER</code>/<code>MAP</code> vectors (<code>ct - zc</code>),
+both two elements long, gave me <em>one</em> value. The fix that made
+everything robust: never do array-to-array arithmetic — compute each
+element scalarly inside
+<code>MAP(keys, LAMBDA(q, XLOOKUP(q, …)))</code>.</li>
+<li><strong>API writes don’t adjust relative references.</strong> I
+wrote the same formula string into every row via the Sheets API — no
+fill-down — so <code>$C2</code> in row 3 still pointed at row 2. Half a
+scenario placed pods based on the wrong pod’s data. Use
+<code>INDEX($C:$C, ROW())</code> for “this row” and the expanding
+<code>$C$2:INDEX($C:$C, ROW()-1)</code> for “rows above.”</li>
+</ol>
+<p>None of these throw an error. They just give you a wrong answer with
+total confidence, which is the worst kind. A benchmark that only
+confirms your priors isn’t a benchmark, and a formula that silently
+returns a scalar isn’t a bug report — you find it by diffing against the
+thing you trust.</p>
+<h2 id="why-bother">Why bother</h2>
+<p>Because it closes the gap in the joke. “The spreadsheet is the
+cluster” was always a little dishonest while the scheduler ran in
+Python. Now the sheet doesn’t just <em>hold</em> the desired state — it
+<em>computes</em> the placement. Change a <code>replicas</code> count
+and the neighbouring cells re-derive which node each pod belongs on,
+live, with no process running anywhere. That’s about as sheet-native as
+scheduling gets.</p>
+<p>And underneath the absurdity there’s a genuinely useful lesson about
+greedy algorithms in spreadsheets: the expanding-range trick
+(<code>A$2:INDEX(A:A, ROW()-1)</code>) is how you do any sequential
+accumulation — running placement, running balance, running anything — in
+cells, without a script. I did not expect a container scheduler to teach
+me that, but here we are.</p>
+<p>Do not schedule production pods with a spreadsheet formula. Do read
+the formula — it’s a surprisingly clear way to see what a scheduler
+actually decides.</p>
+<p>Try the live sheet, poke the numbers, watch the placement change: the
+demo is public and read-only.</p>
+<h2 id="join-in">Join in</h2>
+<ul>
+<li>Sheeternetes: <a
+href="https://github.com/sncfoundation/sheeternetes">github.com/sncfoundation/sheeternetes</a></li>
+<li>The foundation: <a
+href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
+href="https://github.com/sncfoundation">github.com/sncfoundation</a></li>
+<li>Slack <a
+href="https://sncfoundation.github.io/slack.html">sheetncf</a>, Telegram
+<a href="https://t.me/stncf">t.me/stncf</a>, LinkedIn <a
+href="https://www.linkedin.com/company/sheetncf">company/sheetncf</a></li>
+</ul>
+<blockquote>
+<p><strong>New here?</strong> Sheeternetes is a container orchestrator
+whose entire control plane lives inside a spreadsheet — Deployments,
+Nodes, Pods and Events are tabs, a scheduler reads and writes cells, and
+real Docker containers run on the other end. It’s part of the
+<strong>Sheet-Native Computing Foundation (SNCF)</strong>, a working
+parody of the CNCF: 30+ projects, a container standard, certification,
+live demos.</p>
+</blockquote>
+<p>It reconciles.</p>
+
+<p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+  Also on <a href="https://dev.to">dev.to</a> and <a href="https://habr.com">Habr</a> (RU).
+  Join the community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+  <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+</p>
+</article>
+</div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
