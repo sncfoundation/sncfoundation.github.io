@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
-<title>Two clusters that couldn&#x27;t reach each other, and the spreadsheet that let them — SNCF Blog</title>
-<meta name="description" content="Cross-substrate federation for Sheeternetes: networking two clusters through a shared spreadsheet (proven across two physical hosts), pooling capacity, live migration, and a WASM runtime that lives in a cell.">
-<meta property="og:title" content="Two clusters that couldn&#x27;t reach each other, and the spreadsheet that let them">
-<meta property="og:description" content="Cross-substrate federation for Sheeternetes: networking two clusters through a shared spreadsheet (proven across two physical hosts), pooling capacity, live migration, and a WASM runtime that lives in a cell.">
+<title>Federating two clusters through a spreadsheet: networking, capacity pooling, and a WASM runtime in a cell — SNCF Blog</title>
+<meta name="description" content="Cross-substrate federation for Sheeternetes: a spreadsheet as the network transport (proven across two physical hosts), capacity pooling, live migration, and a WASM runtime that runs from a cell.">
+<meta property="og:title" content="Federating two clusters through a spreadsheet: networking, capacity pooling, and a WASM runtime in a cell">
+<meta property="og:description" content="Cross-substrate federation for Sheeternetes: a spreadsheet as the network transport (proven across two physical hosts), capacity pooling, live migration, and a WASM runtime that runs from a cell.">
 <meta property="og:image" content="https://sncfoundation.github.io/img/blog/federation-cover.png">
 <meta property="og:url" content="https://sncfoundation.github.io/blog-two-clusters-and-the-spreadsheet-that-let-them.html">
 <meta property="og:type" content="article">
@@ -56,250 +56,233 @@
 </div></nav>
 <header class="hero"><div class="wrap">
   <p class="kicker">SNCF Blog</p>
-  <h1>Two clusters that couldn&#x27;t reach each other, and the spreadsheet that let them</h1>
+  <h1>Federating two clusters through a spreadsheet: networking, capacity pooling, and a WASM runtime in a cell</h1>
   <p class="meta">September 12, 2026 · by Timur Tukaev</p>
 </div></header>
 <div class="wrap">
 <article class="post">
-<p>There’s a particular kind of problem I keep coming back to, and it
-took me a while to admit that what draws me to it isn’t the engineering.
-It’s the shape of it. Two things that cannot reach each other. Both
-real, both running, both perfectly capable — and separated by something
-neither of them chose. A firewall. A network that only lets you speak
-outward, never listen. Distance, dressed up as configuration.</p>
-<p>That’s the honest description of federating two clusters. One lives
-on-prem, a file on somebody’s disk. The other lives in the cloud, a
-document in Google’s data centers. They could not be more different in
-temperament, and neither can be dialed into from the outside. If you
-want them to work as one, you have to find a way for them to reach each
-other across a gap that, by every normal rule, they’re not allowed to
-cross.</p>
-<p>For a long time I thought the answer had to be a tunnel — something
-you build and hold open, a wire you run between them. But you can’t run
-a wire to a place that won’t let you knock. So I stopped trying to
-connect them <em>to each other</em> and asked a smaller question: is
-there any one place they can both already reach? Somewhere ordinary,
-that neither has to open a door for?</p>
-<p>There is. They can both reach a spreadsheet.</p>
+<p>Sheeternetes runs a container cluster whose control plane is a
+spreadsheet. This post is about making two of them work as one — an
+on-prem cluster backed by a local Excel file and a cloud cluster backed
+by a Google Sheet — across the network, with shared capacity, live
+migration, and a runtime that doesn’t need Docker. Everything here is
+reproducible; the code is one small repo.</p>
 <figure>
 <img src="img/blog/federation-cover.png"
-alt="Two clusters that can’t reach each other, connected through a spreadsheet" />
-<figcaption aria-hidden="true">Two clusters that can’t reach each other,
-connected through a spreadsheet</figcaption>
+alt="Two clusters, connected through a spreadsheet" />
+<figcaption aria-hidden="true">Two clusters, connected through a
+spreadsheet</figcaption>
 </figure>
 <blockquote>
-<p><strong>New here?</strong> This is <a
-href="https://github.com/sncfoundation/sheeternetes">Sheeternetes</a> —
+<p><strong>New here?</strong> <a
+href="https://github.com/sncfoundation/sheeternetes">Sheeternetes</a> is
 a container orchestrator whose control plane lives inside a spreadsheet:
 Deployments, Nodes, Pods are tabs, a scheduler reads and writes cells,
-real Docker containers run on the other end. It’s part of the
+and real Docker containers run on the nodes. It’s part of the
 <strong>Sheet-Native Computing Foundation (SNCF)</strong>, a working
 parody of the CNCF where the whole stack lives in spreadsheets. <a
 href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
 href="https://github.com/sncfoundation">github.com/sncfoundation</a></p>
 </blockquote>
-<h2 id="the-wire-is-the-sheet">The wire is the sheet</h2>
-<p>Here’s the idea in one line: if both clusters can reach a shared
-Google Sheet, the sheet can <em>be</em> the wire. You don’t route
-packets between the two machines. You write them into cells, and the
-other side reads them out.</p>
-<p>The whole thing is a small userspace TCP relay,
-<code>sheetwire.py</code>, with two roles. One side
-<strong>serves</strong> — it watches the sheet for someone asking for a
-service, dials the local port, and streams the answer back into cells.
-The other side <strong>exposes</strong> — it opens a local port, and
-anything you send to it gets framed into the sheet, addressed to the
-peer.</p>
-<pre class="bash"><code># side B, the one that hosts the service
+<h2 id="the-problem-reachability-not-discovery">The problem:
+reachability, not discovery</h2>
+<p>Federating two clusters is usually framed as a discovery problem —
+teach cluster A about cluster B’s services. That part is easy. The hard
+part is reachability. An on-prem cluster sits behind NAT and can’t be
+dialed inbound; a serverless Google Sheets cluster has no inbound
+endpoint at all. You can publish a service catalog all day, but if a pod
+in A can’t open a socket to a pod in B, you don’t have a federated
+cluster — you have two clusters with a shared address book.</p>
+<p>The usual answer is a tunnel (WireGuard, an overlay), but a tunnel
+needs at least one side reachable, or a relay both sides can dial. Both
+our sides are behind NAT. What they <em>do</em> share is that both can
+reach one ordinary thing over plain outbound HTTPS: a Google Sheet. So
+the transit medium becomes the sheet itself.</p>
+<h2 id="sheetwire-a-spreadsheet-as-the-wire">Sheetwire: a spreadsheet as
+the wire</h2>
+<p><code>sheetwire.py</code> is a userspace TCP relay whose transport is
+a shared sheet. It has two roles:</p>
+<ul>
+<li><strong><code>serve</code></strong> runs next to the service. It
+watches the sheet for connection requests, dials the local target, and
+streams the response back into cells.</li>
+<li><strong><code>expose</code></strong> runs where you want to reach
+the service. It opens a local listening port; anything you send is
+framed into the sheet, addressed to the peer.</li>
+</ul>
+<pre class="bash"><code># side B — hosts the service
 sheetwire.py serve  --wire &lt;shared-sheet-id&gt; --service web --target 127.0.0.1:8080
 
-# side A, the one that wants to reach it
+# side A — wants to reach it
 sheetwire.py expose --wire &lt;shared-sheet-id&gt; --service web --listen 127.0.0.1:9080
 
-# then, on side A:
-curl localhost:9080     # and it reaches side B&#39;s service — through the cells</code></pre>
-<p>The transit is a tab called <code>Wire</code>, append-only, one row
-per frame:</p>
+# on side A:
+curl localhost:9080     # reaches side B&#39;s service through the cells</code></pre>
+<p>The transport is one append-only tab, <code>Wire</code>, one row per
+frame:</p>
 <pre><code>conn | kind (open | data | close) | dir (a2b | b2a) | service | payload (base64)</code></pre>
-<p>That’s the whole protocol. A connection opens, bytes go across as
-<code>data</code> frames in one direction or the other, and a
-<code>close</code> ends it. The beautiful, slightly absurd part is what
-this means at the wire level: a TCP conversation, chopped into base64,
-laid out as spreadsheet rows.</p>
+<p>Each accepted TCP connection gets a random <code>conn</code> id, so
+many connections multiplex over the same tab. The lifecycle is minimal:
+an <code>open</code> frame names the target service; <code>data</code>
+frames carry base64 bytes in one direction (<code>a2b</code>) or the
+other (<code>b2a</code>); a <code>close</code> frame ends the stream.
+Payloads larger than the safe cell size are sharded across several
+<code>data</code> frames in order. Reassembly is just concatenation by
+row order.</p>
+<p>Both sides run the same loop: poll for new rows addressed to me
+(advancing a cursor so each row is read once), apply them to the local
+sockets, then flush my own outbound frames. Because everything is
+outbound-only writes and reads against the sheet, the relay traverses
+any NAT or firewall — no inbound ports on either side.</p>
 <figure>
 <img src="img/blog/federation-wire.png"
-alt="The Wire tab: a whole TCP conversation, carried in cells" />
-<figcaption aria-hidden="true">The Wire tab: a whole TCP conversation,
+alt="The Wire tab: a full TCP conversation carried in cells" />
+<figcaption aria-hidden="true">The Wire tab: a full TCP conversation
 carried in cells</figcaption>
 </figure>
-<p>Read those rows and you can watch the request leave, cross, and come
-back. <code>GET / HTTP/1.1</code> written into a cell.
-<code>HTTP/1.1 200 OK</code> written back. The body. The close. An HTTP
-exchange, preserved as a little transcript in a spreadsheet, which you
-can scroll through after the fact like a letter.</p>
-<p>Neither side ever opens a port. Both only ever reach
-<em>outward</em>, to the same quiet place, and that turns out to be
-enough. There’s something I find almost moving about that, if you’ll let
-me be soft about infrastructure for a second: the connection doesn’t
-come from forcing a way in. It comes from both of them, independently,
-choosing to show up somewhere in the open.</p>
-<h2 id="making-it-real-and-the-parts-that-fought-back">Making it real —
-and the parts that fought back</h2>
-<p>I don’t trust a demo I can’t reproduce, so let me give you the real
-one, including the places it bit me. None of the difficulties were the
-grand kind. They were the small, stubborn, particular kind — the ones
-that don’t yield to cleverness, only to patience and paying closer
-attention.</p>
-<p><strong>The race that only happened because both sides cared at
-once.</strong> The very first run, both roles started at the same
-instant and both tried to create the <code>Wire</code> tab. One won; the
-other got a flat <em>“a sheet with that name already exists”</em> and
-fell over. Two processes reaching for the same thing at the same moment
-and colliding — the fix was just to let the one that lost the race carry
-on instead of taking it as an insult:</p>
+<p>Read the rows and you get the whole exchange as a transcript: the
+<code>GET / HTTP/1.1</code> request in one cell, the
+<code>HTTP/1.1 200 OK</code> response in another, the body, the close.
+An HTTP round-trip, serialized as spreadsheet rows.</p>
+<h2 id="engineering-notes-the-parts-that-bit">Engineering notes (the
+parts that bit)</h2>
+<p>A few things worth writing down, because they’re the non-obvious cost
+of this design.</p>
+<p><strong>A create race on startup.</strong> The first run had both
+roles start simultaneously and both try to create the <code>Wire</code>
+tab; one won, the other got a 400 <em>“a sheet with that name already
+exists”</em> and died. The fix is to treat a lost create race as
+success:</p>
 <pre class="python"><code>try:
     ss.batchUpdate(..., {&quot;addSheet&quot;: {&quot;properties&quot;: {&quot;title&quot;: &quot;Wire&quot;}}}).execute()
 except HttpError as e:
-    if &quot;already exists&quot; not in str(e): raise   # the other side won the create — fine</code></pre>
-<p><strong>The wall that wasn’t in the code at all.</strong> On my Mac,
-the first end-to-end attempt with a real containerized backend simply
-wouldn’t connect, and the logs were clean, which is the worst kind of
-failure. It took me longer than I’d like to admit to realize it had
-nothing to do with Sheetwire: macOS can’t route to a Docker container’s
-own IP from the host. The relay was fine. The network I was standing on
-wasn’t. A good reminder that when something won’t reach something else,
-the fault is usually not in either of them — it’s in the ground
-between.</p>
-<p><strong>The quota, which forces a certain gentleness.</strong> Google
-Sheets lets you write about sixty times a minute. Stream bytes naively
-and you blow through that in seconds. So the relay batches — it gathers
-whatever’s outbound and flushes it once per tick, as a single append,
-and reads on the same rhythm. It makes Sheetwire a deliberately
-unhurried thing: a channel for cross-cluster API calls, service to
-service, not a firehose. Honestly, I’ve made peace with that. Not
-everything worth saying has to be said fast.</p>
-<p>And then the two-host test, which is the one I actually cared about —
-because up to that point everything had been on one machine, and a thing
-you’ve only ever run beside itself isn’t really connected to
-anything.</p>
-<p>So: my laptop on one side. A Linux box on the other, somewhere else
-entirely. A shared sheet as the wire. Getting there had its own small
-comedy of friction — the second host wouldn’t <code>git clone</code>
-under one policy, then <code>pip</code> refused to touch a managed
-environment, then there was no ssh between the two machines, so the
-credential had to make its way across by hand. Every step a tiny
-negotiation. It usually is, with anything worth connecting to.</p>
-<p>Then, from the laptop:</p>
+    if &quot;already exists&quot; not in str(e): raise   # the other side won the create</code></pre>
+<p><strong>macOS can’t route to a container’s IP.</strong> The first
+end-to-end test with a containerized backend refused to connect, with
+clean logs — the worst kind of failure. It had nothing to do with
+Sheetwire: on macOS the Docker bridge network’s container IPs aren’t
+routable from the host. Publish the port (<code>-p</code>) or run the
+relay on the same Docker network; on Linux this isn’t an issue. Worth
+knowing before you burn an hour on it.</p>
+<p><strong>The write quota forces batching.</strong> Google Sheets
+allows roughly 60 write requests per minute per user. Streaming a frame
+per chunk blows through that immediately. So each side accumulates
+outbound frames and flushes them once per tick (default ~1.1 s) as a
+single <code>values.append</code> — one write regardless of how many
+frames — and reads on the same cadence. The consequence is honest:
+Sheetwire is a low-throughput, service-to-service pipe (cross-cluster
+API calls, control-plane chatter), not a bulk data path. Latency is a
+couple of ticks per round-trip.</p>
+<h2 id="two-host-validation">Two-host validation</h2>
+<p>Everything above ran on one machine first, which proves the logic but
+not the premise — a relay you only run beside itself hasn’t crossed
+anything. So: a laptop on one side, a separate Linux host on the other,
+a shared sheet as the wire.</p>
+<p>Bringing up the second host surfaced its own friction, all mundane
+and all worth noting for anyone reproducing: the box wouldn’t
+<code>git clone</code> under one agent’s default policy (fixed by
+cloning in a plain shell — the repo is public, no auth needed);
+<code>pip</code> refused to install into an externally-managed
+environment (PEP 668 — use a venv or
+<code>--break-system-packages</code>, though the two libs were already
+present); and there was no ssh between the machines, so the OAuth
+credential had to be moved by hand.</p>
+<p>With the backend running on the Linux host and <code>serve</code>
+pointed at it, from the laptop:</p>
 <pre><code>$ curl localhost:9090
 &lt;h1&gt;hello from HOST B — through a spreadsheet&lt;/h1&gt;</code></pre>
 <p>That HTML was served by a process on the other host. It crossed the
-internet exactly once, through a spreadsheet, and neither machine had
-opened a single inbound port. Two separate computers, behind their own
-walls, speaking through one shared, ordinary thing they both happened to
-trust.</p>
+internet once, through a shared sheet, with no inbound ports on either
+machine. The full exchange
+(<code>open → GET → 200 OK → body → close</code>) is visible as rows in
+the <code>Wire</code> tab.</p>
 <figure>
 <img src="img/blog/federation-terminal.png"
 alt="The real run — two hosts, one spreadsheet" />
 <figcaption aria-hidden="true">The real run — two hosts, one
 spreadsheet</figcaption>
 </figure>
-<p>I sat with that longer than the result warranted. It’s a
-<code>curl</code>. It returns some HTML. And it undid me a little
-anyway.</p>
-<h2 id="sharing-what-you-have">Sharing what you have</h2>
-<p>Networking is only half of it. Once two clusters can talk, the next
-thing you want is for them to help each other carry load — for one to be
-able to <em>ask</em> the other for room, and for the other to give
-it.</p>
-<p>Three planes make one federation, and the wire underneath every one
-of them is the same shared sheet:</p>
-<figure>
-<img src="img/blog/federation-arch.png"
-alt="Federation, three planes — the wire is always the shared sheet" />
-<figcaption aria-hidden="true">Federation, three planes — the wire is
-always the shared sheet</figcaption>
-</figure>
-<p><code>bridge.py stretch</code> treats both clusters as one pool of
-capacity. It fills the local cluster as far as it goes, and orders the
-rest from the peer:</p>
+<h2 id="stretching-a-cluster-pool-the-peers-capacity">Stretching a
+cluster: pool the peer’s capacity</h2>
+<p>With connectivity in place, the next primitive is shared capacity —
+let one cluster place work on the other. <code>bridge.py stretch</code>
+treats both clusters’ nodes as one pool: it fills the local cluster
+first, then orders the remaining replicas from the peer.</p>
 <pre class="bash"><code>python3 bridge.py stretch web --replicas 10 --cpu 300 \
     --local http://localhost:8801 --local-token secret \
     --peer  http://localhost:8802 --peer-token secret
 # web x10 @ 300m | local free 1000m -&gt; 3, ordered from peer -&gt; 7</code></pre>
-<p>Ten replicas asked for; the local cluster had room for three; the
-other seven were <em>ordered from the peer</em>, and the peer ran them.
-From the outside it’s one deployment — one <code>web</code>, ten pods —
-that happens to span an Excel file on a disk and a document in the
-cloud, two things with nothing in common except a willingness to be part
-of the same whole. Sheetwire stitches the Service across both so the
-seam doesn’t show.</p>
-<p>There’s a plainness to that I keep admiring: one side, at the edge of
-what it can do alone, simply asks. And the other answers, <em>of course,
-I have room, give them here.</em> We could stand to be more like our
-schedulers.</p>
-<h2 id="never-letting-go-of-the-first-hand">Never letting go of the
-first hand</h2>
-<p>The oldest piece of this, and still my favorite, is migration. Moving
-a workload from one cluster to the other, live, without dropping it.</p>
-<p>The rule it follows is called make-before-break, and it’s exactly
-what it sounds like. When you move a deployment,
-<code>bridge migrate</code> copies it to the target and <strong>waits
-until it’s actually running there</strong> before it takes anything down
-on the source. If the target never comes up, the source is left
-completely untouched — no harm done, nothing lost. And with
-<code>--rollback-window</code>, it keeps watching after the switch, and
-if the new home falters, it quietly brings the workload back to where it
-was.</p>
-<p>You never let go of the first hand until the second one is holding. I
-don’t think I need to explain why that’s the part I’d want someone to
-understand about how I try to do things.</p>
-<h2 id="the-smallest-thing-kept-whole">The smallest thing, kept
-whole</h2>
-<p>One more, because it closes a circle. If the image can live in the
-cells, can the <em>runtime</em> be more native to the sheet too? The
-honest answer is WASM. A WebAssembly module can be tiny — small enough
-to fit, whole and uncut, inside a single cell. And a WASI runtime needs
-nothing but the bytes: no Docker daemon, no registry, nothing external
-at all.</p>
-<p><code>wasmlet.py</code> pulls a module straight out of a cell, checks
-that it’s exactly what it should be, and runs it:</p>
+<p>The split is simple and capacity-aware: read each cluster’s free CPU
+(node <code>cpu_total − cpu_used</code> over Ready, schedulable nodes),
+fit as many replicas locally as the local free CPU allows, and apply the
+remainder to the peer as the same-named deployment. Ten replicas, three
+fit locally, seven get scheduled on the peer’s nodes. From the outside
+it’s one deployment — one <code>web</code>, ten pods — spanning an Excel
+file and a Google Sheet, with Sheetwire stitching the Service across
+both substrates.</p>
+<p>Three planes make one federation, and the transport under each is the
+same shared sheet:</p>
+<figure>
+<img src="img/blog/federation-arch.png"
+alt="Federation, three planes — the transport is always the shared sheet" />
+<figcaption aria-hidden="true">Federation, three planes — the transport
+is always the shared sheet</figcaption>
+</figure>
+<h2 id="live-migration-across-substrates">Live migration across
+substrates</h2>
+<p>Moving a workload between clusters live is the oldest piece here, and
+it predates the networking work. <code>bridge migrate</code> uses
+make-before-break: it copies the deployment to the target and waits
+until it reports Ready there before draining it from the source. If the
+target never comes up, the source is left untouched — zero downtime,
+nothing lost. With <code>--rollback-window N</code> it keeps watching
+the target for <code>N</code> seconds after cutover and, if the replica
+count degrades, automatically restores the deployment on the source and
+removes it from the target.</p>
+<pre class="bash"><code>python3 bridge.py migrate web --from local --to peer --rollback-window 30 \
+    --local http://localhost:8801 --local-token secret \
+    --peer  http://localhost:8802 --peer-token secret</code></pre>
+<h2 id="a-sheet-native-runtime-wasm-in-a-cell">A sheet-native runtime:
+WASM in a cell</h2>
+<p>Docker is only the executor on the node; the image itself already
+lives in cells via SICF (our on-sheet image format). The natural next
+step is a runtime that needs nothing but the bytes — and that’s
+WASM/WASI. A WebAssembly module is small enough to fit whole inside a
+single cell (base64 + sha256), and a WASI runtime runs it with no Docker
+daemon and no registry.</p>
+<p><code>wasmlet.py</code> pulls a module out of a cell, verifies its
+digest, and runs it with <code>wasmtime</code>:</p>
 <pre class="bash"><code>wasmlet.py --store &lt;sheet-id&gt; --name hello:v1
 # pulled hello:v1 from a spreadsheet cell (158 bytes), sha256 OK
 # hello from a spreadsheet cell</code></pre>
-<p>A hundred and fifty-eight bytes. One cell. The entire program, held
-complete in a space that small, and it runs. There’s a tenderness in
-things that don’t need to be broken into pieces to be kept.</p>
-<h2 id="the-honest-limits">The honest limits</h2>
-<p>Because I’d rather tell you the edges than have you find them. The
-Sheets write quota makes Sheetwire a low-throughput pipe — good for
-service-to-service calls, wrong for bulk transfer. Federation is
-eventually-consistent; there’s no consensus across the two substrates.
-And while the networking is now proven across two real hosts, the full
-stretched-and-migrating cluster spanning a live Excel↔︎Sheets pair has so
-far only been run on one machine — a genuine multi-host production run
-is the next thing. Do not run production on any of this. That was never
-the point.</p>
-<h2 id="what-it-was-actually-about">What it was actually about</h2>
-<p>It’s a spreadsheet pretending to be a network, and it works, and I
-can prove it. But if you’ve read this far you already know the article
-isn’t really about the quota, or the base64, or the frames.</p>
-<p>It’s about two things that were kept apart by walls neither of them
-built, finding each other anyway — not by breaking through, but by both
-reaching, patiently, toward the same open place. It’s about the friction
-being where the meaning was: the race, the wall, the credential passed
-hand to hand — every one of them a small negotiation, and connecting to
-anything that matters is nothing but small negotiations, gladly made.
-It’s about one side asking for room and the other saying yes. It’s about
-not letting go of the first hand until the second one is holding.</p>
-<p>I built a way for two distant, stubborn, utterly different systems to
-reach each other through something quiet and shared, and then to carry
-each other’s weight, and never to drop what they were holding. I called
-it federation. I could have called it something else.</p>
-<p>It reconciles.</p>
+<p>A 158-byte module, one cell, executed with the digest checked against
+the stored value — no daemon, no pull, no external dependency. It’s the
+runtime counterpart to SICF: the image is in the sheet, and this
+executes straight from it. For the workloads this actually suits —
+static binaries, <code>scratch</code>/<code>alpine</code>-scale things,
+WASM modules — it’s a genuinely lighter path than the OCI/Docker one,
+which stays for heavier images.</p>
+<h2 id="honest-limits">Honest limits</h2>
+<ul>
+<li><strong>Throughput.</strong> The Sheets write quota caps Sheetwire
+at low bandwidth. It’s for service-to-service calls, not bulk
+transfer.</li>
+<li><strong>Consistency.</strong> Federation is eventually-consistent;
+there’s no consensus across the two substrates. <code>sync</code> is a
+union reconcile, <code>stretch</code> is a one-shot split — neither
+coordinates a global view.</li>
+<li><strong>Validation scope.</strong> The networking is proven across
+two physical hosts. <code>stretch</code> and <code>migrate</code> have
+been run against real, live clusters (a real Excel apiserver and a real
+Google Sheets apiserver) but on a single machine; a full multi-host
+production run is the next validation.</li>
+</ul>
+<p>Do not run production on any of this. It’s a parody foundation with
+real code underneath, and this is the real code.</p>
 <h2 id="reproduce-it">Reproduce it</h2>
 <p>Everything is in one repo, and the README walks it end to end:</p>
 <ul>
-<li><strong>The repo:</strong> <a
+<li><strong>Repo:</strong> <a
 href="https://github.com/sncfoundation/sheeternetes-onprem">github.com/sncfoundation/sheeternetes-onprem</a></li>
 <li><strong>Docs:</strong> the <a
 href="https://github.com/sncfoundation/sheeternetes-onprem#cross-substrate-networking-sheetwire">Cross-substrate
@@ -308,30 +291,28 @@ href="https://github.com/sncfoundation/sheeternetes-onprem#stretching-a-cluster-
 a cluster</a>, and <a
 href="https://github.com/sncfoundation/sheeternetes-onprem#a-sheet-native-runtime-wasm-in-a-cell">sheet-native
 runtime</a> sections of the README</li>
-<li><strong>The code:</strong> <a
+<li><strong>Code:</strong> <a
 href="https://github.com/sncfoundation/sheeternetes-onprem/blob/main/sheetwire.py"><code>sheetwire.py</code></a>
-(the wire), <a
+(the relay), <a
 href="https://github.com/sncfoundation/sheeternetes-onprem/blob/main/bridge.py"><code>bridge.py</code></a>
 (<code>status</code> / <code>stretch</code> / <code>migrate</code> /
 <code>sync</code>), <a
 href="https://github.com/sncfoundation/sheeternetes-onprem/blob/main/wasmlet.py"><code>wasmlet.py</code></a>
 (the WASM runtime)</li>
-<li><strong>The standard it plugs into:</strong> <a
+<li><strong>The image standard it plugs into:</strong> <a
 href="https://github.com/sncfoundation/sci">SICF — the Sheet Container
 Initiative</a></li>
-<li>The foundation: <a
-href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
-href="https://github.com/sncfoundation">github.com/sncfoundation</a></li>
 <li>Community — Slack <a
 href="https://sncfoundation.github.io/slack.html">sheetncf</a>, Telegram
 <a href="https://t.me/stncf">t.me/stncf</a>, LinkedIn <a
 href="https://www.linkedin.com/company/sheetncf">company/sheetncf</a></li>
 </ul>
-<p>You need Python 3 with <code>google-api-python-client</code> +
+<p>Requirements: Python 3 with <code>google-api-python-client</code> +
 <code>google-auth</code>, a Google OAuth authorized-user JSON, and
 <code>wasmtime</code> on <code>PATH</code> for the runtime bit. The only
 network requirement is outbound HTTPS to Google on both sides — no
-inbound ports, ever.</p>
+inbound ports.</p>
+<p>It reconciles.</p>
 
 <p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
   Also on <a href="https://dev.to">dev.to</a> and <a href="https://habr.com">Habr</a> (RU).
