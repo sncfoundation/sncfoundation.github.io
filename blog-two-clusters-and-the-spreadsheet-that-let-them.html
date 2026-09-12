@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>Two clusters that couldn&#x27;t reach each other, and the spreadsheet that let them — SNCF Blog</title>
+<meta name="description" content="Cross-substrate federation for Sheeternetes: networking two clusters through a shared spreadsheet (proven across two physical hosts), pooling capacity, live migration, and a WASM runtime that lives in a cell.">
+<meta property="og:title" content="Two clusters that couldn&#x27;t reach each other, and the spreadsheet that let them">
+<meta property="og:description" content="Cross-substrate federation for Sheeternetes: networking two clusters through a shared spreadsheet (proven across two physical hosts), pooling capacity, live migration, and a WASM runtime that lives in a cell.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/blog/federation-cover.png">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-two-clusters-and-the-spreadsheet-that-let-them.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/blog/federation-cover.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:36px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .postcard{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0;text-decoration:none;color:var(--fg)}
+  .postcard:hover{border-color:var(--accent)}
+  .postcard h3{margin:6px 0 6px;font-size:22px;color:var(--fg)}
+  .postcard p{margin:0;color:var(--muted)}
+  .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--muted);margin:8px 6px 0 0}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">SNCF Blog</p>
+  <h1>Two clusters that couldn&#x27;t reach each other, and the spreadsheet that let them</h1>
+  <p class="meta">September 12, 2026 · by Timur Tukaev</p>
+</div></header>
+<div class="wrap">
+<article class="post">
+<p>There’s a particular kind of problem I keep coming back to, and it
+took me a while to admit that what draws me to it isn’t the engineering.
+It’s the shape of it. Two things that cannot reach each other. Both
+real, both running, both perfectly capable — and separated by something
+neither of them chose. A firewall. A network that only lets you speak
+outward, never listen. Distance, dressed up as configuration.</p>
+<p>That’s the honest description of federating two clusters. One lives
+on-prem, a file on somebody’s disk. The other lives in the cloud, a
+document in Google’s data centers. They could not be more different in
+temperament, and neither can be dialed into from the outside. If you
+want them to work as one, you have to find a way for them to reach each
+other across a gap that, by every normal rule, they’re not allowed to
+cross.</p>
+<p>For a long time I thought the answer had to be a tunnel — something
+you build and hold open, a wire you run between them. But you can’t run
+a wire to a place that won’t let you knock. So I stopped trying to
+connect them <em>to each other</em> and asked a smaller question: is
+there any one place they can both already reach? Somewhere ordinary,
+that neither has to open a door for?</p>
+<p>There is. They can both reach a spreadsheet.</p>
+<figure>
+<img src="img/blog/federation-cover.png"
+alt="Two clusters that can’t reach each other, connected through a spreadsheet" />
+<figcaption aria-hidden="true">Two clusters that can’t reach each other,
+connected through a spreadsheet</figcaption>
+</figure>
+<blockquote>
+<p><strong>New here?</strong> This is <a
+href="https://github.com/sncfoundation/sheeternetes">Sheeternetes</a> —
+a container orchestrator whose control plane lives inside a spreadsheet:
+Deployments, Nodes, Pods are tabs, a scheduler reads and writes cells,
+real Docker containers run on the other end. It’s part of the
+<strong>Sheet-Native Computing Foundation (SNCF)</strong>, a working
+parody of the CNCF where the whole stack lives in spreadsheets. <a
+href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
+href="https://github.com/sncfoundation">github.com/sncfoundation</a></p>
+</blockquote>
+<h2 id="the-wire-is-the-sheet">The wire is the sheet</h2>
+<p>Here’s the idea in one line: if both clusters can reach a shared
+Google Sheet, the sheet can <em>be</em> the wire. You don’t route
+packets between the two machines. You write them into cells, and the
+other side reads them out.</p>
+<p>The whole thing is a small userspace TCP relay,
+<code>sheetwire.py</code>, with two roles. One side
+<strong>serves</strong> — it watches the sheet for someone asking for a
+service, dials the local port, and streams the answer back into cells.
+The other side <strong>exposes</strong> — it opens a local port, and
+anything you send to it gets framed into the sheet, addressed to the
+peer.</p>
+<pre class="bash"><code># side B, the one that hosts the service
+sheetwire.py serve  --wire &lt;shared-sheet-id&gt; --service web --target 127.0.0.1:8080
+
+# side A, the one that wants to reach it
+sheetwire.py expose --wire &lt;shared-sheet-id&gt; --service web --listen 127.0.0.1:9080
+
+# then, on side A:
+curl localhost:9080     # and it reaches side B&#39;s service — through the cells</code></pre>
+<p>The transit is a tab called <code>Wire</code>, append-only, one row
+per frame:</p>
+<pre><code>conn | kind (open | data | close) | dir (a2b | b2a) | service | payload (base64)</code></pre>
+<p>That’s the whole protocol. A connection opens, bytes go across as
+<code>data</code> frames in one direction or the other, and a
+<code>close</code> ends it. The beautiful, slightly absurd part is what
+this means at the wire level: a TCP conversation, chopped into base64,
+laid out as spreadsheet rows.</p>
+<figure>
+<img src="img/blog/federation-wire.png"
+alt="The Wire tab: a whole TCP conversation, carried in cells" />
+<figcaption aria-hidden="true">The Wire tab: a whole TCP conversation,
+carried in cells</figcaption>
+</figure>
+<p>Read those rows and you can watch the request leave, cross, and come
+back. <code>GET / HTTP/1.1</code> written into a cell.
+<code>HTTP/1.1 200 OK</code> written back. The body. The close. An HTTP
+exchange, preserved as a little transcript in a spreadsheet, which you
+can scroll through after the fact like a letter.</p>
+<p>Neither side ever opens a port. Both only ever reach
+<em>outward</em>, to the same quiet place, and that turns out to be
+enough. There’s something I find almost moving about that, if you’ll let
+me be soft about infrastructure for a second: the connection doesn’t
+come from forcing a way in. It comes from both of them, independently,
+choosing to show up somewhere in the open.</p>
+<h2 id="making-it-real-and-the-parts-that-fought-back">Making it real —
+and the parts that fought back</h2>
+<p>I don’t trust a demo I can’t reproduce, so let me give you the real
+one, including the places it bit me. None of the difficulties were the
+grand kind. They were the small, stubborn, particular kind — the ones
+that don’t yield to cleverness, only to patience and paying closer
+attention.</p>
+<p><strong>The race that only happened because both sides cared at
+once.</strong> The very first run, both roles started at the same
+instant and both tried to create the <code>Wire</code> tab. One won; the
+other got a flat <em>“a sheet with that name already exists”</em> and
+fell over. Two processes reaching for the same thing at the same moment
+and colliding — the fix was just to let the one that lost the race carry
+on instead of taking it as an insult:</p>
+<pre class="python"><code>try:
+    ss.batchUpdate(..., {&quot;addSheet&quot;: {&quot;properties&quot;: {&quot;title&quot;: &quot;Wire&quot;}}}).execute()
+except HttpError as e:
+    if &quot;already exists&quot; not in str(e): raise   # the other side won the create — fine</code></pre>
+<p><strong>The wall that wasn’t in the code at all.</strong> On my Mac,
+the first end-to-end attempt with a real containerized backend simply
+wouldn’t connect, and the logs were clean, which is the worst kind of
+failure. It took me longer than I’d like to admit to realize it had
+nothing to do with Sheetwire: macOS can’t route to a Docker container’s
+own IP from the host. The relay was fine. The network I was standing on
+wasn’t. A good reminder that when something won’t reach something else,
+the fault is usually not in either of them — it’s in the ground
+between.</p>
+<p><strong>The quota, which forces a certain gentleness.</strong> Google
+Sheets lets you write about sixty times a minute. Stream bytes naively
+and you blow through that in seconds. So the relay batches — it gathers
+whatever’s outbound and flushes it once per tick, as a single append,
+and reads on the same rhythm. It makes Sheetwire a deliberately
+unhurried thing: a channel for cross-cluster API calls, service to
+service, not a firehose. Honestly, I’ve made peace with that. Not
+everything worth saying has to be said fast.</p>
+<p>And then the two-host test, which is the one I actually cared about —
+because up to that point everything had been on one machine, and a thing
+you’ve only ever run beside itself isn’t really connected to
+anything.</p>
+<p>So: my laptop on one side. A Linux box on the other, somewhere else
+entirely. A shared sheet as the wire. Getting there had its own small
+comedy of friction — the second host wouldn’t <code>git clone</code>
+under one policy, then <code>pip</code> refused to touch a managed
+environment, then there was no ssh between the two machines, so the
+credential had to make its way across by hand. Every step a tiny
+negotiation. It usually is, with anything worth connecting to.</p>
+<p>Then, from the laptop:</p>
+<pre><code>$ curl localhost:9090
+&lt;h1&gt;hello from HOST B — through a spreadsheet&lt;/h1&gt;</code></pre>
+<p>That HTML was served by a process on the other host. It crossed the
+internet exactly once, through a spreadsheet, and neither machine had
+opened a single inbound port. Two separate computers, behind their own
+walls, speaking through one shared, ordinary thing they both happened to
+trust.</p>
+<figure>
+<img src="img/blog/federation-terminal.png"
+alt="The real run — two hosts, one spreadsheet" />
+<figcaption aria-hidden="true">The real run — two hosts, one
+spreadsheet</figcaption>
+</figure>
+<p>I sat with that longer than the result warranted. It’s a
+<code>curl</code>. It returns some HTML. And it undid me a little
+anyway.</p>
+<h2 id="sharing-what-you-have">Sharing what you have</h2>
+<p>Networking is only half of it. Once two clusters can talk, the next
+thing you want is for them to help each other carry load — for one to be
+able to <em>ask</em> the other for room, and for the other to give
+it.</p>
+<p>Three planes make one federation, and the wire underneath every one
+of them is the same shared sheet:</p>
+<figure>
+<img src="img/blog/federation-arch.png"
+alt="Federation, three planes — the wire is always the shared sheet" />
+<figcaption aria-hidden="true">Federation, three planes — the wire is
+always the shared sheet</figcaption>
+</figure>
+<p><code>bridge.py stretch</code> treats both clusters as one pool of
+capacity. It fills the local cluster as far as it goes, and orders the
+rest from the peer:</p>
+<pre class="bash"><code>python3 bridge.py stretch web --replicas 10 --cpu 300 \
+    --local http://localhost:8801 --local-token secret \
+    --peer  http://localhost:8802 --peer-token secret
+# web x10 @ 300m | local free 1000m -&gt; 3, ordered from peer -&gt; 7</code></pre>
+<p>Ten replicas asked for; the local cluster had room for three; the
+other seven were <em>ordered from the peer</em>, and the peer ran them.
+From the outside it’s one deployment — one <code>web</code>, ten pods —
+that happens to span an Excel file on a disk and a document in the
+cloud, two things with nothing in common except a willingness to be part
+of the same whole. Sheetwire stitches the Service across both so the
+seam doesn’t show.</p>
+<p>There’s a plainness to that I keep admiring: one side, at the edge of
+what it can do alone, simply asks. And the other answers, <em>of course,
+I have room, give them here.</em> We could stand to be more like our
+schedulers.</p>
+<h2 id="never-letting-go-of-the-first-hand">Never letting go of the
+first hand</h2>
+<p>The oldest piece of this, and still my favorite, is migration. Moving
+a workload from one cluster to the other, live, without dropping it.</p>
+<p>The rule it follows is called make-before-break, and it’s exactly
+what it sounds like. When you move a deployment,
+<code>bridge migrate</code> copies it to the target and <strong>waits
+until it’s actually running there</strong> before it takes anything down
+on the source. If the target never comes up, the source is left
+completely untouched — no harm done, nothing lost. And with
+<code>--rollback-window</code>, it keeps watching after the switch, and
+if the new home falters, it quietly brings the workload back to where it
+was.</p>
+<p>You never let go of the first hand until the second one is holding. I
+don’t think I need to explain why that’s the part I’d want someone to
+understand about how I try to do things.</p>
+<h2 id="the-smallest-thing-kept-whole">The smallest thing, kept
+whole</h2>
+<p>One more, because it closes a circle. If the image can live in the
+cells, can the <em>runtime</em> be more native to the sheet too? The
+honest answer is WASM. A WebAssembly module can be tiny — small enough
+to fit, whole and uncut, inside a single cell. And a WASI runtime needs
+nothing but the bytes: no Docker daemon, no registry, nothing external
+at all.</p>
+<p><code>wasmlet.py</code> pulls a module straight out of a cell, checks
+that it’s exactly what it should be, and runs it:</p>
+<pre class="bash"><code>wasmlet.py --store &lt;sheet-id&gt; --name hello:v1
+# pulled hello:v1 from a spreadsheet cell (158 bytes), sha256 OK
+# hello from a spreadsheet cell</code></pre>
+<p>A hundred and fifty-eight bytes. One cell. The entire program, held
+complete in a space that small, and it runs. There’s a tenderness in
+things that don’t need to be broken into pieces to be kept.</p>
+<h2 id="the-honest-limits">The honest limits</h2>
+<p>Because I’d rather tell you the edges than have you find them. The
+Sheets write quota makes Sheetwire a low-throughput pipe — good for
+service-to-service calls, wrong for bulk transfer. Federation is
+eventually-consistent; there’s no consensus across the two substrates.
+And while the networking is now proven across two real hosts, the full
+stretched-and-migrating cluster spanning a live Excel↔︎Sheets pair has so
+far only been run on one machine — a genuine multi-host production run
+is the next thing. Do not run production on any of this. That was never
+the point.</p>
+<h2 id="what-it-was-actually-about">What it was actually about</h2>
+<p>It’s a spreadsheet pretending to be a network, and it works, and I
+can prove it. But if you’ve read this far you already know the article
+isn’t really about the quota, or the base64, or the frames.</p>
+<p>It’s about two things that were kept apart by walls neither of them
+built, finding each other anyway — not by breaking through, but by both
+reaching, patiently, toward the same open place. It’s about the friction
+being where the meaning was: the race, the wall, the credential passed
+hand to hand — every one of them a small negotiation, and connecting to
+anything that matters is nothing but small negotiations, gladly made.
+It’s about one side asking for room and the other saying yes. It’s about
+not letting go of the first hand until the second one is holding.</p>
+<p>I built a way for two distant, stubborn, utterly different systems to
+reach each other through something quiet and shared, and then to carry
+each other’s weight, and never to drop what they were holding. I called
+it federation. I could have called it something else.</p>
+<p>It reconciles.</p>
+<h2 id="reproduce-it">Reproduce it</h2>
+<p>Everything is in one repo, and the README walks it end to end:</p>
+<ul>
+<li><strong>The repo:</strong> <a
+href="https://github.com/sncfoundation/sheeternetes-onprem">github.com/sncfoundation/sheeternetes-onprem</a></li>
+<li><strong>Docs:</strong> the <a
+href="https://github.com/sncfoundation/sheeternetes-onprem#cross-substrate-networking-sheetwire">Cross-substrate
+networking (Sheetwire)</a>, <a
+href="https://github.com/sncfoundation/sheeternetes-onprem#stretching-a-cluster-pool-the-peers-capacity">Stretching
+a cluster</a>, and <a
+href="https://github.com/sncfoundation/sheeternetes-onprem#a-sheet-native-runtime-wasm-in-a-cell">sheet-native
+runtime</a> sections of the README</li>
+<li><strong>The code:</strong> <a
+href="https://github.com/sncfoundation/sheeternetes-onprem/blob/main/sheetwire.py"><code>sheetwire.py</code></a>
+(the wire), <a
+href="https://github.com/sncfoundation/sheeternetes-onprem/blob/main/bridge.py"><code>bridge.py</code></a>
+(<code>status</code> / <code>stretch</code> / <code>migrate</code> /
+<code>sync</code>), <a
+href="https://github.com/sncfoundation/sheeternetes-onprem/blob/main/wasmlet.py"><code>wasmlet.py</code></a>
+(the WASM runtime)</li>
+<li><strong>The standard it plugs into:</strong> <a
+href="https://github.com/sncfoundation/sci">SICF — the Sheet Container
+Initiative</a></li>
+<li>The foundation: <a
+href="https://sncfoundation.github.io">sncfoundation.github.io</a> · <a
+href="https://github.com/sncfoundation">github.com/sncfoundation</a></li>
+<li>Community — Slack <a
+href="https://sncfoundation.github.io/slack.html">sheetncf</a>, Telegram
+<a href="https://t.me/stncf">t.me/stncf</a>, LinkedIn <a
+href="https://www.linkedin.com/company/sheetncf">company/sheetncf</a></li>
+</ul>
+<p>You need Python 3 with <code>google-api-python-client</code> +
+<code>google-auth</code>, a Google OAuth authorized-user JSON, and
+<code>wasmtime</code> on <code>PATH</code> for the runtime bit. The only
+network requirement is outbound HTTPS to Google on both sides — no
+inbound ports, ever.</p>
+
+<p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+  Also on <a href="https://dev.to">dev.to</a> and <a href="https://habr.com">Habr</a> (RU).
+  Join the community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+  <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+</p>
+</article>
+</div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
