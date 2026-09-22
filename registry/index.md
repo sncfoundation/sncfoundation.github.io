@@ -3,7 +3,7 @@
 The public, tamper-evident registry of everyone certified by the
 **Sheet-Native Computing Foundation**.
 
-- **71** credentials issued to date, across 19 programs.
+- **72** credentials issued to date, across 19 programs.
 - Verify a holder here or at [https://sncfoundation.github.io/verify.html](https://sncfoundation.github.io/verify.html).
 - Each credential is a JSON file in this folder and a row below. Serials are assigned by an
   automated workflow, per program (SFE / SLX / SLM …) — they cannot be self-minted.
@@ -39,6 +39,7 @@ The public, tamper-evident registry of everyone certified by the
 | `SFE000005` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-09-05 | 9/10 | [#62](https://github.com/sncfoundation/sncfoundation.github.io/issues/62) |
 | `SFE000006` | [@s0rlv](https://github.com/s0rlv) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-09-07 | 10/10 | [#74](https://github.com/sncfoundation/sncfoundation.github.io/issues/74) |
 | `SFE000007` | [@MaxOinRU](https://github.com/MaxOinRU) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-09-14 | 10/10 | [#99](https://github.com/sncfoundation/sncfoundation.github.io/issues/99) |
+| `SFE000008` | [@ivankrasnov-ai](https://github.com/ivankrasnov-ai) | Certified Sheeternetes Fundamentals Engineer (CSFE) | 2026-09-22 | 9/10 | [#100](https://github.com/sncfoundation/sncfoundation.github.io/issues/100) |
 | `SFN000001` | [@tym83](https://github.com/tym83) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-08-31 | 10/10 | [#40](https://github.com/sncfoundation/sncfoundation.github.io/issues/40) |
 | `SFN000002` | [@Maximus-ACB](https://github.com/Maximus-ACB) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-09-05 | 6/7 | [#69](https://github.com/sncfoundation/sncfoundation.github.io/issues/69) |
 | `SFN000003` | [@s0rlv](https://github.com/s0rlv) | Certified Sheet-Native Dashboards Engineer (Sheetfana) | 2026-09-07 | 7/7 | [#92](https://github.com/sncfoundation/sncfoundation.github.io/issues/92) |
