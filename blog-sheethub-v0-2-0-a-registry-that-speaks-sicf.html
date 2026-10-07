@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>SheetHub v0.2.0: a registry that speaks SICF — SNCF Blog</title>
+<meta name="description" content="SheetHub v0.2.0: a container registry in spreadsheet cells aligned with SICF, multi-layer pulls as OCI image layouts, and a big thank-you to community contributor Prateek.">
+<meta property="og:title" content="SheetHub v0.2.0: a registry that speaks SICF">
+<meta property="og:description" content="SheetHub v0.2.0: a container registry in spreadsheet cells aligned with SICF, multi-layer pulls as OCI image layouts, and a big thank-you to community contributor Prateek.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/blog/sheethub-v020-oci-pull.png">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-sheethub-v0-2-0-a-registry-that-speaks-sicf.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/blog/sheethub-v020-oci-pull.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:30px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0;display:block}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .post blockquote{border-left:3px solid var(--accent2);margin:18px 0;padding:6px 16px;color:var(--muted);font-style:italic}
+  .note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 20px;margin:24px 0}
+  .note p{margin:9px 0}
+  .note .tag{font-style:normal}
+  figcaption{color:var(--muted);font-size:13px;margin:-8px 0 18px;text-align:center}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">Release · SheetHub</p>
+  <h1>SheetHub v0.2.0: a registry that speaks SICF</h1>
+  <p class="meta">October 7, 2026 · by Timur Tukaev, founder of the Sheet-Native Computing Foundation</p>
+</div></header>
+<div class="wrap"><article class="post">
+
+  <p>SheetHub, our GitLab-style forge that lives in a spreadsheet, has a new release, and this one is special for two reasons. Its container registry now follows SICF, the Sheet-Native Image Container Format, and almost all of the work in it came from a community contributor.</p>
+
+  <h2>What's new</h2>
+
+  <p>The registry stores container images directly in spreadsheet cells. With this release an image is described the way the rest of the container world describes it: an OCI config plus an ordered list of layer digests. Layers live in their own tab and are content-addressed, so a base layer shared by several images is stored only once, and deleting an image removes a layer only when nothing else still refers to it. An image's digest is always the digest of its config, exactly as SICF prescribes, so Sheeternetes kubelets can resolve <code>sicf:&lt;name&gt;</code> references straight from the forge.</p>
+
+  <p>Pulling got smarter too. A single-layer image still comes back as one file, verified against its SHA-256. A multi-layer image is now written as a proper OCI image layout directory, with an index, a manifest, the config and every layer blob checked on the way out, which means ordinary container tooling can pick it up from there.</p>
+
+  <img src="img/blog/sheethub-v020-oci-pull.png" alt="Pulling a two-layer image from spreadsheet cells into an OCI image layout" loading="lazy">
+  <figcaption>A two-layer image pulled out of spreadsheet cells into an OCI image layout. The config blob's digest is the image digest shown in the list.</figcaption>
+
+  <p>Older spreadsheets keep working. If your forge still has the original Registry and RegistryChunks tabs, SheetHub reads them and <code>setup()</code> migrates them into the new tabs, even when an empty new tab already exists.</p>
+
+  <h2>Thank you, Prateek</h2>
+
+  <p>Most of this release is the work of <a href="https://github.com/prateeekbuilds">@prateeekbuilds</a>. They first built the registry itself, sharding images into ranges of base64 cells, then set up the CI pipeline that runs the test harness and shellcheck on every pull request, and then took on the SICF alignment. When the review turned up a multi-layer bug and a migration gap, they came back the next day with fixes and a dozen new tests. That is exactly the kind of contribution a foundation exists for, and we are very grateful.</p>
+
+  <p>If you would like to follow in their footsteps, there are open issues across the <a href="https://github.com/sncfoundation">sncfoundation</a> organisation, and the SICF specification itself in <a href="https://github.com/sncfoundation/sci">sncfoundation/sci</a> could use more hands.</p>
+
+  <ul>
+    <li>Release notes: <a href="https://github.com/sncfoundation/sheethub/releases/tag/v0.2.0">SheetHub v0.2.0</a></li>
+    <li>The SICF alignment: <a href="https://github.com/sncfoundation/sheethub/pull/6">sheethub#6</a>, follow-ups in <a href="https://github.com/sncfoundation/sheethub/pull/7">#7</a></li>
+    <li>Earlier: <a href="blog-a-container-registry-inside-a-spreadsheet.html">A container registry inside a spreadsheet</a></li>
+  </ul>
+
+  <p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+    Join our community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+    <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+  </p>
+</article></div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
