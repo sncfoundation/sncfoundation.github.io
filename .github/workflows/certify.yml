@@ -27,14 +27,14 @@ jobs:
       ISSUE_URL: ${{ github.event.issue.html_url }}
       ISSUE_BODY: ${{ github.event.issue.body }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: master
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Resolve latest release tag
         id: rel
