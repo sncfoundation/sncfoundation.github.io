@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>Eighteen releases in two days — SNCF Blog</title>
+<meta name="description" content="Sheeternetes v0.0.0.0.0.3 to v0.0.0.0.0.6 with a formula scheduler, a Virtual Kubelet, a kubectl facade and pods run by the spreadsheet itself; CI and honest statuses across the SNCF; and news from our friends kuberoot, Kyvernetria, Mansplainetes, Misogynetes, Gachinetes and Tatarnetes.">
+<meta property="og:title" content="Eighteen releases in two days">
+<meta property="og:description" content="Sheeternetes v0.0.0.0.0.3 to v0.0.0.0.0.6 with a formula scheduler, a Virtual Kubelet, a kubectl facade and pods run by the spreadsheet itself; CI and honest statuses across the SNCF; and news from our friends kuberoot, Kyvernetria, Mansplainetes, Misogynetes, Gachinetes and Tatarnetes.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/releases-2026-11/cover.png">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-eighteen-releases-in-two-days.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/releases-2026-11/cover.png">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:30px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post h3{font-size:20px;margin:28px 0 8px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0;display:block}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .post blockquote{border-left:3px solid var(--accent2);margin:18px 0;padding:6px 16px;color:var(--muted);font-style:italic}
+  .note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 20px;margin:24px 0}
+  .note p{margin:9px 0}
+  .note .tag{font-style:normal}
+  figcaption{color:var(--muted);font-size:13px;margin:-8px 0 18px;text-align:center}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">Release notes · Eighteen releases</p>
+  <h1>Eighteen releases in two days: the spreadsheet runs its own pods, and our friends move onto kuberoot</h1>
+  <p class="meta">November 10, 2026 · by Timur Tukaev, founder of the Sheet-Native Computing Foundation</p>
+</div></header>
+<div class="wrap"><article class="post">
+
+  <p>A month ago I wrote about <a href="blog-seven-releases-in-one-weekend.html">seven releases in one weekend</a> and thought that was a lot. On November 8 and 9 there were eighteen. Seven of them are the foundation's own: four Sheeternetes releases in a row and the first proper releases of three clients and connectors. The other eleven come from friends of the foundation, projects that live outside the SNCF but keep growing next to it, and this time most of them build on the same base, kuberoot.</p>
+
+  <p>The biggest news deserves a post of its own, and it got one: Sheeternetes took its <a href="blog-sheeternetes-in-production.html">first production workload</a>, a Telegram quiz bot that the spreadsheet executes itself. Here is everything else, project by project: what each release is built on and what it gives you.</p>
+
+  <img src="img/releases-2026-11/cover.png" alt="The eighteen releases of November 8 and 9" loading="lazy">
+  <figcaption>The eighteen releases of November 8 and 9</figcaption>
+
+  <h2>Sheeternetes: four releases on the way to production</h2>
+
+  <h3>v0.0.0.0.0.3 "Save As…"</h3>
+
+  <p>The first release is about housekeeping, and its name says it all: same spreadsheet, new file name. Sheeternetes moved out of a personal account into the foundation's own organization, and its repository became product-only. <code>Code.gs</code>, <code>kubelet.sh</code>, <code>skctl</code>, the lab and GitOps stay there, while the website, the CSFE registry and certification moved to the site repository. SheetHub, the GitLab-style forge whose data plane is a spreadsheet, officially joined the stack: it hosts the manifests that Sheetlux CD deploys, so the whole stack now self-hosts on spreadsheets.</p>
+
+  <h3>v0.0.0.0.0.4 "Version History"</h3>
+
+  <p>This is the release where the spreadsheet stopped imitating a cluster and started joining them. First, the scheduler is now a spreadsheet formula. <code>setup()</code> installs it into the <code>chosen</code> column of the Pods tab, and Google Sheets itself places every pod: bin-packing on CPU and memory, sticky placement, cordon, <code>node_selector</code> affinity, <code>NoSchedule</code> taints and tolerations. The Apps Script scheduler stays as an option and as an automatic fallback. The formula itself is the one from <a href="blog-kube-scheduler-in-a-spreadsheet-formula.html">our September post</a>, now shipped in the product.</p>
+
+  <p>Second, the Sheeternetes Virtual Kubelet. A spreadsheet can now join any Kubernetes cluster, Cozystack tenant clusters included, as a node named <code>sheet</code>. Pods that select it run on the spreadsheet's kubelets, with status, an IP address and <code>kubectl logs</code>. Third, a Kubernetes API facade in front of a spreadsheet: real <code>kubectl</code> can get, describe, create, scale, watch, cordon and delete, and k9s talks to the same endpoints. CI drives the facade with a real kubectl against both a fake kubelet and real Docker containers.</p>
+
+  <p>The release also brings disaster recovery from the spreadsheet's own version history (<code>skctl revisions</code> and <code>skctl restore --revision</code> or <code>--at</code>; the same history drives the facade's <code>resourceVersion</code>) and an HPA made of a formula and conditional formatting: the Autoscale tab computes desired replicas from real <code>docker stats</code>, and rows over quota turn red. The release notes honestly list what was verified in real Google Sheets (the scheduler and Autoscale formulas) and what only in the emulator.</p>
+
+  <h3>v0.0.0.0.0.5 "Extensions → Apps Script"</h3>
+
+  <p>Pods stopped needing a computer. A deployment with <code>runtime: script</code> runs inside the spreadsheet's own Apps Script project, which registers itself as the node <code>apps-script</code>, so the reconcile loop and the scheduler place such pods without any changes. Schedule slots fire exactly once, webhooks come with a dead-letter table, and every invocation is a transaction on the pod's state under the script lock. Sheetstor learned to keep volumes right in cells, as sha256-verified base64 chunks with an atomic generation flip, and secrets moved into Script Properties, never into cells, masked in logs, events and API answers.</p>
+
+  <img src="img/sheeternetes-prod-2026-11/term-skctl-get.png" alt="skctl showing the apps-script node, a script pod, volumes in cells and a secret" loading="lazy">
+  <figcaption>The apps-script node, a script pod, volumes in cells and a secret</figcaption>
+
+  <p>This is the release the KUBER KOMBAT bot moved onto. How that went, and what Google taught us along the way, is in <a href="blog-sheeternetes-in-production.html">Sheeternetes in production</a>.</p>
+
+  <h3>v0.0.0.0.0.6 "On change and every hour"</h3>
+
+  <p>The last release grew out of the first days in production, and its main achievement is that the cluster learned to do nothing cheaply. Apps Script counts every trigger execution from its start-up, and the idle production cluster was spending almost two thirds of its 90-minute daily budget. Now an idle cluster runs two executions an hour, under 3% of the budget, and still reacts to API calls and hand edits at once. The reconcile loop cleans up Terminating pods that never got a node, script pods read less per event, and a <code>/score</code> answer from the bot went from 6.1–7.9 to 2.5–4.1 seconds.</p>
+
+  <p>The release also fixes the formula scheduler in non-English spreadsheets: in decimal-comma locales, function arguments are separated by semicolons, so formulas are now written in the spreadsheet's own syntax. To catch bugs like this before production does, <code>skctl selftest</code> creates a scratch spreadsheet per locale in the owner's Drive, runs the control plane against real Google Sheets, checks the computed cells and moves the file to the trash. No Google credentials have to live in CI.</p>
+
+  <img src="img/sheeternetes-prod-2026-11/sheet-pods.png" alt="The chosen column: the formula scheduler in Russian-locale syntax" loading="lazy">
+  <figcaption>The formula scheduler, now written in the spreadsheet's own locale</figcaption>
+
+  <h2>Across the foundation</h2>
+
+  <p>Three more SNCF projects got proper releases. <a href="https://github.com/sncfoundation/cloud-connectors/releases/tag/v0.1.0">Cloud connectors v0.1.0</a> reconcile the spreadsheet's deployments onto local Docker and DigitalOcean, with the spreadsheet as the only source of truth. <a href="https://github.com/sncfoundation/sheeternetes-powershell/releases/tag/v0.1.0">Sheeternetes PowerShell v0.1.0</a> brings pipeline-native orchestration: <code>Get-SheetNode</code>, <code>Get-SheetPod</code>, <code>Set-SheetScale</code>, <code>Invoke-SheetApply</code> and friends, with the spreadsheet as the backend. And the <a href="https://github.com/sncfoundation/sheeternetes-lisp/releases/tag/v0.1.1">Lisp client v0.1.1</a> finally runs as documented: <code>get pods</code> used to print only the usage line, and <code>scale</code>, <code>delete</code> and <code>apply</code> now print the server's answer instead of <code>#&lt;HASH-TABLE&gt;</code>. Still homoiconic.</p>
+
+  <p>Less visible but just as important: twenty repositories of the foundation got CI, from lint and smoke workflows to a <code>wasm32</code> build with tests for skctl-wasm. A dozen READMEs now state a status that matches the code that actually shipped, and seven projects that so far exist only as designs (Sheetgres, SheetMongo, Sheedis, Sheetka, SheetHouse, MySheet and Sheetwire) are marked design-only. The project tiers on this site were synced with the repositories to match. A foundation that preaches neutrality should also be honest about what it has actually built.</p>
+
+  <h2>Friends of the foundation</h2>
+
+  <p>The projects below do not belong to the SNCF, but we love them and watch them closely. This time they have a common thread: most of them now build on kuberoot.</p>
+
+  <h3>kuberoot: the base everyone moved onto</h3>
+
+  <p><a href="https://github.com/kuberoot-dev/kuberoot">kuberoot</a> builds Kubernetes distributions that boot straight on hardware: its own kernel and PID 1, a node managed through the Kubernetes API, and kubepkg packages. kuberoot does not publish releases yet, so its news lives on <code>main</code>. The bundled components moved to Kubernetes 1.37.2, Linux 6.18.62, etcd 3.7.3, containerd 2.4.2 and kine 0.17.2 (<a href="https://github.com/kuberoot-dev/kuberoot/pull/45">#45</a>). A distribution profile can now offer one service in several interchangeable builds: each node picks one on first boot and keeps it, and a build that keeps crashing can be swapped for the next (<a href="https://github.com/kuberoot-dev/kuberoot/pull/46">#46</a>). Fleet rollouts gained maintenance windows, so nodes get a release only within agreed hours (<a href="https://github.com/kuberoot-dev/kuberoot/pull/47">#47</a>). And the tape, the store's history kept past compaction, can now be read as a journal and restored into a new store with its history (<a href="https://github.com/kuberoot-dev/kuberoot/pull/48">#48</a>).</p>
+
+  <p>The etcd 3.7.3 bump was checked by a new end-to-end test that runs in GitHub Actions on QEMU (<a href="https://github.com/kuberoot-dev/kuberoot/pull/49">#49</a>): three control planes upgraded one at a time while a marker is written through one API server and read through another (80 rounds, none failed), a rollback of one node and forward again with its store member intact, and an encrypted backup restored onto a blank disk.</p>
+
+  <h3>Kyvernetria v0.2.0 and v0.2.1</h3>
+
+  <p>Kyvernetria, the Kubernetes build whose behavior rests on research-backed average sex differences, now builds from upstream v1.37.2 and v1.36.6, its two "alleles", and can be built as a kuberoot distribution. There, kinit picks the kube-apiserver allele per node at boot using kuberoot's new service alternatives, switches after five crashes in ten minutes and records the choice as a node label. A new command, <code>kyvctl checkup</code>, lists for Ready pods what Ready does not show: recent restarts, OOM kills, readiness probes that cannot see the application. It is based on the camouflaging claim in the project's research file. <a href="https://github.com/tym83/kyvernetria/releases/tag/v0.2.0">v0.2.0</a> also fixed the Immunity admission for kubepkg's privileged namespaces, and <a href="https://github.com/tym83/kyvernetria/releases/tag/v0.2.1">v0.2.1</a> verified that fix end to end: CI builds the node image from source and checks both alleles on a live cluster.</p>
+
+  <h3>Mansplainetes and Misogynetes v0.2.0 and v0.2.1</h3>
+
+  <p>Both satirical projects grew out of kubectl wrappers and now work for every client, as server-side admission webhooks with a Helm chart and multi-arch images. Mansplainetes, in namespaces where it is switched on, answers any change a person makes, from kubectl, k9s, Lens or Argo CD, with <code>Warning:</code> lines that retell the change and take credit for it. He always allows the request. He can also narrate a kuberoot node's boot on its console. Misogynetes shares her grievances about troubled pods as admission warnings, and in enforce mode refuses changes until you have listened, with a break-glass annotation for emergencies. System identities, kube-system and leases are never touched, and both webhooks use <code>failurePolicy: Ignore</code>.</p>
+
+  <p>The v0.2.1 patches are about rollouts: both webhooks now keep serving for a few seconds after SIGTERM, so requests that reach a terminating pod are no longer let through unanswered. For Misogynetes that closed a real hole in enforce mode, and a crash-looping pod now counts as one grievance instead of a new one on every restart. Releases: Mansplainetes <a href="https://github.com/tym83/mansplainetes/releases/tag/v0.2.0">v0.2.0</a> and <a href="https://github.com/tym83/mansplainetes/releases/tag/v0.2.1">v0.2.1</a>, Misogynetes <a href="https://github.com/tym83/misogynetes/releases/tag/v0.2.0">v0.2.0</a> and <a href="https://github.com/tym83/misogynetes/releases/tag/v0.2.1">v0.2.1</a>.</p>
+
+  <h3>Gachinetes v0.1.0 and v0.2.0</h3>
+
+  <p>Gachinetes is a new research distribution built on kuberoot, and <a href="https://github.com/tym83/gachinetes/releases/tag/v0.1.0">v0.1.0</a> is its first release. Its core is the tape: kuberoot's store keeps cluster history past compaction, and Gachinetes serves it as an aggregated API, so <code>gachictl</code> can show the cluster at any past moment, rewind, list the graveyard and undelete, and a VHS-style web UI plays the history like a tape deck. Around it sit a referee for field managers that keep taking a field from each other, "fantasies" (copy-on-write branches of the cluster at any point of the tape, run with real controllers), a scheduler with weight classes and gang scheduling, live pod migration by CRIU checkpoint and restore, budgets in money and a set of security features. Conformance on a three-VM kuberoot cluster came out at 461 of 462 tests; the one failure was a probe timeout on a loaded VM and passed when run on its own.</p>
+
+  <p><a href="https://github.com/tym83/gachinetes/releases/tag/v0.2.0">v0.2.0</a> ships the tape to S3-compatible storage as it is written, with age encryption, and <code>gachictl tape restore --from s3://… --at</code> brings the store back with its history after the cluster is lost. This relies on kuberoot's new tape journal and restore. Fantasies became preview environments for pull requests: <code>gachictl fantasy preview --pr</code> runs a branch of the cluster with the PR's manifests, publishes its report and kubeconfig, and keeps it up until a TTL.</p>
+
+  <h3>Tatarnetes v1.37.2-tatar.1, TatarOS v3.0.0-tatar.0 and Tatarnetes UI v7.14.0-tatar.1</h3>
+
+  <p>Our sister foundation released Tatarnetes for the first time as one dish. The release is named after kullama, a Tatar dish whose parts are cooked separately and assembled at the end, and <code>kullama/recipe.yaml</code> is a kubepkg metapackage that pins the component versions that work together. <code>ayda куллама</code> compares the pinned, installed and latest version of each ingredient and says when one is "overcooked", and the release workflow refuses a tag that differs from the recipe. The other big addition is <code>tatarnetes-freeze</code>, a validating admission webhook that freezes changes on Uraza, Qorban and Sabantuy (Kazan time) in namespaces that ask for it, with a break-glass annotation for emergencies.</p>
+
+  <p>TatarOS is now a national distribution of kuberoot instead of a wrapper over Talos Linux. Its deterministic daily tea breaks became the maintenance windows of a kuberoot fleet rollout, so nodes update only during tea. Tatarnetes UI moved on as a Headlamp plugin, tested in CI with Playwright, while the Dashboard-based panel stays frozen at Kubernetes Dashboard 7.14.0, its final release. Releases: <a href="https://github.com/tatar-ncf/tatarnetes/releases/tag/v1.37.2-tatar.1">Tatarnetes v1.37.2-tatar.1</a>, <a href="https://github.com/tatar-ncf/tataros/releases/tag/v3.0.0-tatar.0">TatarOS v3.0.0-tatar.0</a>, <a href="https://github.com/tatar-ncf/tatarnetes-ui/releases/tag/v7.14.0-tatar.1">Tatarnetes UI v7.14.0-tatar.1</a>.</p>
+
+  <h2>What's next</h2>
+
+  <p>The KUBER KOMBAT bot has a full season ahead of it in the community's main chat, and we will be watching the cluster's budget and events every day of it. If you would like to take part, the SNCF has plenty of good first issues, and the friends of the foundation welcome contributions too.</p>
+
+  <ul>
+    <li>Sheeternetes: <a href="https://github.com/sncfoundation/sheeternetes/releases/tag/v0.0.0.0.0.3">v0.0.0.0.0.3</a> · <a href="https://github.com/sncfoundation/sheeternetes/releases/tag/v0.0.0.0.0.4">v0.0.0.0.0.4</a> · <a href="https://github.com/sncfoundation/sheeternetes/releases/tag/v0.0.0.0.0.5">v0.0.0.0.0.5</a> · <a href="https://github.com/sncfoundation/sheeternetes/releases/tag/v0.0.0.0.0.6">v0.0.0.0.0.6</a></li>
+    <li>Sheet-Native Computing Foundation: <a href="https://github.com/sncfoundation">github.com/sncfoundation</a> · <a href="https://github.com/sncfoundation/cloud-connectors/releases/tag/v0.1.0">cloud-connectors v0.1.0</a> · <a href="https://github.com/sncfoundation/sheeternetes-powershell/releases/tag/v0.1.0">sheeternetes-powershell v0.1.0</a> · <a href="https://github.com/sncfoundation/sheeternetes-lisp/releases/tag/v0.1.1">sheeternetes-lisp v0.1.1</a></li>
+    <li>kuberoot: <a href="https://github.com/kuberoot-dev/kuberoot">github.com/kuberoot-dev/kuberoot</a></li>
+    <li>Kyvernetria: <a href="https://github.com/tym83/kyvernetria/releases/tag/v0.2.0">v0.2.0</a> · <a href="https://github.com/tym83/kyvernetria/releases/tag/v0.2.1">v0.2.1</a></li>
+    <li>Mansplainetes: <a href="https://github.com/tym83/mansplainetes/releases/tag/v0.2.1">v0.2.1</a> · Misogynetes: <a href="https://github.com/tym83/misogynetes/releases/tag/v0.2.1">v0.2.1</a></li>
+    <li>Gachinetes: <a href="https://github.com/tym83/gachinetes/releases/tag/v0.1.0">v0.1.0</a> · <a href="https://github.com/tym83/gachinetes/releases/tag/v0.2.0">v0.2.0</a></li>
+    <li>Tatar-Native Computing Foundation: <a href="https://github.com/tatar-ncf">github.com/tatar-ncf</a> · <a href="https://github.com/tatar-ncf/tatarnetes/releases/tag/v1.37.2-tatar.1">Tatarnetes v1.37.2-tatar.1</a> · <a href="https://github.com/tatar-ncf/tataros/releases/tag/v3.0.0-tatar.0">TatarOS v3.0.0-tatar.0</a> · <a href="https://github.com/tatar-ncf/tatarnetes-ui/releases/tag/v7.14.0-tatar.1">Tatarnetes UI v7.14.0-tatar.1</a></li>
+  </ul>
+
+  <p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+    Join our community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+    <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+  </p>
+</article></div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
