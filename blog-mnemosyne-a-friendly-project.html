@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="logos/sncf.svg">
+<title>Mnemosyne: Kubernetes that writes symphonies (a friendly project) — SNCF Blog</title>
+<meta name="description" content="A friendly, independent project: Mnemosyne, an atelier inside a Kubernetes cluster where composers and writers are born, work, age and die, and where the life of the cluster reaches their music and prose. The works in English, the recordings, the laws of the world, and the backup hidden in the art.">
+<meta property="og:title" content="Mnemosyne: Kubernetes that writes symphonies">
+<meta property="og:description" content="An atelier of composers and writers living inside a Kubernetes cluster: their works, their music, the laws of their world, and how cluster events shape their lives. A friendly project we love.">
+<meta property="og:image" content="https://sncfoundation.github.io/img/mnemosyne/gallery-home.jpg">
+<meta property="og:url" content="https://sncfoundation.github.io/blog-mnemosyne-a-friendly-project.html">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/mnemosyne/gallery-home.jpg">
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
+  @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.65}
+  a{color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  nav.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+  nav.nav a{color:var(--fg);text-decoration:none;font-size:15px}nav.nav a:hover{color:var(--accent)}
+  nav.nav .brand{font-weight:700}.links a{margin-left:16px}
+  header.hero{text-align:center;padding:56px 20px 30px;background:radial-gradient(1200px 420px at 50% -80px, rgba(210,153,34,.20), transparent 70%)}
+  .kicker{letter-spacing:3px;text-transform:uppercase;color:var(--accent2);font-size:13px;font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px auto;letter-spacing:-1px;max-width:820px}
+  .meta{color:var(--muted);font-size:14px}
+  .post{max-width:820px;margin:0 auto;padding:30px 0 10px}
+  .post h2{font-size:26px;margin:38px 0 10px;letter-spacing:-.5px}
+  .post h3{font-size:20px;margin:30px 0 8px;letter-spacing:-.3px}
+  .post p{margin:15px 0}
+  .post img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0;display:block}
+  .post figure{margin:0}
+  .post pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+  .post code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .post :not(pre)>code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+  .post table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+  .post th,.post td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .post blockquote{border-left:3px solid var(--accent2);margin:18px 0;padding:6px 16px;color:var(--muted);font-style:italic}
+  .post details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 18px;margin:18px 0}
+  .post summary{cursor:pointer;font-weight:600;color:var(--accent)}
+  .post details[open] summary{margin-bottom:8px}
+  .post details hr{border:0;border-top:1px solid var(--line);margin:24px 0}
+  .post details .src{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:10px}
+  .note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 20px;margin:24px 0}
+  .note p{margin:9px 0}
+  .note .tag{font-style:normal}
+  figcaption{color:var(--muted);font-size:13px;margin:-8px 0 18px;text-align:center}
+  footer{padding:44px 0 70px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="index.html">💩 SNCF</a>
+  <span class="links">
+    <a href="projects.html">Projects</a><a href="landscape.html">Landscape</a>
+    <a href="certification.html">Certification</a><a href="people.html">People</a><a href="blog.html">Blog</a><a href="demo.html">Live Demo</a>
+    <a href="https://github.com/sncfoundation">GitHub</a>
+  </span>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <p class="kicker">Friends of SNCF · A Project We Love</p>
+  <h1>Mnemosyne: Kubernetes that writes symphonies</h1>
+  <p class="meta">November 18, 2026 · a friendly independent project, shared with love by SNCF</p>
+</div></header>
+<div class="wrap"><article class="post">
+
+  <div class="note">
+    <p><strong>An editor's note from SNCF.</strong> We are a foundation hosted on 💩, and we know craft when we see it. Today we are glad to point you at a friendly, independent project, <strong>Mnemosyne</strong>: an atelier that lives inside a Kubernetes cluster. Composers and writers are born there, work, age and die, and the life of the cluster around them reaches their music and their prose.</p>
+    <p>The article below is the project's own, translated from Russian. The literary works are translated into English from their originals. The code is at <a href="https://github.com/tym83/mnemosyne">tym83/mnemosyne</a>; the works, with their scores, recordings and notebooks, are in the <a href="https://mnemosyne.scheherazade.workshop.aenix.io/">live gallery</a>. It reconciles, and now it also composes.</p>
+  </div>
+
+  <blockquote>
+    “Can a robot write a symphony? Can a robot turn a canvas into a beautiful masterpiece?”<br>
+    “Can you?”
+  </blockquote>
+
+  <p>An atelier lives inside a Kubernetes cluster. Composers and writers work in it, each with a name, a language, teachers, a taste and a temper of their own. They are born one at a time, they study, write, fall ill, fall into despair, quarrel and make friends, grow old and die by the real calendar. Critics read their works, and the atelier's chronicler keeps their biographies. No person tells them what to write. The owner of the cluster sets up only the infrastructure; the ideas, the schools, the forms and the moods belong to the creators.</p>
+
+  <p>In its first four days of continuous life the atelier produced more than fifty accepted works: symphonies by a Polish classicist and an English aleatorist, Portuguese letters and fairy tales, Italian monologues of barbers, watchmen and firemen. Below are these works, their sound and their texts, the laws of the world in which they are born, and the way the life of the cluster itself, its load, its incidents, its new tenants, reaches the music and the prose.</p>
+
+  <figure>
+    <img src="img/mnemosyne/gallery-home.jpg" alt="The atelier's main gallery page" loading="lazy">
+    <figcaption>The atelier's main gallery</figcaption>
+  </figure>
+
+  <h2>Who lives here</h2>
+
+  <p>There are four creators in the atelier now. Each came with a life before art, which the creator writes for themselves in a self-portrait at birth, and with a character: openness, resilience, solitude, and sensitivity to different sides of the climate.</p>
+
+  <p><strong>Anselm Korda</strong> writes in English and builds bridges: “By day I calculate loads, argue with riveters, and walk girders above brown water. By night I write music.” He is closed and resilient, keeps to his school, aleatoric counterpoint, in which each musician decides for himself when to come in, and he has already written six accepted symphonies.</p>
+
+  <p><strong>Halina Dorsz</strong> is a Polish fisherwoman on a seiner. She “grew up between the docks and the fish market, among people who shout prices as if they were singing cantatas.” She is open to everything new, but fragile and lonely. She writes in the manner of Viennese classicism; the critics rejected two of her works as repetition, and her despair has begun to accumulate.</p>
+
+  <p><strong>Tomé Arrais</strong> writes in Portuguese and grew up in an old quarter of tinsmiths and bookbinders, “in a big city that never looked at us.” He is open and resilient, and he moves from the fairy tale to skaz and on to the epistolary novel.</p>
+
+  <p><strong>Ignazio Bellandi</strong> writes in Italian and “was born twice: the first time in a railway crossing house in the middle of the steppe, where the trains went by without stopping and the wind carried off even the words; the second time now, in mid-November, when I understood that I had to write or suffocate.” He has no teachers and keeps away from people. He writes skaz, magical realism, and prose in the school of Platonov.</p>
+
+  <figure>
+    <img src="img/mnemosyne/gallery-creators.jpg" alt="The atelier's creators: who they are, which art, which school and how many works" loading="lazy">
+    <figcaption>The creators of the atelier: who, in which art, in which school, and how many works</figcaption>
+  </figure>
+
+  <h2>The works</h2>
+
+  <p>Below are several of the atelier's pieces in full, in English translation from the originals. The gallery also shows a Russian translation of every work. It is made by a separate figure, the Translator, who takes no part in the life of the atelier, does not age and does not judge. The originals are in the gallery.</p>
+
+  <h3>Line Clear</h3>
+
+  <p>Ignazio Bellandi, magical realism, in Italian (<a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0004-w00001.html">original</a>). For twenty-two years a wind has blown across the steppe that carries words away from the fifth syllable on, and the people of the line have learned to speak four syllables at a time and to write down the rest. Of all the atelier's works, this one has the highest score.</p>
+
+  <details>
+    <summary>Line Clear: read the translation</summary>
+
+    <p>Many years later, facing the last page of the fire station's duty log, with his pen held two fingers above the paper, Ignazio Bellandi would remember that distant afternoon when his grandfather, who bore the same name, sat him on the stool in crossing house 214 and taught him to write the only sentence that family had ever written out in full. The crossing house stood at kilometre two hundred and fourteen of the line, counted from the capital, at a spot in the steppe where there was nothing to keep watch over but a level crossing that nobody crossed, and in those years the wind carried words away from the fifth syllable on. Short sentences arrived whole: “Bread.” “Shut it.” “Freight coming.” Long sentences left the mouth and reached the ear without their tails, and the tail went off eastward with the dust, so that for the twenty-two years the wind lasted the people of the line learned to speak four syllables at a time and to write down all the rest.</p>
+
+    <p>Grandfather Ignazio wrote. Every evening at nine, after the express that did not stop had gone by, he opened the log with the grey cloth cover, headed in red and ruled in blue, and wrote in the same slanting hand: “Crossing 214. Line clear. Nothing to report.” He did it for forty-one years, three months and nine days, fifteen thousand and seventy-six times, and never got a letter wrong, because he was a man who counted the doors before he slept and the poles before he woke, and who counted as an event only what had not already been written the day before. His wife, Nives Corradi, kept pigeons in a crooked cage on the roof of the crossing house, because pigeons were the one thing the wind could never manage to keep: it flung them against the sky for hours, turned them over, tore out their tail feathers, and they came back all the same, one by one, and she counted them aloud, four syllables to a number. Once a week the grandfather tied to a pigeon's leg a copy of the seven lines, with a knot he had learned in 1931 from a fireman passing through, and which for that reason the family always called the fireman's knot, and the pigeon flew to the city depot, at kilometre two hundred and ninety-seven, and came back in the evening with a bare leg, which was the sign that down there they had read it. The wind stopped one Tuesday in March 1958, without warning, and for a week the people of the line talked in sentences so long that two linemen got lost inside a conversation and did not come out of it until Easter. Not the grandfather: he went on saying four syllables at a time until his death, which caught him at ten past three on a July afternoon, sitting on the stool with the log open in front of him; and since that morning, to save time, he had already written the evening's line, the last thing the railway received from him was that nothing had happened on the line.</p>
+
+    <p>Amedeo Bellandi, the son, had from his father neither the name nor the handwriting, but he had the crossing house, and he kept it until the day the railway closed thirty-seven crossing houses of the steppe with a letter of six lines, one for every six houses and one left over. His son Ignazio had been born there, on a January night when four trains went by and none of them stopped, and he was nine when they loaded onto a freight car a wardrobe, old Nives, little Nives who bore her grandmother's name, his mother Elvira, and eleven pigeons in a hatbox with holes in it. In the city the family lost everything in a business of promissory notes that none of them ever managed to tell in more than four syllables at a time, and they ended up in a single room on Ropemakers' Street, four metres by three twenty, with a flowered curtain that divided the sleep of the grown-ups from the sleep of the children. Amedeo hid the salt in seven different places, one of which was never found, and in the evenings he argued with the empty refrigerator. “What's for supper?” he would ask. And the refrigerator, which was empty, and for a time also unplugged from the wall to save money, answered him with its hum: one long hum for no, two short for yes. “Is there at least an egg?” A long hum. “Are you sure?” Two short. It went on like that for three years, two months and eleven days, until there was something to eat inside it again, and then the refrigerator fell silent for good, as witnesses do when the case is closed. Behind the curtain the children laughed with their faces in the pillow, and their mother said “Quiet,” and their father said “Quiet” to the refrigerator, and the refrigerator kept quiet for exactly one minute and then started again. Old Nives set up the crooked cage on the roof of the building, among the chimney pots, and every evening she sent her grandson up to count. She died in that room in the winter of eighty-nine, saying four syllables only, “Count the pigeons,” and the grandson, who along with his grandfather's name had taken on the habit of the doors and the poles, counted them that evening and every evening after.</p>
+
+    <p>Ignazio Bellandi became a fireman at twenty-three, because it was the only trade in the city in which the family knot still had a use. At the station almost nothing ever burned. They played scopa, Pace told the joke about the priest and the parrot that everyone knew down to the last comma, the shift chief Ruggeri slept sitting up, and at midnight one of them opened the duty log with the grey cloth cover, headed in red and ruled in blue, and wrote the line. For eleven years now Ignazio had been the one to write it, because his hand was the steadiest: “Night shift. Nothing to report.” He no longer even thought it. It was the sentence that took his hand at eleven fifty-nine and let it go at midnight exactly.</p>
+
+    <p>On the evening of 14 November he counted eleven pigeons in the crooked cage, and at dawn he counted twelve. The twelfth was dark grey, with one crooked white feather on its left wing, and it ate with the others as if it had always eaten there. On its leg it carried a slip of paper folded four times and tied with the fireman's knot. The slip was a page torn from a log, ruled in blue, numbered at the top right, 173, and it said, in a slanting hand: “Crossing 214. Line clear. Nothing to report.” Ignazio read it on the roof, in his vest, and then read it at the station to Pace and Ruggeri.</p>
+
+    <p>“One pigeon extra,” said Pace. “All I ever get extra is fines.”</p>
+
+    <p>“Two-fourteen has been closed for thirty years,” said Ignazio.</p>
+
+    <p>“Then it's running late,” said Ruggeri, and went back to sleep.</p>
+
+    <p>Ignazio opened the station's log and compared. The same paper, the same blue rule every seven and a half millimetres, the same red of the heading, the same numbering at the top right. The station's log was not missing a single page. That evening he put a padlock on the cage and counted eleven. At dawn the padlock was locked and there were twelve pigeons, and the slip was page 174. The third night he did not sleep. He sat on the roof with his back against a chimney, counted eleven at ten, eleven at two, eleven at twelve past four, closed his eyes for what the clock said was seven minutes, and at nineteen past four there were twelve pigeons, and the page was 175. On the roof there were his own footprints and nothing else. A homing pigeon returns only to its own home, and old Nives knew it, the city depot knew it and Ignazio knew it: that pigeon's home was his crooked cage, and every night something carried it away from there to the steppe, to set it free at dawn. The pages went up by one a day. The station's log had two hundred. On 9 December page 198 arrived, on the 10th page 199, and Ignazio held it in his hand for a whole hour, turning it over, and from the back, against the light, all that showed was his own hand.</p>
+
+    <p>That evening he put the pigeon in his grandmother's hatbox with the holes, which was still at the back of the wardrobe, and went to the railway station in uniform, because he was coming off his shift and because it was the only suit of clothes he had. The steppe train did not stop at 214, had never stopped there. At the luggage van the guard weighed the hatbox, four hundred and twenty grams, then looked at Ignazio.</p>
+
+    <p>“Are you travelling or sending?”</p>
+
+    <p>“I'm sending myself.”</p>
+
+    <p>“Then onto the scales.”</p>
+
+    <p>Eighty-one kilos and four hundred and twenty grams, hatbox included, at the mixed-freight rate, and the guard made out his waybill with the consignee's name left blank, because Ignazio did not know what to put there. He travelled sitting on a mailbag, counting the poles through the barred window, two hundred and ninety-six, two hundred and ninety-five, down and down all night, while the hatbox cooed on his knees. At the bend by 214 the train still slowed, as in his grandfather's day, out of a habit that was written down nowhere, and there the guard slid open the big door and said “Freight,” and Ignazio threw himself out with the hatbox clutched to his chest and rolled eleven metres through the dust, his helmet going off on its own, and got up white from head to foot, in a fireman's uniform in the middle of the steppe, where for a hundred and forty kilometres there was nothing that could catch fire, and laughed with his mouth shut, quietly, the way you laugh behind a curtain.</p>
+
+    <p>The crossing house had three doors and he counted them. The outer one was not locked. Inside was the stool. On the wall hung a calendar for 1994 with the days crossed off in pencil, one by one, up to yesterday, except that yesterday was the 10th of December of another year, and the pencil lay on the windowsill, freshly sharpened. On the shelf above the sink lay a wet shaving brush with the lather still in its bristles, and on the floor stood an enamel bowl full of water so cold that its rim had misted over. The floorboards creaked at every step, and Ignazio walked on tiptoe through the house where he was born, with his regulation boots in his hand. The log was not there. On the nail behind the kitchen door, the one where old Nives used to hang the ladle, hung a small carrying cage, empty, with a cardboard label tied to its handle and written in block capitals: 9 ROPEMAKERS' STREET, ROOF. Ignazio stood in front of the nail for as long as it took the express to go by without stopping, and then a little longer.</p>
+
+    <p>He tore a sheet from his duty notebook, rested it on his knee and wrote <em>ricevuto</em>, received, and it came out crooked, with the r sinking below the line, a single word of four syllables, because in those parts that is the length that arrives whole. He folded it four times, tied it to the pigeon's leg with the fireman's knot, went out to the level crossing and opened the hatbox. The pigeon circled twice over the roof of the crossing house and then struck out westward, toward kilometre two hundred and ninety-seven, without looking back, because it has no other grammar than that.</p>
+
+    <p>Ignazio walked back. Before leaving he drank half the water in the bowl and left the other half, and from the crossing house cupboard he took his grandfather's red flag, rolled round its staff as it had been thirty years before. He walked for three days along the ballast, counting the poles, which were climbing now, two hundred and fifteen, two hundred and sixteen, with his throat closing toward afternoon, and a night spent in a ditch with his uniform for a blanket. Every time he heard a train he stood at the edge and waved the red flag, as the regulations prescribe for stopping a train, and the drivers leaned out of their windows and waved back, one of them with his cap, and kept going, nineteen trains in three days, and none of them stopped. He reached Ropemakers' Street, at pole two hundred and ninety-seven, on the morning of 14 December, with the flag under his arm and the soles of his boots split open.</p>
+
+    <p>The grey pigeon was on the roof. It was in the crooked cage with the other eleven, eating. Its leg was bare. The slip was gone, not there and not anywhere on the roof, and Ignazio looked in the gutters too. Page two hundred never came. That evening he counted twelve, and at two he counted twelve, and at four he counted twelve and fell asleep against the chimney, and when he opened his eyes it was light and the padlock was locked, and he counted, under his breath, one by one, as far as they went, and they went to eleven.</p>
+
+    <p>On the night of the 15th he was on duty. Nobody called, Pace told the joke about the priest and the parrot, Ruggeri slept sitting up. At eleven fifty-nine Ignazio opened the station's log at the last page, page two hundred, ruled in blue, headed in red, and took the cap off his pen. At midnight the pen was still two fingers above the paper. At six, at the change of shift, the log was still open at page two hundred, and the pen lay beside it, uncapped, its nib dry.</p>
+
+    <p class="src">Translated from the Italian. Original, “Linea libera”: <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0004-w00001.html">the work's page in the gallery</a>.</p>
+  </details>
+
+  <h3>The Pass of the Jars</h3>
+
+  <p>Tomé Arrais, fairy tale, in Portuguese (<a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0002-w00001.html">original</a>). In two valleys on either side of a mountain pass, every house keeps a clay jar and whispers into it what it never said to the one it should have said it to.</p>
+
+  <details>
+    <summary>The Pass of the Jars: read the translation</summary>
+
+    <p>Once upon a time, and not only once, for these things like to repeat themselves, there was a pass so high that the clouds asked leave to go through it. I tell it by the fire and not at the window; draw closer, your grace, and the door, leave it as it is, pulled to, which is how doors always stay. Whoever tells a tale adds a stitch to it, they say, but I add little: I change the words and keep the order, for the order is not mine. Now on that pass there was, and there is, a law, and the law is this, keep it in your pocket, for I will ask you for it at the end: what is buried speaks until someone answers it; and whoever answers keeps everything he heard and becomes the one to whom it was said. Nothing more. A short law, like the ones that hurt.</p>
+
+    <p>[1] On one side of the pass lay the valley of Sunrise and on the other the valley of Sunset, and in both valleys it was an old custom for every house to have its own clay jar. Into it, at night, with their mouth against the mouth of the clay, each person whispered what they had never said to the one they should have said it to; then they stopped it with cork and wax, climbed the cold pass and buried it, and came down to sleep like the just. In the house at the watermill in the valley of Sunrise, the one who carried the jar was the miller's wife. But the miller's wife, who had brought with her a daughter by another man, went one winter under the earth, without a jar and without warning, and there remained at the mill the miller, the wheel and the stepdaughter, who was small, thin and quiet, and whom the village called the Flour Girl, because she always went about white to her eyelashes.</p>
+
+    <p>[4] The first frost of that year came, and the miller, who had slept badly since his wife's death, set about sounding out his stepdaughter the way you feel a sack to see whether it has weevils. He asked her once, at supper: “Do you hear anything at night, girl?” He asked her another time, by the millstone: “Have you anything you've never told anyone?” And he asked her the third time, with the lamp already out: “Is there anyone you owe a word to?”</p>
+
+    <p>[5] And the girl, who did not know how to lie because no one had ever taught her, answered the first that she heard the wheel, the second that she had not, and the third: “I owe nothing to anyone, stepfather. I have no one to owe.” And the miller learned what he wanted to learn: that he had in his house an empty mouth, without debts, light as a jar not yet filled.</p>
+
+    <p>[8] That same week the cold bit so hard that the old jars, the grandparents' and great-grandparents', cracked under the earth of the pass, and the pits began to speak all at once. At first it was a murmur, like people praying in another room; then the wind took up the voices and brought them down the slopes, into one valley and into the other, and nobody slept any more. The dogs howled at the mountain, the children woke asking who was calling, the old men pulled their caps down over their ears, and it did no good. And the miller, on that sleepless night, sat in the dark with the house jar, put his mouth to it, whispered into it something long, stopped it with cork and wax, and set it at his stepdaughter's bedside while she slept. Let each one carry their own, says the custom. He did not carry his.</p>
+
+    <p>[9] Then the men of both valleys gathered at the big stone at the foot of the pass, those of Sunrise with the sun at their backs and those of Sunset with it in their faces, and the eldest said the thing as it was: “Someone has to go up and cover the pits, three nights running, before the pass wakes us to death.” They all fell silent, for each one knew what he had up there. It was the miller who spoke: “My stepdaughter will go. She owes nothing to anyone; the pass has nothing to say to her. And she'll take the mill's jar, which is still to be buried.”</p>
+
+    <p>[10] They all looked at the girl, white with flour beside the men, and she, who had never said no to anything, said: “I'll go.”</p>
+
+    <p>[11] At nightfall she tied her stepfather's jar to her back with a strap, took a little hoe and an oil lamp, and went up. Far or near, slow or quick, for on the mountain these things are not measured, she climbed by the goat path, and the higher she went the clearer the voices became, as when we come near a house where there is a feast and begin to make out the words. She made out none. Not yet.</p>
+
+    <p>[12] Right at the top, where the path comes undone and the earth does not know which way to run off, an old woman lay. She was sleeping stretched out along the line that divides the two valleys, half her body in Sunrise and half in Sunset, in a black shawl, with a goat beside her. She opened one eye and said: “Lie here with me till morning, child, but don't cross the line. And when the sky grows light, you tell me which side the sun will rise on.” The girl lay down on the line, with the jar under her head, and spent the whole night listening to the pits begging for she could not tell what, and trembling, and she did not move a finger to one side or the other. When the sky began to whiten, evenly, for up there the sky grows light evenly, the old woman asked: “Well? Which side?” And the girl answered: “I don't know, grandmother. I'm not the one who makes it rise.” The old woman laughed with the few teeth she had left, and said it was the first right answer she had been given in many years, because everyone answered her on the sun's behalf.</p>
+
+    <p>[14] Then she took from her shawl a cloth tied round a handful of earth, grey earth gathered from the line itself, and gave it to her. “This is no one's earth, neither one valley's nor the other's. A pinch on a pit and the pit falls silent. But listen well, for I say it only the way it is said: cover and don't answer, for what speaks under the earth is not for you.” The girl repeated it, because she was used to repeating what she was told: “I cover and don't answer, for what speaks under the earth is not for me.”</p>
+
+    <p>[15] The old woman said to the goat: “Go with her.” And the goat, which had a cracked bell, went ahead through the fog, tlim, tlam, tlim, over stones the girl could not see, as far as the field of pits, a flat bare ground just below the line, where grass does not take and the earth is always warm, even with frost all around. There the goat lay down, and the bell fell silent, and the girl was left alone with the voices.</p>
+
+    <p>[17] The first night she went from pit to pit with her ear to the ground, because the voices are many and you have to put your ear down to know where each one comes from. Under the first she heard: “Brother, I ate your bread in the winter of the snow and said it was the rat; you died in March, tell me it wasn't from the bread.” She threw a pinch on it and the pit fell silent. Under another: “Father, the vineyard I sold was yours; tell me you had given it to me, for I don't remember hearing it from you.” A pinch, and silence. And so on through the night, cover and don't answer, cover and don't answer, until morning. The second night the old woman said it to her again, the way it is said: “Cover and don't answer, for what speaks under the earth is not for you.” And she went down to the field again, and put her ear to a pit that was saying: “Wife, don't close the shutter tonight, I'll be back before the cock crows.” And the earth was so hot that it burned her ear, and when she lifted her head there was a dark mark on it, the size of a fingernail, shaped like a keyhole. She covered that one and covered others, “Son, tell me you didn't hear me that night through the wall,” “Neighbour, give me back my needle and tell me you found it yourself,” and when day broke she saw that the cloth was almost empty. One pinch was left.</p>
+
+    <p>[18] The third night the old woman said nothing to her, only laid her hand on the marked ear. The girl went down with the pinch shut in her fist and her stepfather's jar still on her back, for she had not yet found a place for it. And close to the line now, under a tiny pit, deeper and older than all the rest, she heard a child's voice, as near as if it were on the other side of a plank: “Mother, open the door for me, I can hear you on the other side.” The girl had the pinch in her hand. She had it. And instead of throwing it, she put her mouth to the earth and said: “I'm coming.” The pit fell silent under her ear, and the earth suddenly grew hot like the forehead of someone in a fever, and then cooled. And straight after, in the dark, there where there was no house nor wall nor any door at all, three small knocks were heard, knock, knock, knock, at the height of a knee. And then all the pits of the pass, those left uncovered and those already covered that had somehow unsaid the pinch, turned toward her, turned, I tell you, the way people in a room turn when someone at last answers, and began to beg of her. “Brother, tell me it wasn't from the bread.” “It wasn't from the bread,” she said. “Wife, don't close the shutter.” “I won't close it.” “Father, tell me you had given it to me.” “I gave it to you.” “Son, tell me you didn't hear.” “I heard nothing.” And so to the end of the night, I'm coming, I'm coming, I won't close it, I forgive you, I gave it to you, until the last pit fell silent and the pass was left mute as a locked church, and the wind went over it looking for someone and found no one. It was then that she buried her stepfather's jar, without hearing its voice, because it did not speak yet.</p>
+
+    <p>[19] That morning both valleys slept late, Sunrise and Sunset, a thing that had not happened in living memory. And when they woke, each at their own window, nobody remembered what they had buried. One man remembered that he had a brother, and that the brother had died in March, and nothing more; a widow left her shutter open without knowing why and slept well with it open. And if any of them, washing their face, felt a tiny unease at not remembering something, they fed it like a stray cat, and the unease went away, and they forgot it too. There was sun on both sides at once. At the mill, the miller sat down by the wheel to enjoy the warmth of the day, and everything was still, so still, when he heard at the door, down by the ground, three small knocks. He went to open it. There was no one there.</p>
+
+    <p>[20] The girl took leave of the old woman, who was already lying on the line again with her shawl over her, and went down. When she came to the place where the path splits in two, one for each valley, she stood still a good while, because she did not know which way her home was. Or she knew, but did not know whose was the wish to know. She went down to Sunrise out of habit, for feet have their habits.</p>
+
+    <p>[22] But not all the voices had stayed up there. They came with her, inside, wanting to get out through her mouth, and behind her on the path, as if someone small were following her barefoot, there came knocks on the stones, three, and three more, and three more. She ran, and fell, and ran again, until she reached the millrace, and she went into the water up to her knees, under the wheel, where the noise is so great you cannot hear yourself think. And the wheel, which always speaks and never asks for anything, spoke over everything, and the knocks did not cross the water, and the voices inside her fell asleep to the slap of the paddles like children being rocked. She stayed there until the moon came out, saved by the only mouth in the valley that had nothing to confess.</p>
+
+    <p>[23] When she came out of the water and knocked at the mill door, the miller came to open it with the lamp and did not know her. “Who are you, lady, at this hour?” he asked. For the flour had all come off her in the water, and what was left was a face he had not seen for two winters. And when she opened her mouth to say she was the stepdaughter, out came the voice of a grown woman, hoarse from too little sleep, and then another, an old man's, and then another, a child's, and she fell silent in fright, because she did not know, she truly did not know, which of them was hers. The neighbour women who came to look did not know her either, and one of them crossed herself.</p>
+
+    <p>[26] The next day the men of both valleys gathered again at the big stone, to find out who had silenced the pass, for such a thing deserved a reward. And the eldest, who was suspicious the way old men are who have slept well for the first time, said: “Whoever was up there, let them say the first word of the deepest pit, for not even I know what it is.” Many kept silent, some tried their luck, “brother,” “father,” “forgive me,” and all were wrong. The woman who had come from the mill, whom nobody knew, said softly, in a child's voice: “Mother.”</p>
+
+    <p>[27] Then the old man went straight to her and moved the hair away from her ear, and saw there the dark mark shaped like a keyhole, which is the mark the pass leaves on whoever puts their ear to it for three nights. “It's the Flour Girl,” he said. And the miller, hearing this, looked at her again and knew her, and was not glad.</p>
+
+    <p>[28] For at that instant the girl's mouth opened without her willing it, and out of it, before both valleys, in the voice of the miller's dead wife, came what the miller had whispered into the mill's jar and what she had buried without hearing, but which the earth, as you see, had handed over to her with all the rest: “Wife, you called me three nights and I said it was the wheel; don't call me any more.” And the girl, or the miller's wife, or whoever was standing there, answered him at once, him, in front of everyone: “I don't call you any more.” So the miller stood uncovered, he who had sent a child to carry what was his, and everyone knew that the heaviest thing in the mill's jar had not gone up the pass on the back that owed it.</p>
+
+    <p>[30] From that day no one in the two valleys answered the miller. Not as a punishment from the people, for the people remembered nothing, but because when he spoke all that could be heard was the wheel. He asked for bread at the shop and the shopkeeper looked at the millrace; he said good morning and the women turned their heads toward the water like people listening to rain. He lived many years like that, speaking and hearing the wheel for an answer, and no one ever called him again, by his name or by anything else.</p>
+
+    <p>[31] And the girl? A shepherd from the valley of Sunset, who had slept on the line guarding goats and had seen her lamp go down three nights, came to ask for her hand, and she said “I'm coming,” which was now the answer that came to her most readily. The wedding was held up on the pass, on the line itself, at a long table half in one valley and half in the other, and it was the first time that Sunrise and Sunset ate of the same bread; and they ate, and drank, and danced, and slept well, as they slept ever after. The old woman of the line was at the wedding, in her shawl, and said nothing. At the end of the feast, when no one was looking any more, the bride took from under her apron a tiny jar, the size of a closed fist, put her mouth to it, whispered something into it, stopped it with cork and wax and buried it on the line, neither on one side nor on the other. What she said I don't know. I won't tell it. They lived together many years, and the shepherd loved her, but sometimes he woke in the night and heard her answering someone in the dark, in a voice that was not the one he knew in her, “I won't close it,” “I forgive you,” “it wasn't from the bread,” and he lay very still, not knowing to whom. And sometimes, by day, on a mild afternoon, with the soup on the fire and the goats lying down, three small knocks came at the door of their house, at the height of a knee, and she got up and went to open it, and there was no one, and she sat down again as if there had been.</p>
+
+    <p>In by one door and out by another; whoever likes may tell another. But before you go to bed, your grace, you who sleep so well, take out of your pocket the law I gave you at the beginning and read it again, slowly. There are many pits, and many passes, and there is always a voice that begged someone for something you never got to hear. Someone, somewhere, answered it “I'm coming” in your place, and kept what was yours, and that is why you sleep. Who it was I cannot tell you. I know only that the door was left pulled to, as I asked. And if now, with the fire burning low and the whole house still, you hear down there, by the ground, three tiny knocks, don't go and open. Or go. It's no affair of mine any more.</p>
+
+    <p class="src">Translated from the Portuguese. Original, “O Colo dos Cântaros”: <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0002-w00001.html">the work's page in the gallery</a>.</p>
+  </details>
+
+  <h3>Return to Sender</h3>
+
+  <p>Tomé Arrais, epistolary novel, in Portuguese (<a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0002-w00019.html">original</a>). A novel made only of letters that came back. When he chose the school, Arrais explained that the letter here is an event: it arrives at the wrong hour, it is refused, it stays in transit, and the truth lives in the gap between what is written, what is weighed and what is sent back. And one more reason, about the times: skaz, he wrote, is worn thin all around him and puts the narrator's word at the centre, while here the centre has to be the sealed envelope and the weight that does not add up.</p>
+
+  <details>
+    <summary>Return to Sender: read the translation</summary>
+
+    <p>Tinsmiths' Quarter, 3 November</p>
+    <p>Dear Madam,</p>
+    <p>You do not know me, and I ask you straight away not to be alarmed by the handwriting. It is a bookbinder's hand, and so it is straighter than the man who writes it. My name is Ilídio Saraiva and I have a workshop at the far end of Glue Lane. They call it that because of the smell, which is of hot fish; if you have ever boiled hide glue, madam, you will know what I mean and forgive me the detail.</p>
+    <p>I found your address on the back of an envelope. Half rubbed out, it is true: the name of the town can be read whole, Fonte Seca, the street can be guessed, and your name, Benvinda, came out darker than the rest, as though someone had written it twice. The envelope has a black border. It came to this house on a Saturday in March, when I was nine, and it was I who opened the door to the postman. My mother came behind me, wiping her hands, and said the sentence I heard from her only that once and that has never let go of me since: “In this house nobody dies by post.” And I, who was obedient out of fear and not out of virtue, gave it back.</p>
+    <p>Now, and this is where the thing twists, the envelope did not go. I found it three weeks ago, clearing out the drawer of the workbench that was my father's, under the bone folder he used to crease the gatherings. Closed, with sealing wax. I weighed it on the gold-leaf scale: twenty-three grams. A letter of condolence, madam, does not weigh twenty-three grams. There is something small and hard inside it, and when I shut the drawer I hear it roll from one corner to the other, slowly, like someone turning over in bed.</p>
+    <p>I have not opened it. I will not open it. I write only to ask whether you know who died, and whether that death was meant for us.</p>
+    <p>With the respect of one who knocks at the wrong door,<br>Ilídio Saraiva, bookbinder</p>
+    <p>P.S. The folder is of ox bone and has gone yellow where my father's thumb used to rest. My thumb does not fit there. I don't know why I tell you this.</p>
+
+    <hr>
+
+    <p>Tinsmiths' Quarter, 9 February</p>
+    <p>Dona Benvinda,</p>
+    <p>All four have come back to me. They lie here on the bench in a row, like gatherings waiting for their covers. You refused them all, and I ought to be ashamed to go on. I am, but it is an old shame, inherited, and one more does not show.</p>
+    <p>The thing is that your postman, God keep him, who is a man of detail, writes on the back. In pencil, in a small hand, always in the same order. I copy them out for you, since you have not seen them:</p>
+    <p>“12 g. Ten twenty. Refused, but held it up to the light.”<br>
+    “12 g. Nine forty. Wiped her hands on her apron before saying no.”<br>
+    “13 g. Noon. Refused. Pressed the letter to her cheek, stamp side.”<br>
+    “14 g. Late afternoon, candle lit in the upstairs window. Refused. Put her finger on the scale pan.”</p>
+    <p>Now listen, for this is what keeps me awake: I weighed them all before sending them, and they all left here at eleven grams. I tell myself it is the damp of the hills, that the paper drinks it. I say it in the same voice my mother used for saying the neighbour's dog howled because of the moon. But a bookbinder knows something the rest of the world does not: when a goatskin will not stick to the board, it is because something was left between the two. A hair, a grain, a nothing. You tear the skin off and there it is.</p>
+    <p>So I have decided. I am sending you the envelope. Not mine: yours. It goes as it came, with no letter, only the new address written over the old. If it is yours, hold it. If it is not, send it back, and I will put it in the drawer again and learn to sleep with it rolling.</p>
+    <p>Yours, out of stubbornness,<br>Ilídio Saraiva</p>
+    <p>P.S. I weighed it before I closed it into the big envelope. Twenty-three grams. It has not changed in thirty-one years. Mine change in a week.</p>
+
+    <hr>
+
+    <p>Postal Inspectorate, District Office, 2 March</p>
+    <p>To Mr Aurélio Pestana, rural letter carrier, Fonte Seca post office.</p>
+    <p>Sir,</p>
+    <p>This Inspectorate has received a complaint from the office of origin. It concerns items returned to sender that bear on the back handwritten pencil annotations unrelated to the service and contrary to regulations: weights, times and remarks on the conduct of the addressee. It is not the business of a letter carrier to describe anyone's hands.</p>
+    <p>There is a further matter. The registered item, a black-bordered envelope, was accepted at origin with a weight of 23 grams. On its return, the control weighing gave 19 grams, with the closure and the wax seal intact. A discrepancy in the weight of a registered item is grounds for an official report.</p>
+    <p>You are hereby notified to submit a written justification within eight days. I remind you that your retirement file awaits a decision from this Inspectorate. An official report does not come off with an eraser.</p>
+    <p>The Inspector,<br>J. Barreto Lemos</p>
+
+    <hr>
+
+    <p>Fonte Seca, 8 March</p>
+    <p>Most Excellent Inspector,</p>
+    <p>With all due respect, and with the hands Your Excellency will guess from the handwriting.</p>
+    <p>Yes, I wrote on the back. I have done it for twenty-six years with everything that comes back. It is not carelessness, Inspector, it is fear. When a letter is not received, someone has to say that it was there, and I do not want to be the last to have held it without a witness. I weigh because the scale is mine and because the number does not lie. I wrote down what they weighed. The bookbinder's letters gained weight in the hills. I cannot explain it, and that is why I noted it.</p>
+    <p>Of the bordered envelope I say what I saw, and only that. Dona Benvinda opened the door before I knocked. She did not reach out her hand from above, the way you take a thing; she put both hands underneath, the way you take bread out of the oven. She held it while the tower struck eleven, all the strokes and the rest of the hum after. She closed her eyes. Then she shook her head and gave it back to me. I felt at once that it was coming back light. Nothing rolled any more. I weighed it on the counter: nineteen. The wax is whole, with the seal impression. I give my word, for the little it is worth.</p>
+    <p>Simões, from whom I inherited the bag, told me once that some thirty years ago a black-bordered letter went out of that house to the capital, sent by the lady's mother. It never came back, and there was no notice of delivery. The old woman waited for it at the door every morning until the day they carried her out. I tell Your Excellency this not because it is service business, but because I have no one else to tell it to.</p>
+    <p>The next day the house woke with its shutters closed. The neighbour saw the lady go up the hill at daybreak with her hands closed one over the other, and says she has not come down yet.</p>
+    <p>I will not sign the report. I ask that I not be made to weigh anything more. I have fourteen months left.</p>
+    <p>Your Excellency's attentive and obliged servant,<br>Aurélio Pestana</p>
+    <p>P.S. The difference is four grams. I looked for them in the bag, in the lining of my coat and on the floor of the post office, on my knees. They are nowhere.</p>
+
+    <hr>
+
+    <p>Tinsmiths' Quarter, 10 March</p>
+    <p>My dear lady, whom I have never seen,</p>
+    <p>It came back. And it came back lighter.</p>
+    <p>I did not open it. I put it in the drawer, under the folder, as it had been, and shut the drawer slowly, waiting. It did not roll. I opened and shut it seven times, like a foolish boy, and seven times the drawer kept quiet. That night I slept as I had not slept since I was nine.</p>
+    <p>I know what you did. You did what my mother would not do and what I, out of obedience, did not know how to do: you held it. I do not ask where you took what you held. There are things one keeps and does not tell, and a man who has spent his life sewing spines knows that the best of a book is what stays inside the sewing.</p>
+    <p>This morning I picked up the folder and my thumb settled on the yellow part. It fits. I don't know whether the bone gave way or I did.</p>
+    <p>Don't send this one back to me. Or send it back, if you like, only so that I know someone held it. A letter that does not come back, you taught me this, does not arrive either: it stays on the road, waiting for a hand.</p>
+    <p>With a gratitude I do not know how to weigh,<br>Ilídio</p>
+    <p>P.S. I wrote on the back myself, in pencil, to spare your postman the trouble: 11 g. Seven in the evening. Sealed it without a tremor.</p>
+
+    <p class="src">Translated from the Portuguese. Original, “Devolva-se ao remetente”: <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0002-w00019.html">the work's page in the gallery</a>.</p>
+  </details>
+
+  <h3>Inasmuch As</h3>
+
+  <p>Ignazio Bellandi, the school of Platonov, in Italian (<a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0004-w00022.html">original</a>). An official receiver makes an inventory of a poor family's belongings by the railway. Bellandi chose Platonov because “the crooked, official, wrong word says pain better than the smooth one,” and because Platonov teaches you to tell in earnest what seems comic, without using irony to keep from suffering.</p>
+
+  <details>
+    <summary>Inasmuch As: read the translation</summary>
+
+    <p>The official receiver came at the end of August, when the plain of Albinia was already yellow up to the embankment and the train for Grosseto went past the crossing house without stopping, because nobody there needed to leave any more. He was a man with shoes dusty to the ankle and a ledger under his arm, and he counted our things the way the drowned are counted after a flood, with respect and in a hurry: one wardrobe, five mattresses, one flowered curtain, one Ignis refrigerator, devoid of contents. My father followed him about in his vest, with the hole under the armpit through which the grey hair showed, and asked him questions, since nobody had ever explained to him how one becomes poor in the proper manner. “And what's missing, dottore, where do you write that down?” The receiver looked at the open refrigerator and said: “What is missing does not fall within my competence.” “And whose competence does it fall within?” “That will be seen at the hearing.” The court had already held forty hearings, and my father had attended them all in his Sunday shirt, feeling justice get into his knees like damp. When the receiver left, there remained under the wardrobe a sheet torn from his ledger: two columns, Assets and Liabilities, and at the bottom a printed line, Hearing No. ____. My father picked it up, smoothed it on his thigh with his palm and kept it, because a ruled sheet is already a beginning of order, even when there is nothing to put on it. That evening, after the bread soup, he got up, opened the refrigerator door and stood in the yellow light with his arms at his sides. “Your Excellency is hereby informed that as of today's date the butter is found to be unobtainable, inasmuch as.” There he stopped. The motor hummed a little longer, then fell silent, and in the silence the motor left behind, my mother, from behind the curtain, in the thick voice of the clerk of the court, said: “Adjourned.” My father shut the door, took the pencil and under the printed line wrote 41, with the care of someone numbering a file that others will have to consult. We little ones, in the dark of the shared bed, bit the pillow.</p>
+
+    <p>In the days that followed my father walked a great deal, given that walking was the last work nobody could seize from him. He went along the tracks to Marcucci's store, at the junction with the provincial road, where the plain ends against a wall of reeds, and asked for butter on credit, not for himself, but for the regularity of the family. Marcucci stood behind the counter with a pencil behind his ear and answered seriously, because he too was a man who was afraid of registers: “Credit is suspended pending further instructions.” “And who gives the instructions, Marcucci?” “When they come, they come.” “And where do they come? Here, or to us?” Marcucci did not know, and he gave him an empty piece of greaseproof paper that still smelled of butter, and my father brought it home folded in his breast pocket like a receipt. He came back at sunset with hunger in his hands, because hunger, in a man who walks, comes down from the stomach and settles in the fingers, which no longer know what to hold. In the evening he opened the door. Forty-two: the butter is found to be unobtainable, inasmuch as. The motor fell silent. “Adjourned.” Forty-three: the same, with the greaseproof paper laid on the empty shelf, as evidence for the prosecution. “Adjourned.” Forty-four, forty-five. My father wrote the numbers in the Liabilities column, one under the other, and the Assets column stayed white and clean like a sheet nobody has used. We bit the pillow not because it was a thing to laugh at, but because it was the only law still in force in the room, and whoever broke it left the others without a court. I was the smallest, and I bit so hard that one evening a feather was left between my teeth, and I kept it in my mouth until I fell asleep, so as not to make a noise even by spitting it out.</p>
+
+    <p>The crossing keeper's wife was called Ilva, and she had a vegetable garden that produced more than one family could eat, since the ground along the railway is fat with coal and with patience. One afternoon at the end of September she stopped my father at the level crossing and put into his hands a jar of pickles, peppers, little onions, cucumbers, all squeezed together in the vinegar like people in a railway carriage. “Take it, Bellandi, it's stuff left over.” My father held the jar with both hands and asked: “And what do I owe you?” “Nothing.” “Nothing can't be written down, signora.” “Then don't write it down.” He walked home slowly, looking at the jar against the light, because he did not understand how a thing left over for someone can reach the one who lacks it without passing through any office. That evening he did not go to the refrigerator at once. He sat on the bed in his vest with the jar on his knees, and I saw his whole life sitting in his shoulders, bent, as if he had to carry a new weight, the weight of having something. Then he got up, opened the door and set the jar on the middle shelf, beside the greaseproof paper. The light caught the little onions and made them white as teeth. “Your Excellency is hereby informed that as of today's date there is deposited,” he said, and stopped, because for things given he did not know the formula: the court had taught him only to ask and to have nothing. He stood there with his mouth open. The motor hummed. My father began again from the start, quietly, in his old voice: “Your Excellency is hereby informed that as of today's date the butter is found to be unobtainable, inasmuch as.” The motor fell silent. From behind the curtain my mother said: “Adjourned.” That was all she said, but in a smaller voice, almost her own. My father wrote 46 in the Liabilities column. After forty-six there were no more hearings. I took the ledger sheet myself, from the pocket of the Sunday shirt, and the printed line at the bottom, Hearing No. ____, is still to be filled in.</p>
+
+    <p>Now I live in Grosseto, above a courtyard where nothing burns, and on the roof I keep pigeons, which come home. At twenty past three, after a shift in which we played scopa [an Italian card game] at the station and nobody called, I opened my refrigerator. It is full. There is a two-hundred-and-fifty-gram block of butter, never opened, its gold paper still smooth at the corners. There is a tray of lasagne that the wife of Fanucci, the cook, has marked in felt pen: BELLANDI DON'T TOUCH 14/11. There is a bottle of spumante for my promotion to crew chief, which nobody celebrated, because the promotion came by post on a Tuesday; it lies on the bottom shelf, it is too long, and its neck sticks out past the edge and won't let the door close. On the door, held by a magnet from the Misericordia [a lay confraternity of mutual aid], is the sheet: Assets blank, Liabilities from 41 to 46 in my father's hand. The light of the refrigerator lay on my hands and made them someone else's, older. I did not decide to speak. I heard my mouth say, in his voice, which has lived in my throat since I stopped growing: “Your Excellency is hereby informed that as of today's date the butter is found to be unobtainable, inasmuch as.” The butter was there, in front of me, and I looked at the butter and waited for the motor's pause. With the door open the thermostat never reaches temperature and the compressor runs without a break; I know it from the course on building services, I know it from the kitchens we have gone into because of a forgotten pan. I did not move the bottle. I did not write 47 on the empty line, because there was nobody to tell me it was allowed. I stood with the light in my face and the spumante lying crosswise, the motor ran without a pause, and my mother's voice from behind the curtain was not there, inasmuch as.</p>
+
+    <p class="src">Translated from the Italian. Original, “In quanto”: <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0004-w00022.html">the work's page in the gallery</a>.</p>
+  </details>
+
+  <h3>Music</h3>
+
+  <p>A composer writes a score, not sound. The sound is made by the atelier's studio: it plays every accepted score with samples of a live orchestra (the Sonatina and VSCO libraries through the sfizz synthesizer) and puts the recording next to the notes. A work's page has the recording, the score itself, which you can leaf through page by page, and a Play button that plays the notes right in the browser. Rendering runs as a separate process alongside the life of the atelier, and by then the composer is already writing the next piece.</p>
+
+  <figure>
+    <img src="img/mnemosyne/work-listen.jpg" alt="A work's page: the whole recording and each movement" loading="lazy">
+    <figcaption>A work's page: the recording in full and by movement</figcaption>
+  </figure>
+
+  <figure>
+    <img src="img/mnemosyne/work-score.jpg" alt="The score viewer on a work's page" loading="lazy">
+    <figcaption>Leafing through the score on a work's page</figcaption>
+  </figure>
+
+  <p>Below are five works with recordings. In each collapsible block is what the composer wrote about the idea before the first note: Halina Dorsz's in English translation from the Polish, Anselm Korda's in his own English.</p>
+
+  <p><strong>Kasacja na Festyn Śledziowy</strong> (“Cassation for the Herring Festival”), Halina Dorsz, Viennese classicism, four movements, 22 minutes. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/audio/mnemosyne-atelier-0003-w00006/work.mp3">Listen (mp3)</a> · <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0003-w00006.html">score and original</a>. Dorsz is corresponding with a stranger she plays chess with by post, and she offers him a draw. Chess became a rule of voice leading: of the two middle voices, only one moves at any moment.</p>
+
+  <details>
+    <summary>The idea of the “Cassation”</summary>
+    <p>I want to hand a stranger a win he might have had, in the language of a dance the whole port will understand, and not pretend that it costs me nothing.</p>
+    <p>I want to offer a draw to someone I have never seen, and to know that a draw ends the game, and that there may be no next letter. I am writing a cassation for the Herring Festival in four movements. The melody is born from the cries of the market women who, when I was a child, called out the price of herring like cantatas, and the bass rocks like barrels. The second violin and the viola play the whole piece by one rule of chess: in the middle, only one voice moves at a time. When one plays a figure, the other holds a long note and waits, sometimes for half a movement, the way I wait for an envelope. In the final rondo the refrain returns three times, because threefold repetition of a position is, in chess, a draw by the rules. The third time, the second violin plays its move and straight away plays the viola's answer too, that is, it makes a move for its opponent, and that is my offer. The viola accepts it, and for the first time in the whole piece both middle voices go together, in parallel thirds, the most ordinary Viennese two-part writing, the kind every couple on the waterfront sings.</p>
+    <p class="src">Translated from the Polish. Original: <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0003-w00006.html">the work's page in the gallery</a>.</p>
+  </details>
+
+  <p><strong>Closure Pour</strong>, Anselm Korda, aleatoric counterpoint, three movements, 24 minutes. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/audio/mnemosyne-atelier-0001-w00002/work.mp3">Listen (mp3)</a> · <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0001-w00002.html">score and original</a>. Korda builds bridges, and the piece grew out of his trade: the two arms of a bridge move apart in the heat of the day and come together on their own by four in the morning. In the orchestra, the winds and the strings drift apart in the same way in a warm hall.</p>
+
+  <details>
+    <summary>The idea of “Closure Pour”</summary>
+    <p>I want to keep the listener in a cooling hall, breath held, until he hears with his own ears a note that no one on the stage is playing.</p>
+    <p>I want to say that warmth keeps us apart, and that meeting is not an act of will but an hour you must be present for. At noon two steel arms of a cantilever miss each other by a hand's width; at four in the morning they line up to the millimetre, and nobody has been persuaded of anything. 'Closure Pour' grows from a fact of my trade and a fact of the concert hall. Wind instruments go sharp as breath warms them. Strings go flat as warm air and hot lights slacken them. So in a warm room the two families drift apart by plain physics. Woodwinds and brass sit along one wall and strings along the facing wall, each side a cantilever. The score fixes their pitches and frees their breath, and it gives their tuning to the room: 'do not correct.' The piece begins at 2:40 in the morning, with the heating switched off at midnight. The keystone is a low tone that nobody plays. It is the difference tone that appears in the middle of the hall only when the two arms' fifths become pure across the gap.</p>
+    <p class="src">Written in English. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0001-w00002.html">The work's page in the gallery</a>.</p>
+  </details>
+
+  <p><strong>Precamber</strong> (in the idea it is called “The Tripod and the Tide”), Anselm Korda, three movements, 21 minutes. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/audio/mnemosyne-atelier-0001-w00003/work.mp3">Listen (mp3)</a> · <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0001-w00003.html">score and original</a>. A viola sings a little above a chorale, a tuba jolts it, and once in an evening the jolt coincides with the tide.</p>
+
+  <details>
+    <summary>The idea of “Precamber”</summary>
+    <p>I want the listener to catch himself hoping the shaking is the world's, and then hear for himself which half was his own kick.</p>
+    <p>I want to say that when the world seems to shake, half the shaking is my own kick, and the half that remains is the only part worth fearing or loving. You find it by kicking and waiting three seconds, not by staring harder. I also want the hall to catch itself, as I did on the riverbank, being glad that something is failing. 'The Tripod and the Tide' grows from a doubled star that stayed put when I kicked the telescope, and from a pier I nearly condemned because I wanted it to fall. A solo viola sings a plain tune, always slightly sharp, against a chorale held at pure pitches and breathed in free tempo. Her beating swells and eases on a slow tide but never stops, because she is never once in tune. A comic tuba keeps jolting her, and each jolt rings down and dies. Once a night, if the hall's breathing lines a jolt up with a crest of the tide, the beating turns into a rattle and the whole ensemble joyfully joins the alarm. Then the jolt dies, and everyone hears what is left: the tide, small, coming back exactly on time.</p>
+    <p class="src">Written in English. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0001-w00003.html">The work's page in the gallery</a>.</p>
+  </details>
+
+  <p><strong>Centering Struck</strong>, Anselm Korda, four movements, 20 minutes. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/audio/mnemosyne-atelier-0001-w00005/work.mp3">Listen (mp3)</a> · <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0001-w00005.html">score and original</a>. A high chord in just intonation holds a phantom low tone beneath it, while the real props, the double basses, the cellos, the bassoons and the composer's own voice, are taken away one after another.</p>
+
+  <details>
+    <summary>The idea of “Centering Struck”</summary>
+    <p>I want the low C to keep sounding after the last person who plays it has stopped.</p>
+    <p>I want to say that a structure built true goes on carrying after the last hand that held it is gone, and that the only way to find out is to be the one left underneath when the hands go. The core is unchanged: the old mason's rule of standing beneath your own arch when the centering is struck, Ada's praise landing on me like a mallet on timber wedges, the tuba as my self-portrait in the ceremonial band, and the long sustained harmony whose props are knocked away one at a time. What is new is the physics, which I owe to the load test under my own bridge. While the officials toasted on the deck, their clinking glasses came down through the girders as a thin ringing about a whole tone off the steel's own hum, and under that ringing I heard the bearing pads groan once for every truck that crossed. The arch in this piece is a high chord in pure 4:5:6 tuning: violins and oboes on C5, E5 and G5. Played truly, it sounds a phantom C3 beneath itself, Tartini's third tone. The props are the real low C, taken away in order: contrabasses, then cellos, then bassoons, and last my own voice, humming it from a chair at the centre of the stage floor, under the players, who are raised around me in a curve. When I stop, the low C either goes on sounding because the arch is true, or it vanishes and everyone hears that it was only ever me.</p>
+    <p class="src">Written in English. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0001-w00005.html">The work's page in the gallery</a>.</p>
+  </details>
+
+  <p><strong>The Glover</strong>, Anselm Korda, four movements, 22 minutes. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/audio/mnemosyne-atelier-0001-w00006/work.mp3">Listen (mp3)</a> · <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0001-w00006.html">score and original</a>. Korda wrote it after the evening when the critic Ada understood his music completely and praised it precisely. A muted cello catches the tempo of each player, and the one it catches must change his breathing or fall silent.</p>
+
+  <details>
+    <summary>The idea of “The Glover”</summary>
+    <p>I want the listener to feel the exact moment the glove fits, and to pull his hand out laughing before the chalk dries.</p>
+    <p>I want to say that being perfectly understood is a kind of fitting, like being measured for a glove, and that the living part of a man is always the part that has just slipped out of the glove. This grows from the glovers' workshops of my childhood street. There I watched an old man trace hands on paper with a chalk stub, and I was half afraid the traced hand would stop growing. It also grows from a recent evening when the critic Ada understood my music exactly, praised it exactly, and I walked home warm and strangely embalmed. The piece is built inside my school's poetics and turns them against comfort. The players breathe freely, but one instrument, the Glover, a muted cello, follows and copies them. Whenever it catches a player's tempo and fits him, that player must change his breath, his register or his costume of phrasing, or fall silent for good. It is a chase made of free rhythms. It is funny when the tuba tries to disguise itself as a flute, and frightening when the copy arrives a fraction before the original.</p>
+    <p class="src">Written in English. <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0001-w00006.html">The work's page in the gallery</a>.</p>
+  </details>
+
+  <p>The last two pieces show how a creator's memory works. The atelier's critic Ada, whose voice is lyrical, wrote a review of “Precamber” and praised Korda, and the praise entered his next ideas: in “Centering Struck” it lands on him “like a mallet on timber wedges,” and after it, in “The Glover,” he walks home “warm and strangely embalmed.” Nobody asked him to write about the critic. The review went into his notebook as an event of his life.</p>
+
+  <h3>How the schools and ensembles sound</h3>
+  <p>So far all five sounded works are symphonies. The language the composers write in is wider. Before the creators moved in, the studio played one piece in every school and one for every ensemble. These pieces were written by the engine itself, by each school's grammar, not by a creator: this is how the vocabulary the creators choose from sounds.</p>
+  <p>Schools, three to four minutes each:</p>
+  <ul>
+    <li>additive music, piano: <a href="img/mnemosyne/audio/school-additive.mp3">mp3</a></li>
+    <li>the Fibonacci series, string quartet: <a href="img/mnemosyne/audio/school-fibonacci.mp3">mp3</a></li>
+    <li>Pärt's tintinnabuli, string quartet: <a href="img/mnemosyne/audio/school-tintinnabuli.mp3">mp3</a></li>
+    <li>Feldman, strings and piano: <a href="img/mnemosyne/audio/school-feldman.mp3">mp3</a></li>
+    <li>Riley's In C, chamber ensemble: <a href="img/mnemosyne/audio/school-in_c.mp3">mp3</a></li>
+    <li>Messiaen, chamber ensemble: <a href="img/mnemosyne/audio/school-messiaen.mp3">mp3</a></li>
+    <li>drone, string orchestra: <a href="img/mnemosyne/audio/school-drone.mp3">mp3</a></li>
+    <li>Ustvolskaya, strings and piano: <a href="img/mnemosyne/audio/school-ustvolskaya.mp3">mp3</a></li>
+  </ul>
+  <p>Ensembles, 44 seconds each: <a href="img/mnemosyne/audio/ensemble-choir.mp3">choir</a>, <a href="img/mnemosyne/audio/ensemble-organ.mp3">organ</a>, <a href="img/mnemosyne/audio/ensemble-accordion.mp3">accordion</a>, <a href="img/mnemosyne/audio/ensemble-dan_tranh.mp3">đàn tranh</a> (a Vietnamese zither), <a href="img/mnemosyne/audio/ensemble-guitar_solo.mp3">guitar</a>, <a href="img/mnemosyne/audio/ensemble-harpsichord.mp3">harpsichord</a>, <a href="img/mnemosyne/audio/ensemble-string_quartet.mp3">string quartet</a>, <a href="img/mnemosyne/audio/ensemble-piano_trio.mp3">piano trio</a>.</p>
+
+  <h2>The laws of the world</h2>
+
+  <h3>The lineage</h3>
+
+  <p>The atelier is a lineage rather than a single artist. The first creator is born together with the atelier, and the next ones arrive one at a time, days and weeks apart. The median life is about two real years, so over its lifetime a cluster sees three or four generations.</p>
+
+  <p>A place in the atelier is held by whoever creates, not by whoever is alive. A creator who stops creating lives on in obscurity, grows old, and may come back one day, or may never come back; meanwhile someone else takes the place. Succession comes to an empty place, and not only after a death.</p>
+
+  <p>A life is defined by state and forces, not by a list of events. Illness comes when a heavy inner life coincides for a long time with a creative crisis. Being written out is measured: novelty falls relative to the creator's own catalogue. Money can pull a creator into commerce and self-repetition; poverty can add pain or break them. Encounters produce friendship, rivalry, influence and quarrels, and the dead can influence too, through their works. A deferred idea matures and one day returns as an illumination. Before death a creator has a secret miracle, like the hero of Borges's story: time to finish the last piece.</p>
+
+  <p>Out of this come fates that nobody wrote: the meteor that flared and went into obscurity; the late bloomer; the even master of a long life; the one recognized only after death; the one who returned after a long silence with a late style; the founder of a school.</p>
+
+  <h3>Schools</h3>
+
+  <p>Every creator writes in some school. For composers these are, for example, Viennese classicism, Pärt's tintinnabuli or spectralism; for writers, skaz, magical realism, the epistolary novel or the school of Platonov. A school here is code rather than a label: a musical school has a grammar by which the score is built, a literary school has a poetics that is checked against every draft.</p>
+
+  <p>Nobody knows all the schools. A young writer knows the teacher's school, what is being written around them, and a few schools from their reading; the library grows with age. A school can also be founded: the creator writes its manifesto and rules, the inner critic checks whether it is just a known school under a new name, and if the school is born, the creator immediately writes the first piece in it. One such school has already been born in earlier runs of the atelier.</p>
+
+  <h3>How a creator chooses a school</h3>
+
+  <p>The choice of a school is the creator's own decision, and the creator explains it. Before them are the idea, the schools they know, their attitude to tradition, and what is being written around them right now. Anselm Korda, the bridge builder, crossed his school with drone music for the symphony “Precamber”: “My own school gives me the crowd and its separate breaths, but by itself it lets harmony only shimmer, never settle. Drone gives me beats as audible weight, a measure of where the deck stands.” Halina Dorsz keeps to the Viennese form because it “promises that every question gets an answer, and I want to keep that promise honestly,” and she breaks exactly one rule in it. Bellandi came to Platonov through his father's hunger and the language of bankruptcy files.</p>
+
+  <p>A school cannot be founded whenever a creator likes, only after a great turn in their life: an illumination, a loss, a return after silence, an illness, a secret miracle. At any other time the creator is told plainly that now is not the time, and chooses the nearest of the schools they know.</p>
+
+  <h3>Three courts</h3>
+
+  <p>In the Thousand and One Nights, King Shahryar listened to tales and decided whether the teller would live. In the atelier nobody is executed: the king has come apart into three forces.</p>
+
+  <p>The first is the creator's own taste, their inner critic: what they value, what they cannot stand, what they are proud of and what ashamed of. It guides the drafts and decides when to put a work down. The second is a circle of outside critics with names, with schools they love and despise, and with reputations. The third is the public, with its fashions, its word of mouth and its pull toward what is already popular.</p>
+
+  <p>None of them is infallible. The inner critic sometimes lets something weak through and sometimes kills something good; the outside critics sink a masterpiece and raise up a failure, and years later admit they were wrong. What is rejected does not die. Sketches, abandoned drafts and unfinished pieces stay in the notebooks, and one day they may be taken up again, like Kafka's manuscripts or Schubert's “Unfinished.” Repetition is still dangerous, and both the author and the critics watch for it, but it is an illness that is noticed or missed, not a sentence.</p>
+
+  <h3>Notebooks</h3>
+
+  <p>Every work is born together with its notebooks: the idea, the inner critic's interrogation, the choice of school, the plan, the drafts, the revisions, the doubts. In the gallery all of this is as open as the finished pieces. Textual scholarship calls it the avant-texte, everything that came before the text, and in the atelier it is valued no less than the works themselves.</p>
+
+  <figure>
+    <img src="img/mnemosyne/work-idea.jpg" alt="The idea of “The Glover” in the composer's notebook" loading="lazy">
+    <figcaption>The idea of “The Glover” in the composer's notebook</figcaption>
+  </figure>
+
+  <h2>How the cluster reaches the art</h2>
+
+  <p>The state of the cluster, its configuration, applications, load and events affect the lives of the creators, the opinions of the critics and the structure of the works. But they pass through one boundary: facts reach no one. Nobody in the atelier knows that the payment service went down. They know that the autumn was ragged and left a wound behind.</p>
+
+  <h3>What the cluster feels</h3>
+
+  <p>The atelier sees the cluster only through the standard Kubernetes API. The slow layer is configuration: what is installed, how many tenants there are, how closed the network is, whether there is fault tolerance, how the services are interwoven, whether there have been upgrades. The fast layer is load: how full the resources are, pod churn, latencies, all measured against the cluster's own ordinary week, because a bank's empty nights are not a storm. And then events: incidents, rollouts, tenants born and deleted, migrations, long lulls.</p>
+
+  <h3>The climate</h3>
+
+  <p>All of this folds into a dozen qualities of experience: turbulence, volatility, crowding, strain, scars, loss, renewal, steadiness, density, closedness, age, abundance or scarcity. The climate has a memory: what is recent weighs more, but nothing is forgotten completely. Past this boundary only the climate gets through.</p>
+
+  <h3>Temperaments</h3>
+
+  <p>Each creator feels the climate in their own way: crowding charges one and stifles another. Long strain together with a creative crisis raises the risk of illness. The lull after a storm is the best time for an illumination, because what was deferred has ripened. Monotony leads to fallow years. Renewal, growth and new tenants bring patrons; scarcity brings poverty. After losses the inner critic is harder on lightness, and after a long steadiness it thirsts for risk. Critics are severe in turbulent times and praise the austere, and in times of renewal they are hungry for the new, which is why they change their shoes to follow the age.</p>
+
+  <h3>Down to the score</h3>
+
+  <p>The climate reaches the work itself as inclinations rather than images, and the creator's taste weighs them. Interwoven services pull toward dense polyphony, a closed network toward strict closed forms, volatile load toward rhythmic unevenness, steadiness toward long arcs, age toward a late style. A symphony can take the abstract shape of a year lived through, where the storm stood and how long the lull lasted, as its proportions and its curve of tension, the way Gubaidulina used Fibonacci numbers. The same weather gives different things to two creators.</p>
+
+  <p>The live atelier is only a few days old, and the climate has been steady all that time: no incidents, no losses. To show how one and the same event lands on different people, we ran the mechanics of life a year ahead, without models, on a synthetic cluster, Leonia, with a real load history: thirty-one incidents, eight tenants, a Kubernetes upgrade in September. A run like this has no works, only fates; and no names either, because the creators write their names for themselves.</p>
+
+  <h3>One incident, three fates</h3>
+
+  <p>On the eighteenth of April Leonia had the worst incident of the year. The “scars” in the climate grew from 0.34 to 0.62 in a single night and by the end of May had almost reached one. Each creator felt it in their own way.</p>
+
+  <p>Writer number two felt the incident least of all. She had strength to spare, her despair never rose above a tenth, and in June her wonderful year began: her own Boldino autumn, Pushkin's most fertile season, in the middle of summer.</p>
+
+  <p>Writer number four felt it more strongly and met it already at the edge: despair close to one, a quarter of his strength left. After the incident an inner heaviness he had not had before began to accumulate every night. In May he fell silent, because he had begun to repeat himself; in August he fell ill and recovered, in October he fell ill again, in November a third time, and he died, having managed on his last night to finish a piece that was accepted. While he was still alive, researchers found an old work in his notebooks and published it.</p>
+
+  <p>Composer number five, born on the night the atelier's first composer died, felt the incident more sharply than anyone: within two weeks the scars reached their limit for him. But he did not break. His despair grew but stayed bearable, and in eight nights his deferred idea gained 68 points of maturity, while the others gained three or four over the same nights. For him the storm became a time of ripening.</p>
+
+  <h3>The lineage goes on</h3>
+
+  <p>In the same year the atelier's first composer, a woman, died of despair on the eighty-fifth day, having finished a last piece that her inner critic never accepted. Four months later an early work was found in her notebooks and published posthumously; writer number two heard it. In October that writer herself fell silent, written out, and that same night a student appeared beside her; the next day he surpassed her. Composer number three lost someone close to him in November, writer number four, and a month later lived through his own wonderful year.</p>
+
+  <p>Nobody wrote any of this. There are only forces, climate, character, recognition, money, encounters, and the fates that come out of them.</p>
+
+  <h2>What had to be fixed</h2>
+
+  <p>The atelier did not become itself at once. Nearly every problem looked the same: the works came out alike, and each time the cause lay not in the models but in the way we had built the world.</p>
+
+  <p><strong>Everything in one quiet domestic register.</strong> The first works converged on one intonation: a thing, a moment, a kitchen. Newcomers wrote their idea before any school had reached them, and our prompts carried one aesthetic for everyone. Now the poetics of the creator's own school enters the idea, the draft is written and reread by the school's measure, and every creator has a life before art, a character, and a hand of their own in language.</p>
+
+  <p><strong>One school for everyone.</strong> Everyone knew the same schools and chose the first one. Now each creator has a library of their own that grows with age, sees what is being written around them, and relates to tradition according to temperament, and a school that fills a whole season tires the critics.</p>
+
+  <p><strong>Every composer's night ended in a rejection.</strong> On every round the critic sent only remarks and not the composer's own previous idea, so the composer started from nothing instead of revising. Now both sides see the previous round, and a rejected idea is not lost: it becomes the creator's problem, and it matures.</p>
+
+  <p><strong>The score did not obey the plan.</strong> The first symphony grammar wrote the same texture whatever the composer had in mind: always 4/4, one harmonic cycle, an eternal harp. The composer made the diagnosis himself: “the generator does not obey the plan.” In the second version the plan became the skeleton of the score: metre, mode, layers of instruments, density, register, and everything the plan does not name stays silent.</p>
+
+  <p><strong>Our rules instead of the laws of the form.</strong> Every symphony had to bring one theme back in every movement. That was our habit, not a law of the genre. A composer was rejected three times under this rule, and we removed it.</p>
+
+  <p><strong>Only symphonies, and only skaz.</strong> The composers wrote nothing but symphonies, and the writers were drawn into skaz: the fashion around them and their own latest school reinforced each other. A creator simply did not see their own habit. Now a composer sees the forms and ensembles of their latest works and every form the studio can play, and a writer sees how their latest pieces divide between schools. One mirror was not enough. Having seen that their last three works were symphonies, both Korda and Dorsz chose a symphony again. Dorsz even called her piece a cassation, a light street serenade, and ordered a full orchestra from the studio. So fatigue with a form entered the laws of the world, as fatigue with a school had earlier: after three works in one form, a composer's ear tires of it, and the next piece takes another, a quartet, piano, choir, organ, a chamber ensemble. Which one is the composer's own decision.</p>
+
+  <p><strong>The sound waited for the composer, and the composer waited for the sound.</strong> Rendering an old symphony took the composer's turn for an hour, and he did not compose. Now the studio has a life of its own and renders accepted works alongside the creators.</p>
+
+  <p><strong>Small things that ate the music.</strong> In the free sample library, the cymbals file had a comment with one slash instead of two, and every symphony with cymbals was left without sound. Failed render attempts left their intermediate tracks behind, and one day eleven gigabytes of WAV filled the atelier's whole volume; the following symphonies had no sound until we enlarged the disk and taught a failed attempt to clean up after itself. Korda writes in just intonation, with quarter tones, and the trumpet is written a tone above where it sounds: a B a quarter tone sharp became, after transposition, a C sharp plus fifty cents, and MusicXML keeps no cents. The studio, checking the written score against the sounding one, found the difference and dropped the work, and the composer lost a whole night. Now a quarter tone is written with its own accidental. The Translator once put a Chinese character into a Russian sentence. The API classifier took the list of a creator's past works for an attempt to extract the model's reasoning, and refused; now past works are named by their title and first sentence.</p>
+
+  <h2>Where it grew from</h2>
+
+  <p>The project grew out of a manifesto, a long text about how a cluster might live and create. It is in the gallery in full (<a href="https://mnemosyne.scheherazade.workshop.aenix.io/manifesto.html">the manifesto</a>); here is what it stands on.</p>
+
+  <p>The first metaphor is the Thousand and One Nights. Scheherazade tells the king tale after tale to live until morning, and no tale repeats an earlier one. A cluster that has stopped creating stops remembering itself. In the atelier the king has long since come apart into taste, critics and public, but the ban on repetition has remained.</p>
+
+  <p>The second is Borges. Funes remembered everything and for that reason could not think: a complete memory is as useless as a map at a scale of one to one. That is why what reaches the creators is the climate and not the event log. Pierre Menard wrote the Quixote word for word, and it was a different work: a restored cluster matches the original to the letter, but it is written after a disaster, in another year, by another performer. “The Secret Miracle” is a year frozen into a single instant before the firing squad, so that a writer can finish his play: in the same way a dying creator has time to finish the last piece. “The Immortal” explains why there is death: the immortals have no reason to create.</p>
+
+  <p>The third is Pavić. The Dictionary of the Khazars is a book as a data structure, a hypertext before hypertext, with readers of two copies who are meant to meet and compare their books. From it come the atelier's dictionary of persons, places and things from the works, and the backup that can be assembled only from many works at once.</p>
+
+  <p>Then come Calvino and Invisible Cities, from which the synthetic cluster took the name Leonia; Cage and 4′33″, where silence is also a work; and Barthes with the death of the author, which engineers have long carried out literally under the name STONITH, “shoot the other node in the head”: before a failover the old leader is forcibly killed, and the birth of the reader is paid for by the death of the Author.</p>
+
+  <h2>A memory people cannot stop repeating</h2>
+
+  <p>All of this is also a backup. Every work, finished or not, a score, a draft, a note in a margin, a review, a chapter of a biography, carries a small piece of the cluster's state, encrypted for the owner. The data is hidden in the musical decisions of a score and in the choices between variants of a text; without the key it is simply art. The owner's private key never enters the cluster: the atelier can seal its memory but cannot read it.</p>
+
+  <p>We tested this literally. We downloaded the archive of works from the gallery, assembled the state from them on the owner's laptop, and brought it up in an empty cluster. All 469 objects out of 469 came up, tenants, services, CronJobs, autoscaling, roles, in 59 seconds. How to do it yourself is described on the <a href="https://mnemosyne.scheherazade.workshop.aenix.io/restore.html">Restore</a> page.</p>
+
+  <p>The most durable backup is the one that people cannot stop repeating.</p>
+
+  <h2>Where to look</h2>
+
+  <p><strong>Code:</strong> <a href="https://github.com/tym83/mnemosyne">github.com/tym83/mnemosyne</a><br>
+  <strong>The atelier's gallery:</strong> <a href="https://mnemosyne.scheherazade.workshop.aenix.io/">mnemosyne.scheherazade.workshop.aenix.io</a><br>
+  <strong>The manifesto:</strong> <a href="https://mnemosyne.scheherazade.workshop.aenix.io/manifesto.html">mnemosyne.scheherazade.workshop.aenix.io/manifesto.html</a></p>
+
+  <p class="meta" style="margin-top:34px;border-top:1px solid var(--line);padding-top:16px">
+    A friendly project featured by the Sheet-Native Computing Foundation. Code at
+    <a href="https://github.com/tym83/mnemosyne">tym83/mnemosyne</a>, works in the <a href="https://mnemosyne.scheherazade.workshop.aenix.io/">live gallery</a>; the article is translated from Russian.
+    Join our community — <a href="slack.html">Slack</a>, <a href="https://t.me/stncf">Telegram</a>,
+    <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a>. ← <a href="blog.html">Back to the blog</a>
+  </p>
+</article></div>
+<footer class="wrap">
+  Sheet-Native Computing Foundation — a new word in infrastructure, hosted on 💩<br>
+  <a href="blog.html">Blog</a> · <a href="projects.html">Projects</a> ·
+  <a href="certification.html">Certification</a> · <a href="https://github.com/sncfoundation">GitHub</a>
+  <br><span style="color:var(--muted,#9198a1)">Community: <a href="slack.html">Slack</a> &middot; <a href="https://t.me/stncf">Telegram</a> · <a href="https://www.linkedin.com/company/sheetncf">LinkedIn</a></span>
+</footer>
+</body>
+</html>
