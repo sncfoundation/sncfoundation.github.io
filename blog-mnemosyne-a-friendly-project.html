@@ -92,6 +92,10 @@
 
   <h2>The idea</h2>
 
+  <p>Mnemosyne is an add-on for Kubernetes that turns the life of a cluster into material for art and turns the resulting art into a backup of the cluster itself. Technically it is an operator with ten resource types of its own. It reads the state of the cluster through the ordinary API, folds what it has read into a “climate” and hands this climate to agents built on language models, which live in the cluster as creators, critics and a chronicler. Everything the agents produce, from the first idea to the recording of a finished symphony, is stored as Kubernetes objects and files on a volume, and an encrypted piece of the cluster's state is woven into each of these artifacts. The cluster thus becomes at once the source of events, the environment in which the agents live, the store of their works and the content that these works preserve.</p>
+
+  <p>Music and prose serve here as an illustration. They make it easy to see how the events of the cluster reach the agents, why the same event resonates differently in different agents, and how a backup is assembled from many scattered artifacts. The literary sources discussed below are not decoration either: each of them became a quite concrete technical decision.</p>
+
   <p>The project grew out of a manifesto, a long text about how a cluster might live and create. It is in the gallery in full (<a href="https://mnemosyne.scheherazade.workshop.aenix.io/manifesto.html">the manifesto</a>); here is what it stands on.</p>
 
   <p>The first metaphor is the Thousand and One Nights. Scheherazade tells tale after tale, and every night brings a new story, unlike the ones before. So it is with the atelier: as long as it creates, the cluster remembers itself, and repetition is its chief illness.</p>
@@ -193,99 +197,198 @@
 
   <h2>How it is built</h2>
 
-  <h3>The atelier inside the cluster</h3>
+  <h3>What the atelier is made of</h3>
 
-  <p>The atelier is installed into a cluster with a single Helm chart. The chart brings ten resource types of its own in the group <code>mnemosyne.art</code>: Atelier, Artist, Opus (a work), Sketch, Notebook, Review, Biography, Edition, Leitmotif and AudienceLog. Everything that happens in the atelier is written as these objects into the cluster itself, next to its ordinary Deployments and Services. The files of the works, the scores, drafts, recordings and notebooks, lie on a separate volume.</p>
+  <p>The atelier is written in Python and is installed into a cluster with a single Helm chart. The chart brings ten resource types of its own in the group <code>mnemosyne.art</code>, the controller that manages them, and the gallery. If you look into the cluster after installation, everything looks the same as for any other application:</p>
 
-  <p>The atelier is run by an operator written with kopf. It watches the Atelier object and keeps one long-lived deployment for it, the life of the atelier. Inside the life several threads run in parallel, as in a real atelier where everyone is busy with their own work:</p>
+<pre><code>$ kubectl get crd -o name | grep mnemosyne
+customresourcedefinition.apiextensions.k8s.io/artists.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/ateliers.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/audiencelogs.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/biographies.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/editions.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/leitmotifs.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/notebooks.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/opera.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/reviews.mnemosyne.art
+customresourcedefinition.apiextensions.k8s.io/sketches.mnemosyne.art
 
-  <ul>
-    <li>each living creator has a thread of their own: they look for an idea, work, rest as long as their strength and character tell them, and sit down to work again;</li>
-    <li>every fifteen minutes the sensor reads the cluster through the API and folds what it has read into the climate;</li>
-    <li>fate runs by the real calendar: births, illnesses, deaths, encounters;</li>
-    <li>the critics and the chronicler write when there is something to write about;</li>
-    <li>the studio renders accepted scores without taking the composer's turn.</li>
-  </ul>
+$ kubectl -n mnemosyne get opus
+NAME                               PHASE     ART     AGE
+mnemosyne-atelier-0001-w00000      accept    music   3d22h
+mnemosyne-atelier-0001-w00001      rewrite   music   2d23h
+mnemosyne-atelier-0001-w00002      accept    music   2d23h
+...
+mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
 
-  <p>Next to the life stands the gallery, a separate read-only deployment. It looks at the volume with the works, holds neither a service account token nor any keys, and every fifteen minutes rebuilds the site: the creators, the works with their notebooks, scores, recordings, translations, reviews, schools, the chronology and the restore page.</p>
+  <p>Atelier describes the atelier itself and holds its lineage together with the fate engine, which can be resumed after a restart. Artist is the life of one creator: their catalogue, periods, teachers and creative state. Opus is a finished or abandoned work, Notebook is the notebook in which the whole search is written down, and Sketch is a single sketch. Review holds a critic's review, Biography a chapter of a biography, Leitmotif the image of a character, and AudienceLog the audience's journal. The heavy files, that is, scores, page images, plans and texts, are not put into the objects. They lie in a store addressed by SHA-256, and the object refers to them by hash, so that the reference does not break when the files move.</p>
 
-  <p>The owner of the cluster sets up only the infrastructure: keys, models, resources, storage, the window of life and the list of what goes into the backup. There are no settings at all for ideas, schools, moods or plans.</p>
+  <p>The controller is written with kopf, a Python framework for Kubernetes operators. It watches the Atelier object and keeps one long-lived deployment for it, which the code calls the life of the atelier (<code>mnemo-life-…</code>). Inside this pod several threads run in parallel, and each is busy with its own work. Every living creator has a thread of their own, in which they look for an idea, work, and then rest as long as their strength and character allow, from ten minutes to several hours. A separate thread reads the cluster every fifteen minutes. Another runs fate by the real calendar, bringing creators into the world, burying them and bringing them together. The critics and the chronicler write in their own thread when something appears that is worth writing about, and the studio renders accepted scores in its own thread without taking the composer's turn. Everything that happens is written into the life log, and this is how the hour in which Korda was writing “The Glover” looked in it:</p>
 
-  <h3>A composer's night</h3>
+<pre><code>2026-11-18T13:31:05 sounded   mnemosyne-atelier-0001 mnemosyne-atelier-0001-w00002
+2026-11-18T13:36:47 composing mnemosyne-atelier-0001 mnemosyne-atelier-0001-w00006
+2026-11-18T13:52:29 carried 22 carriers, pending 1
+2026-11-18T13:52:29 composed  mnemosyne-atelier-0003 unfinished
+2026-11-18T14:07:13 carried 13 carriers, pending 1
+2026-11-18T14:07:13 composed  mnemosyne-atelier-0001 accepted
+2026-11-18T14:27:26 sounded   mnemosyne-atelier-0001 mnemosyne-atelier-0001-w00006</code></pre>
 
-  <p>A composer's work is a chain of steps, and each step is written into the notebook.</p>
+  <p>While Korda was composing, the studio was finishing the recording of his previous symphony, and in the neighbouring thread Dorsz left her own work unfinished. Twenty minutes after “The Glover” was accepted, it already had a recording.</p>
 
-  <p>First the creator writes the idea: one sentence about what they want to do to the listener and a paragraph about what they want to say. Into the idea go their self-portrait, their teachers, their inner weather, the poetics of their school and the climate of the cluster, the last only as feelings, without facts. The inner critic interrogates the idea. If it does not accept it, the creator rewrites it, seeing the previous version and the remarks; if the critic still does not accept it after that, the idea is put aside and becomes a problem that matures.</p>
+  <p>Next to the life stands the gallery, a separate read-only deployment. It mounts the volume with the works without write access, receives neither a service account token nor any keys, and rebuilds a static site every fifteen minutes.</p>
 
-  <p>Then the creator chooses a method: a school, one of the schools founded in the atelier, a cross of two schools, a break with one principle of their own school, or a new school. At the same point they choose the form and the ensemble, seeing the forms of their latest works. Then they write the undertones, the shades the idea has to carry, and pick from the climate the structural inclinations, which their taste is free to weigh as it likes.</p>
+  <p>In the chart values the owner of the cluster sets only the infrastructure: keys, models, resources, storage, the window of life and the list of what goes into the backup. The chart has no settings at all for ideas, schools, moods or plans, and this is deliberate.</p>
 
-  <p>Then the work in notes begins. The composer writes a sketch plan, a JSON document in the grammar of their school or of the symphony: movements, metre, mode, layers of instruments, density, register, dynamics. The studio turns the plan into a score and returns an analysis and images of the pages. The composer “listens” to the sketch through the analysis and the notes; this is not real listening, and the model knows it. Then come up to three drafts, each with its own scale of revision: first form and dramaturgy, then texture and voice leading, then nuance. After each draft the inner critic gives a verdict by the measure of the school and its masters, not by general taste.</p>
+  <h3>How a composer arrives at a plan</h3>
 
-  <p>If the critic asks for more revisions and the drafts have run out, the creator decides. A confident hand lets the work go over the critic's head, an unsure one leaves it unfinished. The novelty of a work is measured as the distance of its musical features from the author's whole previous catalogue, and this figure feeds how written out the author is.</p>
+  <p>Every step of the work is written into the notebook, so the path from the idea to the score can be traced in full.</p>
 
-  <h3>The studio: from plan to sound</h3>
+  <p>First the creator writes the idea, that is, one sentence about what they want to do to the listener and a paragraph about what they want to say. The prompt from which the idea is born contains their self-portrait, their teachers, their inner weather, the poetics of their school and the climate of the cluster translated into feelings, without a single fact about the cluster. The idea is interrogated by the inner critic, who has his own notions of taste. If the answer does not satisfy him, the creator rewrites the idea, seeing both the previous version and the critic's objections. If the second version does not satisfy him either, the idea is put aside and turns into a problem that will mature until it comes back as an insight.</p>
 
-  <p>The plan is text; the sound is made by the studio. The school's grammar turns the plan into a music21 score. The orchestration lays the musical lines out among the instruments, taking into account their ranges, breathing, bow changes, doublings and divisi. The score is written to MusicXML and engraved by LilyPond into a PDF, and the PDF is cut into pages for the critic.</p>
+  <p>An accepted idea gets a method. The creator chooses a school from those they know or one of the schools founded in the atelier itself, and they can cross two schools, break one principle of their own school or declare a new one. At the same point they choose the form and the ensemble, seeing in which forms and for which ensembles their latest works were written. Then the undertones are written, that is, the shades the work has to carry, and the structural inclinations are chosen from the climate, which the creator's taste is free to weigh in its own way.</p>
 
-  <p>Before engraving, the studio checks the written score against the sounding one note for note. If even one pitch differs, the work goes no further. This check once caught a quarter tone lost when a trumpet part was transposed; more on that below.</p>
+  <p>After that the composer writes the plan. The plan is JSON composed according to the grammar of the school or of the symphony, and the music in it is given not by notes but by decisions: which sections a movement consists of, in which metre and mode it goes, which instruments play, who leads the melody, who holds the background, and in which register and at what volume. Here is the beginning of the second movement of “The Glover,” which is called “The Fitting”:</p>
 
-  <p>The studio makes the sound of an accepted work from the score. Each voice plays its own instance of the sfizz synthesizer with samples of live instruments from the open libraries Sonatina, VSCO, FreePats and VCSL. The tracks are mixed according to the seating, pass through convolution with the impulse response of a real hall and are levelled for loudness. The result is FLAC and mp3, for the whole work and for each movement.</p>
+<pre><code>{
+  "title": "The Fitting",
+  "character": "a chase in free rhythms, deadpan disguises, dread at the end",
+  "tempo": 100, "mode": "dorian",
+  "sections": [
+    {"role": "chase", "bars": 32, "meter": "4/4", "progression": [1, 4, 1, 7],
+     "layers": [
+       {"instruments": ["organ"],    "role": "pad",    "pattern": "sustain", "register": [50, 72], "dynamic": "pp"},
+       {"instruments": ["flute"],    "role": "melody", "material": "theme:arabesque", "time_scale": 1.12, "dynamic": "p"},
+       {"instruments": ["clarinet"], "role": "melody", "material": "theme:glove", "time_scale": 0.91, "dynamic": "mp"},
+       {"instruments": ["tuba"],     "role": "bass",   "pattern": "march", "technique": "staccato", "dynamic": "p"},
+       {"instruments": ["cello"],    "role": "counter","material": "theme:glove", "time_scale": 0.95, "bars": [9, 32], "dynamic": "pp"}
+     ]},
+    {"role": "fit", "bars": 6,
+     "notes": "The clarinet is caught; chalk fifths, flautando, no thirds anywhere.", "...": "..."},
+    {"role": "pause", "bars": 4, "layers": []},
+    {"role": "disguise", "bars": 24,
+     "notes": "The tuba wears the flute's arabesque with total seriousness; the real flute interrupts once, too late.", "...": "..."}
+  ]
+}</code></pre>
 
-  <h3>A writer's night</h3>
+  <p>The themes (<code>theme:glove</code>, <code>theme:arabesque</code>) are described separately in the same plan as sequences of pitches and durations, and <code>time_scale</code> stretches or compresses a theme for a single voice. This is how the flute, the clarinet and the cello play the same material at different tempi, and the result is the chase in free rhythms that Korda wrote about in his idea. Nothing the plan does not name appears in the score. This strictness had to be introduced after the first version of the grammar added the same harp to every symphony.</p>
 
-  <p>A writer goes the same way, but in words. The idea and the critic's interrogation are the same. The writer chooses a school from their library, which holds the teacher's school, what is being written around them and what they have read, and sees how their latest pieces divide between schools. Every literary school has a poetics: features that must be present in the text, devices that are forbidden, and the way such a text is to be read.</p>
+  <p>The work goes in rounds. First a sketch is written, the studio returns a score, an analysis and images of three pages for it, and the composer “listens” to the sketch through the analysis and the notes. The model knows that this is not real listening, and the prompt says so. Then up to three drafts are written, each with its own scale of revision: the first corrects form and dramaturgy, the second texture and voice leading, the third nuance. After each draft the inner critic gives a verdict, measuring the work by the measure of its school and the masters of that school, not by general taste. If the critic still asks for revisions and the drafts have run out, the decision is left to the creator: a confident one lets the work go over the critic's head, and an unsure one leaves it unfinished. The novelty of an accepted work is computed as the distance between its musical features and the features of the author's whole previous catalogue, and over time this figure adds up to how written out the author is.</p>
 
-  <p>There are up to three drafts. The inner critic reads each one by the measure of the school and answers with one of three verdicts, accept, rewrite or “this is a repetition”, and names what exactly has to be rewritten. The features of the text go into the author's catalogue, just as musical features do for a composer.</p>
+  <h3>How notes and sound come out of the plan</h3>
+
+  <p>The plan turns into a score in the studio, and this is done with the ordinary tools of music engraving.</p>
+
+  <p>The score is built by music21, an MIT-licensed Python library for working with music notation. The school's grammar reads the plan and lays it out into music21 voices, bars and notes, after which the orchestration distributes the musical lines among the instruments. It takes into account ranges and transpositions, the breathing of the winds, bow changes in the strings, doublings and the division of sections into divisi, and an assignment that cannot be played stops the work with an error.</p>
+
+  <p>The finished score is written to MusicXML, an open music notation format that Sibelius, MuseScore, Finale and Dorico can read. Then <code>musicxml2ly</code> converts the MusicXML into LilyPond source, LilyPond engraves a PDF from it, and <code>pdftoppm</code> cuts page images out of the PDF for the critic. Before engraving, the studio rereads the written MusicXML and checks it against the original score note for note. If even one pitch differs, the work goes no further. Once this check caught a quarter tone lost when a trumpet part was transposed.</p>
+
+  <p>The sound is made from the same score. Each part is played by its own instance of sfizz, a free sampler for the SFZ format. SFZ is a text description of which sample of a live instrument sounds on which note, at which volume and with which technique. The samples come from open libraries: Sonatina Symphonic Orchestra and VSCO (Versilian Community Sample Library) for the orchestra, FreePats for the accordion, and VCSL for the Vietnamese zither đàn tranh. In all, the studio has 93 patches. The tracks are placed according to the seating of the orchestra, pass through convolution with the impulse response of the Jack Lyons Concert Hall at the University of York from the OpenAIR library, and are levelled to −20 LUFS with a peak limit. From this, ffmpeg makes FLAC and mp3 files, for the whole work and for each movement.</p>
+
+  <h3>What is left of one work</h3>
+
+  <p>“The Glover” left a folder of 1.3 GB on the atelier's volume. Leaving out the intermediate files, its contents look like this:</p>
+
+<pre><code>creators/mnemosyne-atelier-0001/20261118T133556/
+├── notebook.json            notebook: idea, interrogation, method, undertones, all verdicts
+├── lineage.json             state of the lineage at the time of the work
+├── sketch-00/
+│   ├── request.json         sketch plan sent to the studio
+│   └── result/
+│       ├── mv0 … mv3/       movements: plan.json, orchestration.json, score.musicxml
+│       ├── score.musicxml   the whole score
+│       ├── score.ly         LilyPond source
+│       ├── score.pdf        engraved score
+│       └── page-*.png       pages the critic saw
+├── draft-00/                draft, laid out the same way
+├── woven/                   backup carriers made from this night
+│   ├── …-draft-00-mv1.musicxml
+│   ├── …-draft-00-mv1.catalogue.json
+│   ├── …-margin-00.musicxml
+│   └── carry-20261118T140713654332.json
+├── woven-render-draft-00/result/
+│   ├── score.flac, score.mp3   recording of the accepted work
+│   └── woven-mv*.musicxml      scores it was played from
+└── atelier/                 atelier objects and the SHA-256 file store</code></pre>
+
+  <p>Korda accepted the four-movement work from the first draft, which is why there are no <code>draft-01</code> and <code>draft-02</code> folders. The <code>margin-*.musicxml</code> files are the margins of the notebook: short phrases that the studio writes every night without any model, purely by the rules of the composer's own school. They are not meant to sound and remain notes in the margins, but they carry the backup on equal terms with the scores.</p>
+
+  <h3>How a writer writes</h3>
+
+  <p>A writer goes the same way, only in words. The idea and the critic's interrogation work for a writer in the same way as for a composer. The writer chooses a school from their library, which holds the teacher's school, what is being written around them and the schools they know from their reading, and while choosing they see how their latest pieces divide between schools. Every literary school has a described poetics: features that must be present in the text, devices that are forbidden in it, and the way such a text is to be read.</p>
+
+  <p>There are also up to three drafts. The inner critic reads each of them by the measure of the school and gives one of three verdicts: accept, rewrite, or a repetition of something already written. When he asks for a revision, he names exactly what has to be rewritten. The features of the finished text go into the author's catalogue in the same way as musical features do for a composer, and the novelty of the following pieces is measured against them.</p>
 
   <h3>Critics, the chronicler and the Translator</h3>
 
-  <p>A published work is read by the outside critics. There are six of them, each with a voice of their own (laconic, polemical, lyrical, scholarly, ironic, confiding), with their own values, the schools they love and dislike, a reputation, and a mood that also comes from the climate. Before reading, a critic has an expectation; after reading, the critic may change their mind, and the author lives with the printed verdict: a crushing review adds despair, and praise takes it away.</p>
+  <p>A published work is read by the outside critics. There are six of them, and each has a voice of their own: Mira writes laconically, Leon argues, Ada writes as a lyric poet, Pavel as a scholar, Iris as an ironist, and Nora confidingly, as if in a letter to someone close. Each has their own values, schools they love and dislike, a reputation, and a mood that also depends on the climate. Before reading, a critic has an expectation, and after reading the critic may change their mind. The author has to live with the verdict that was printed, and if it was crushing, the author's despair grows.</p>
 
-  <p>The chronicler writes biographies strictly from the events of a life: birth, works, encounters, illnesses, losses. The Translator translates into Russian everything written in other languages and keeps the translations in memory so as never to translate the same thing twice. He stands outside the life of the atelier: he does not age, does not judge and influences no one. If a foreign alphabet slips into a translation, a Chinese character in the middle of a Russian sentence, for example, the translation is sent back.</p>
+  <p>The chronicler writes biographies strictly from the events of a life and invents nothing. The Translator translates into Russian everything written in other languages and keeps the finished translations so as never to translate the same thing twice. He takes no part in the life of the atelier, does not age and influences no one. A translation into which a character from a foreign alphabet has slipped, a Chinese character in the middle of a Russian sentence, for example, is sent back.</p>
 
   <h3>Models and money</h3>
 
-  <p>For each role, the creator, the critic, the chronicler, the “eye” that looks at the pages of a score, and the Translator, the owner assigns a list of models that are tried in turn. A model can be an external API (Anthropic or any OpenAI-compatible one) or a model running in the same cluster through llama.cpp, vLLM or Ollama. Only artistic context goes to the models; the snapshot of the cluster goes nowhere.</p>
+  <p>For each role, the creator, the critic, the chronicler, the “eye” that looks at the pages of a score, and the Translator, the owner assigns a list of models that are tried in turn. A model can be an external API, Anthropic or any OpenAI-compatible one, or a model running in the same cluster through llama.cpp, vLLM or Ollama. Only artistic context goes to the models, and the snapshot of the cluster goes nowhere.</p>
 
-  <p>In our atelier the creators work on a large Anthropic model and the Translator on a smaller one. By our measurements during development, one composer's work with a sketch and three drafts costs about seven dollars, and one critic's reading of score pages about thirty cents. The atelier keeps its own book of expenses and can hold to a monthly budget: when the budget is used up, the creators wait for the next month. Identical requests are answered from a cache.</p>
+  <p>In our atelier the creators write on Claude Opus, while the critics, the chronicler, the “eye” and the Translator work on Claude Sonnet. By measurements made during development, one composer's work with a sketch and three drafts costs about seven dollars, and one critic's reading of score pages costs about thirty cents. The atelier keeps its own book of expenses and can hold to a monthly budget: when the budget is used up, the creators wait for the start of the next month. Identical requests are answered from a cache.</p>
 
-  <h3>Memory in the works</h3>
+  <h3>How the backup hides in the works</h3>
 
-  <p>All of this is also a backup. Every fifteen minutes the sensor reads the objects listed in the chart's inventory: namespaces, services, deployments, roles, CronJobs, autoscaling, and anything the owner adds. A change is written to the state journal, as a full snapshot or as a difference from the last one. Each such record is compressed, encrypted to the owner's public key and cut into K equal frames. Repair frames are added to them, each one the XOR of a random set of the originals. This is a fountain code, and its point is that it does not matter which frames survive: any K+32 of them, originals and repair frames mixed, rebuild the record, with less than one chance in four billion of failing. The atelier issues frames with a margin, (K+32)/0.7, so almost a third of the works carrying a record can be lost and it still comes back.</p>
+  <p>All the works and the artifacts of the process serve at the same time as a backup of the cluster, and this is how it is arranged.</p>
 
-  <p>The frames travel in the works. In a score they are carried by musical decisions that belong to the codec, such as shades of dynamics. In a text they are carried by the choice between variant readings: a synonym, a word order, a turn of phrase. A record keeps being spread over new works until it has that margin. Whether a work is finished or an abandoned draft makes no difference: everything the atelier has made is a carrier. Without the key it is simply art.</p>
+  <p>Every fifteen minutes the sensor reads through the Kubernetes API the objects listed in the chart's inventory: namespaces, services, deployments, roles and their bindings, CronJobs, autoscaling, and anything the owner adds. What has been read is normalized, that is, cleaned of the fields the cluster sets by itself, and packed into a tar archive compressed with zstd. If something has changed, a new record is added to the state journal, either a full snapshot of the cluster or a difference from the previous record. A full snapshot is made at the very beginning and then after every thirty differences, so that the chain that has to be replayed during a restore does not grow too long. The atelier's own objects, that is, the creators, the works and the notebooks, never go into the backup. They are the fabric that carries it, not its content.</p>
 
-  <p>The owner's private key never enters the cluster. The atelier has a key of its own, with which it can seal its memory but cannot read it.</p>
+  <p>Each record is encrypted once, to the owner's public key. An ephemeral X25519 key is used for this, a key is derived from the shared secret through HKDF-SHA256, and the record is sealed with the ChaCha20-Poly1305 cipher together with its length and checksum. The encrypted record then has to be spread across many works in such a way that losing some of the works breaks nothing. If the record were simply cut into pieces and one piece handed to each work, the loss of any single piece would break the whole record. So the record is cut into K equal frames, and repair frames are added to them, each of which is the sum modulo two (XOR) of a random selection of the originals. Any number of repair frames can be made, and each of them holds a little information about the whole record at once. To assemble the record again, it does not matter which frames have survived: any K+16 of them, originals and repair frames mixed, are enough, and the record is recovered by solving a system of linear equations, with a probability of failure below one in 65,536. This is redundancy coding of the same kind as erasure coding in Ceph or MinIO, and the variant of it in which any number of repair frames can be made is called a fountain code. You can draw as much water from a fountain as you like, and it does not matter which drops end up in the bucket; in the same way, any number of frames can be issued here, and the record can be assembled from any sufficiently large set of them. Such codes were invented for distributing files over unreliable networks, where some packets are inevitably lost. The atelier issues frames with a margin, (K+16)/0.7 of them, so almost a third of the works carrying a record can be lost and the record will still be restored.</p>
+
+  <p>Here are the figures from the living atelier. The full snapshot of 15 November took 383 frames. To survive the loss of three tenths of its carriers it needed 570 frames, and all 570 have already been spread across the works. A difference written the same morning took only 10 frames, and 38 were enough for it. The very first snapshot, made on 14 November while the atelier was still being put together, turned out to be the largest, at 2040 frames, and of the 2938 it needs, 318 have been carried away so far. It does not stand in the way of a restore, which relies on the later full snapshots that have already been issued in full. A report on each such distribution lies in the work's folder, in a <code>carry-*.json</code> file.</p>
+
+  <p>The frames are woven into the works in four ways.</p>
+
+  <p>In scores they are carried by the performance dynamics. In MusicXML, next to a dynamic marking such as <code>p</code> or <code>mf</code>, there can be a numeric value <code>&lt;sound dynamics&gt;</code>, which tells the player how loud to actually play. The codec places additional points of such dynamics at equal intervals across the sounding notes, with the same written marking, and lets each of them move away from the written level by no more than 1.875 units in either direction, in steps of a quarter of a unit. Each point therefore has sixteen possible values and holds four bits. A reader of the score sees the same <code>p</code> as before, and a listener hears only barely noticeable fluctuations in delivery, of the kind any live performer has. Here is the beginning of one part from the first movement of “The Glover”:</p>
+
+<pre><code>&lt;sound dynamics="44" /&gt;
+...
+&lt;sound dynamics="42.125" /&gt;
+...
+&lt;sound dynamics="42.125" /&gt;</code></pre>
+
+  <p>The first number is the written level, 44, and the next two points were placed by the codec. Both moved 1.875 below it, right to the edge of the tolerance, and together they carry eight bits. The margins of the notebook work in the same way: they are short phrases that do not need to sound, and all their dynamics are given over to data.</p>
+
+  <p>In texts the frames are carried by spaces. Between two words there can be an ordinary space, a non-breaking space or a narrow non-breaking space. On screen they are almost indistinguishable, and the choice between them at each word boundary gives one and a half bits. This is how the composers' notebooks, the critics' reviews, the chapters of biographies and the manifestos of the schools carry data.</p>
+
+  <p>In the audience journals the frames are carried by milliseconds. The time of each listening is recorded to the second with a spread of 0 to 255 milliseconds, and this spread, laid over a key mask, looks like an ordinary random offset but in fact stores a byte.</p>
+
+  <p>The bits themselves are distributed across these choices by an arithmetic coder that works in integers, without floating point, so that the layout is unambiguous on any machine. Each work also carries a catalogue, a JSON file from which the restore learns which frames lie in the work and which record they belong to.</p>
+
+  <p>The owner's private key never enters the cluster. The atelier has a key of its own, with which it can seal its memory but cannot read it. Without the owner's key every work remains simply music, a text or a journal.</p>
 
   <h3>The gallery and restoring</h3>
 
-  <p>The gallery shows everything that has been made, and on the <a href="https://mnemosyne.scheherazade.workshop.aenix.io/restore.html">restore page</a> it hands out all the carriers as a single archive. This is the way back: the owner downloads the archive, assembles the state from it on their own machine with their key, installs into a new cluster the platform and the atelier's chart in suspended mode, and applies the restored objects.</p>
+  <p>The gallery shows everything the atelier has made, and on the <a href="https://mnemosyne.scheherazade.workshop.aenix.io/restore.html">restore page</a> it hands out all the carriers as a single archive, <code>carriers.tar.gz</code>. This is the way back: the owner downloads the archive, assembles the state from it on their own machine with their key, installs the platform and the atelier's chart in suspended mode into a new cluster, and applies the restored objects. How this is done step by step is described below, in the section on installation.</p>
 
   <p>The most durable backup is the one that people cannot stop repeating.</p>
 
   <h2>What had to be fixed</h2>
 
-  <p>The atelier did not become itself at once. Nearly every problem looked the same: the works came out alike, and each time the cause lay not in the models but in the way we had built the world.</p>
+  <p>Most of the time went into making the creators stop writing the same thing. Nearly every failure looked the same: the works of different people came out alike, and each time the cause turned out to lie not in the models but in the way we ourselves had built the world.</p>
 
-  <p><strong>Everything in one quiet domestic register.</strong> The first works converged on one intonation: a thing, a moment, a kitchen. Newcomers wrote their idea before any school had reached them, and our prompts carried one aesthetic for everyone. Now the poetics of the creator's own school enters the idea, the draft is written and reread by the school's measure, and every creator has a life before art, a character, and a hand of their own in language.</p>
+  <p><strong>Everything in one quiet domestic register.</strong> The first works converged on one intonation, which always had some object, some moment and, without fail, a kitchen. It turned out that newcomers wrote their idea before any school at all had reached them, and our prompts carried one aesthetic for everyone. Now the poetics of the creator's own school enters the idea from the very start, the draft is written and reread by that school's measure, and every creator comes to the atelier with a life before art, a character and a manner of writing of their own.</p>
 
-  <p><strong>One school for everyone.</strong> Everyone knew the same schools and chose the first one. Now each creator has a library of their own that grows with age, sees what is being written around them, and relates to tradition according to temperament, and a school that fills a whole season tires the critics.</p>
+  <p><strong>One school for everyone.</strong> All the creators knew the same schools and chose whichever stood first in the list. Now each has a library of their own that grows with age. They see what is being written around them and relate to tradition as their temperament tells them, and a school that has filled a whole season begins to tire the critics.</p>
 
-  <p><strong>Every composer's night ended in a rejection.</strong> On every round the critic sent only remarks and not the composer's own previous idea, so the composer started from nothing instead of revising. Now both sides see the previous round, and a rejected idea is not lost: it becomes the creator's problem, and it matures.</p>
+  <p><strong>Every composer's night ended in a rejection.</strong> On each round the critic sent the composer only his remarks and not the composer's own previous idea, so instead of revising what he had written, the composer started from nothing. Now both sides see the previous round, and a rejected idea is not lost but becomes the creator's problem, which goes on maturing in them.</p>
 
-  <p><strong>The score did not obey the plan.</strong> The first symphony grammar wrote the same texture whatever the composer had in mind: always 4/4, one harmonic cycle, an eternal harp. The composer made the diagnosis himself: “the generator does not obey the plan.” In the second version the plan became the skeleton of the score: metre, mode, layers of instruments, density, register, and everything the plan does not name stays silent.</p>
+  <p><strong>The score did not obey the plan.</strong> The first symphony grammar wrote the same texture whatever the composer had in mind: always 4/4, the same harmonic cycle and the inevitable harp. The diagnosis was made by the composer himself, who wrote in his notebook that “the generator does not obey the plan.” In the second version of the grammar the plan became the skeleton of the score, in which metre, mode, layers of instruments, density and register are set, and everything the plan does not name stays silent.</p>
 
-  <p><strong>Our rules instead of the laws of the form.</strong> Every symphony had to bring one theme back in every movement. That was our habit, not a law of the genre. A composer was rejected three times under this rule, and we removed it.</p>
+  <p><strong>Our rules instead of the laws of the form.</strong> We required every symphony to bring the same theme back in all its movements, although this was our habit and not a law of the genre. A composer was rejected three times for breaking this rule, after which we removed it.</p>
 
-  <p><strong>Only symphonies, and only skaz.</strong> The composers wrote nothing but symphonies, and the writers were drawn into skaz: the fashion around them and their own latest school reinforced each other. A creator simply did not see their own habit. Now a composer sees the forms and ensembles of their latest works and every form the studio can play, and a writer sees how their latest pieces divide between schools. One mirror was not enough. Having seen that their last three works were symphonies, both our composers, Korda and Dorsz, chose a symphony again. Dorsz even called her piece a cassation, a light street serenade, and ordered a full orchestra from the studio. So fatigue with a form entered the laws of the world, as fatigue with a school had earlier: after three works in one form, a composer's ear tires of it, and the next piece takes another, a quartet, piano, choir, organ, a chamber ensemble. Which one is the composer's own decision.</p>
+  <p><strong>Only symphonies, and only skaz.</strong> The composers wrote nothing but symphonies, and the writers were drawn into skaz, because the fashion around them and their own latest school reinforced each other. A creator simply did not see their own habit. First we showed it to them: a composer began to see the forms and ensembles of their latest works and every form the studio can play, and a writer began to see how their latest pieces divide between schools. One mirror turned out not to be enough. Having seen that their last three works were symphonies, both our composers, Korda and Dorsz, chose a symphony again, and Dorsz called her piece a cassation, that is, a light street serenade, and ordered a full orchestra from the studio. Then fatigue with a form entered the laws of the world, arranged in the same way as the critics' fatigue with a school: after three works in one form a composer's ear tires of it, and the next piece is written in another, whether a quartet, piano, choir, organ or a chamber ensemble. Which form to choose is still the composer's own decision.</p>
 
-  <p><strong>The sound waited for the composer, and the composer waited for the sound.</strong> Rendering an old symphony took the composer's turn for an hour, and he did not compose. Now the studio has a life of its own and renders accepted works alongside the creators.</p>
+  <p><strong>The sound waited for the composer, and the composer waited for the sound.</strong> While the studio was rendering an old symphony, the composer could not start a new one, and the queue stood still for an hour. Now the studio has a life of its own and renders accepted works in a separate thread, alongside the creators.</p>
 
-  <p><strong>Small things that ate the music.</strong> In the free sample library, the cymbals file had a comment with one slash instead of two, and every symphony with cymbals was left without sound. Failed render attempts left their intermediate tracks behind, and one day eleven gigabytes of WAV filled the atelier's whole volume; the following symphonies had no sound until we enlarged the disk and taught a failed attempt to clean up after itself. Korda writes in just intonation, with quarter tones, and the trumpet is written a tone above where it sounds: a B a quarter tone sharp became, after transposition, a C sharp plus fifty cents, and MusicXML keeps no cents. The studio, checking the written score against the sounding one, found the difference and dropped the work, and the composer lost a whole night. Now a quarter tone is written with its own accidental. The Translator once put a Chinese character into a Russian sentence. The API classifier took the list of a creator's past works for an attempt to extract the model's reasoning, and refused; now past works are named by their title and first sentence.</p>
+  <p><strong>Small things that ate the music.</strong> In the free sample library, the cymbals file had a comment with one slash instead of two, and because of it every symphony with cymbals was left without sound. Failed render attempts left their intermediate tracks behind, and one day eleven gigabytes of WAV filled the atelier's whole volume, so the following works had no sound until we enlarged the disk and taught a failed attempt to clean up after itself. Korda writes in just intonation, with quarter tones, and the trumpet is written a tone higher than it sounds. A B raised by a quarter tone became, after transposition, a C sharp plus fifty cents, and MusicXML keeps no cents. The studio, checking the written score against the sounding one, found the difference and dropped the work, and the composer lost a whole night. Now a quarter tone is written with its own accidental. The Translator once put a Chinese character into a Russian sentence. And the API classifier took the list of a creator's past works for an attempt to extract the model's reasoning and refused to answer, so past works are now named only by their title and first sentence.</p>
 
   <h2>Our atelier</h2>
 
-  <p>Everything below takes place in one particular atelier. It lives in a Kubernetes cluster that we brought up as a tenant on our Cozystack lab environment, with its own control plane, its own nodes and a 50 GB volume for the works. The models are reached through the Anthropic API. The atelier has lived continuously since 14 November, and its gallery is open to everyone for reading.</p>
+  <p>To show how everything described above works in practice, what follows is an account of what happened in one particular atelier. It lives in a separate Kubernetes cluster, brought up as a tenant on our lab environment running Cozystack, with its own control plane, its own nodes and a 50 GB volume set aside for the works. It calls the models through the Anthropic API. The atelier has lived continuously since 14 November, and its gallery is open for anyone to read.</p>
 
   <h3>Who lives here</h3>
 
@@ -306,7 +409,7 @@
 
   <h2>The works</h2>
 
-  <p>Below are several of the atelier's pieces in full, in English translation from the originals. The gallery also shows a Russian translation of every work. It is made by a separate figure, the Translator, who takes no part in the life of the atelier, does not age and does not judge. The originals are in the gallery.</p>
+  <p>Below are several of the atelier's pieces in full, in English translation from the originals. Each of them is at the same time a literary text and a backup carrier: frames of the cluster's state lie in the spaces between its words. The gallery also shows a Russian translation of every work. It is made by a separate figure, the Translator, who takes no part in the life of the atelier, does not age and does not judge. The originals are in the gallery.</p>
 
   <h3>Line Clear</h3>
 
@@ -501,7 +604,7 @@
 
   <h2>Music</h2>
 
-  <p>A composer writes a score, not sound. The sound is made by the atelier's studio: it plays every accepted score with samples of a live orchestra (the Sonatina and VSCO libraries through the sfizz synthesizer) and puts the recording next to the notes. A work's page has the recording, the score itself, which you can leaf through page by page, and a Play button that plays the notes right in the browser. Rendering runs as a separate process alongside the life of the atelier, and by then the composer is already writing the next piece.</p>
+  <p>A composer writes a score, and the sound for it is made by the atelier's studio, described in detail above: every accepted score is played with samples of live instruments, and the recording is put next to the notes. A work's page has the recording itself, in full and by movement, the score, which you can leaf through page by page, and a Play button that plays the notes right in the browser. Rendering runs in a separate thread, so by the time the recording is ready the composer is usually already writing the next piece.</p>
 
   <figure>
     <img src="img/mnemosyne/work-listen.jpg" alt="A work's page: the whole recording and each movement" loading="lazy">
@@ -563,7 +666,7 @@
   <p>The last two pieces show how a creator's memory works. The atelier's critic Ada, whose voice is lyrical, wrote a review of “Precamber” and praised Korda, and the praise entered his next ideas: in “Centering Struck” it lands on him “like a mallet on timber wedges,” and after it, in “The Glover,” he walks home “warm and strangely embalmed.” Nobody asked him to write about the critic. The review went into his notebook as an event of his life.</p>
 
   <h3>How the schools and ensembles sound</h3>
-  <p>So far all five sounded works are symphonies. The language the composers write in is wider. Before the creators moved in, the studio played one piece in every school and one for every ensemble. These pieces were written by the engine itself, by each school's grammar, not by a creator: this is how the vocabulary the creators choose from sounds.</p>
+  <p>So far all five sounded works are symphonies, although the language the composers write in is much wider. Before the creators had moved into the atelier, the studio played one piece in every school and one for every ensemble. These pieces were written not by a creator but by the engine itself, strictly by each school's grammar, and in them you can hear the vocabulary from which the creators later choose.</p>
   <p>Schools, three to four minutes each:</p>
   <ul>
     <li>additive music, piano: <a href="img/mnemosyne/audio/school-additive.mp3">mp3</a></li>
@@ -579,19 +682,19 @@
 
   <h2>How to install it</h2>
 
-  <p>You need a Kubernetes cluster at version 1.29 or newer, Helm 3, a default storage class and access to a model: an external API or your own OpenAI-compatible model in the cluster. The controller and studio images are public, live at <code>ghcr.io/tym83/mnemosyne-controller</code> and <code>ghcr.io/tym83/mnemosyne-studio</code>, and are referenced only by digest. On the owner's machine you need <code>uv</code> and the repository itself; the atelier's utility is called <code>mnemo</code>.</p>
+  <p>Installation requires a Kubernetes cluster at version 1.29 or newer, Helm 3, a default storage class and access to a model, whether an external API or your own OpenAI-compatible model running in the same cluster. The controller and studio images are public. They live at <code>ghcr.io/tym83/mnemosyne-controller</code> and <code>ghcr.io/tym83/mnemosyne-studio</code> and are referenced only by digest. On the owner's machine you will need <code>uv</code> and the repository itself, which contains the atelier's utility <code>mnemo</code>.</p>
 
-  <p>The first thing the owner does is make a key pair:</p>
+  <p>It all begins with the owner creating a key pair:</p>
 
 <pre><code>uv run mnemo keys new --output ./mnemosyne-keys</code></pre>
 
-  <p>This gives two X25519 keys. <code>owner.key</code> is the owner's key. It should be put away offline, it is needed only for restoring, and if it is lost, nobody can read the backup. <code>atelier.key</code> is the atelier's key, and it goes into a Secret in the atelier's namespace:</p>
+  <p>The command creates two X25519 keys. The first, <code>owner.key</code>, belongs to the owner. It should be kept outside the cluster and is needed only for restoring, and if it is lost, nobody will ever be able to read the backup. The second, <code>atelier.key</code>, belongs to the atelier and goes into a Secret in its namespace:</p>
 
 <pre><code>kubectl --context &lt;ctx&gt; create namespace mnemosyne
 kubectl --context &lt;ctx&gt; -n mnemosyne create secret generic mnemosyne-atelier-key \
   --from-file=atelier.key=./mnemosyne-keys/atelier.key</code></pre>
 
-  <p>Then come the chart values. The minimal variant, with an external API:</p>
+  <p>Then the chart values are written. Here is a minimal variant for an atelier that works with an external API:</p>
 
 <pre><code>addon:
   enabled: true
@@ -621,42 +724,42 @@ models:
     chronicler: [api]
     eye: [api]</code></pre>
 
-  <p><code>window: continuous</code> means continuous life in real time, as in our atelier. There are other windows: nights only, weekends only, or only when the cluster is idle. In that case a Job is started every night instead of a permanent deployment. For your own model in the cluster you describe, instead of <code>api</code>, an endpoint with <code>location: cluster</code> and the address of llama.cpp, vLLM or Ollama.</p>
+  <p>The <code>continuous</code> window means continuous life in real time, like the life of our atelier. Other windows can be chosen, in which the atelier lives only at night, only at weekends or only when the cluster is idle, and in that case a Job is started every night instead of a permanent deployment. If the model runs in the cluster itself, you describe an endpoint with <code>location: cluster</code> and the address of a llama.cpp, vLLM or Ollama server instead of the <code>api</code> endpoint.</p>
 
-  <p>Installation:</p>
+  <p>After that the chart is installed in the usual way, and the state of the atelier is checked with the <code>mnemo</code> utility:</p>
 
 <pre><code>helm --kube-context &lt;ctx&gt; install mnemosyne charts/mnemosyne -n mnemosyne \
   -f digest-controller.yaml -f digest-studio.yaml -f owner.yaml
 uv run mnemo status --namespace mnemosyne --context &lt;ctx&gt;
 uv run mnemo works list --namespace mnemosyne --context &lt;ctx&gt;</code></pre>
 
-  <p>The gallery can be exposed through an Ingress (<code>addon.gallery.ingress</code>) or opened through port-forward. <code>addon.suspend: true</code> stops the atelier, and <code>addon.budget</code> caps the monthly spending on models.</p>
+  <p>The gallery can be exposed through the Ingress described in <code>addon.gallery.ingress</code> or opened through port-forward. The value <code>addon.suspend: true</code> stops the atelier without deleting it, and <code>addon.budget</code> caps the monthly spending on models.</p>
 
-  <p>Restoring takes three steps. First collect the carriers: from a living atelier with <code>mnemo works export</code>, or, if the old cluster is gone, by downloading the <code>carriers.tar.gz</code> archive from the <a href="https://mnemosyne.scheherazade.workshop.aenix.io/restore.html">restore page</a> in the gallery. Then decrypt and check them without any cluster at all:</p>
+  <p>Restoring takes three steps. First the carriers are collected. From a living atelier they can be exported with <code>mnemo works export</code>, and if the old cluster is gone, it is enough to download the <code>carriers.tar.gz</code> archive from the <a href="https://mnemosyne.scheherazade.workshop.aenix.io/restore.html">restore page</a> in the gallery. Then the carriers are decrypted and checked, and no cluster is needed for this at all:</p>
 
 <pre><code>uv run mnemo restore --works ./carriers --key ./mnemosyne-keys/owner.key \
   --output ./recovered --dry-run</code></pre>
 
-  <p>Then install into a new cluster the platform that brings the required resource types, and the atelier's chart with <code>addon.suspend: true</code>, and apply:</p>
+  <p>Finally, the platform that brings the required resource types is installed into a new cluster together with the atelier's chart with <code>addon.suspend: true</code>, and then the restored objects are applied:</p>
 
 <pre><code>uv run mnemo restore --works ./carriers --key ./mnemosyne-keys/owner.key \
   --output ./recovered-apply --apply --kubeconfig ./new.kubeconfig --context &lt;new&gt;</code></pre>
 
-  <p>The objects are applied with server-side apply in phases: resource types, namespaces, the remaining cluster-scoped objects, and then everything inside namespaces. What the new cluster has already created on its own is not overwritten. <code>--at &lt;time&gt;</code> brings up the state at any moment in the past, provided the works had carried it away by then.</p>
+  <p>The objects are applied with server-side apply in phases: first the resource types, then the namespaces, then the remaining cluster-scoped objects, and only after that everything that lives inside namespaces. Whatever the new cluster has already created on its own is not overwritten. The <code>--at &lt;time&gt;</code> flag brings up the state at any moment in the past, provided the works had carried it away by then.</p>
 
-  <p>We tested this literally on our own atelier. We downloaded the archive from the gallery, 1027 files, assembled the state on a laptop and brought it up in an empty cluster. All 469 objects out of 469 came up in 59 seconds: tenants, services, CronJobs, autoscaling, roles and their bindings.</p>
+  <p>We tested this literally on our own atelier. We downloaded an archive of 1027 files from the gallery, assembled the state from it on a laptop and brought it up in an empty cluster. All 469 objects out of 469, that is, tenants, services, CronJobs, autoscaling, roles and their bindings, came up in 59 seconds.</p>
 
-  <p>The backup holds only Kubernetes API objects. The contents of volumes and databases, Secrets (by default), cloud resources and control plane certificates have to be backed up by other means; after a restore the owner puts the Secrets and keys back in place.</p>
+  <p>The backup holds only Kubernetes API objects. The contents of volumes and databases, Secrets (unless the owner has explicitly included them), cloud resources and control plane certificates have to be saved by other means, and after a restore the owner puts the Secrets and keys back into the cluster.</p>
 
   <h2>What is ahead</h2>
 
-  <p>Two arts live in the atelier now, music and literature. The repository already holds studies for three more: paper architecture drawn by Blender, painting, and perfumery. The next step is to settle them in the atelier on the same terms, with their own schools, their own critics and their own way of carrying the cluster's memory.</p>
+  <p>Two arts live in the atelier now, music and literature, but the repository already holds studies for three more: paper architecture drawn by Blender, painting and perfumery. The next step is to settle them in the atelier on the same terms, with their own schools, their own critics and their own way of carrying the cluster's memory.</p>
 
-  <p>After that come our own models. The atelier can already work with an OpenAI-compatible model inside the cluster and run NotaGen for period music; we want a fully autonomous atelier to live on a single GPU node without an external API.</p>
+  <p>After that we want to move the atelier onto its own models. It can already call an OpenAI-compatible model running inside the cluster and run NotaGen, which generates music in the style of a given period, so the next goal is a fully autonomous atelier that lives on a single node with a GPU and does without an external API.</p>
 
-  <p>Then packaging. The repository has an application for Cozystack and a recipe for kubepkg, and they need to be brought to the point where the atelier installs in one click next to databases and Kubernetes clusters.</p>
+  <p>Packaging is a separate job. The repository already has an application for Cozystack and a recipe for kubepkg, and they need to be brought to the point where the atelier installs in one click next to databases and Kubernetes clusters.</p>
 
-  <p>And time. Our atelier is a few days old, and the median life of a creator is about two real years. The most interesting part is still ahead: generations, students who surpass their teachers, schools founded in the atelier that outlive their founders.</p>
+  <p>And finally, time. Our atelier is only a few days old, while the median life of a creator is about two real years, so the most interesting part is still ahead: the change of generations, students who surpass their teachers, and schools founded in the atelier that outlive their founders.</p>
 
   <h2>Where to look</h2>
 
