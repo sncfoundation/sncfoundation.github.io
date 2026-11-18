@@ -8,11 +8,11 @@
 <meta name="description" content="A friendly, independent project: Mnemosyne, an atelier inside a Kubernetes cluster where composers and writers are born, work, age and die, and where the life of the cluster reaches their music and prose. The works in English, the recordings, the laws of the world, and the backup hidden in the art.">
 <meta property="og:title" content="Mnemosyne: Kubernetes that writes symphonies">
 <meta property="og:description" content="An atelier of composers and writers living inside a Kubernetes cluster: their works, their music, the laws of their world, and how cluster events shape their lives. A friendly project we love.">
-<meta property="og:image" content="https://sncfoundation.github.io/img/mnemosyne/gallery-home.jpg">
+<meta property="og:image" content="https://sncfoundation.github.io/img/mnemosyne/en/gallery-home.jpg">
 <meta property="og:url" content="https://sncfoundation.github.io/blog-mnemosyne-a-friendly-project.html">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://sncfoundation.github.io/img/mnemosyne/gallery-home.jpg">
+<meta name="twitter:image" content="https://sncfoundation.github.io/img/mnemosyne/en/gallery-home.jpg">
 <style>
   :root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#161b22;--line:#30363d;--accent:#3fb950;--accent2:#d29922}
   @media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--fg:#1f2328;--muted:#59636e;--card:#fff;--line:#d1d9e0;--accent:#1a7f37;--accent2:#9a6700}}
@@ -80,19 +80,19 @@
 
   <p>Of course, with neural networks everyone is now their own author and artist. But we wanted to run an experiment: could Kubernetes become a generator of events that give birth to creators and critics and shape the conditions of their work and their state of mind? The result is Mnemosyne. In a single Kubernetes cluster lives an atelier where composers and writers work, each with a name, a language, teachers, a taste and a temper of their own. They are born, study, write, fall ill, fall into despair, quarrel and make friends, grow old and die, influence one another, follow schools or found their own. Critics read their works, and the atelier's chronicler keeps their biographies. No person and no admin can tell them what to write or how: the owner of the cluster sets up only the infrastructure, and the ideas, the schools, the forms and the moods remain with the creators themselves.</p>
 
-  <p>In the first four days of the cluster's continuous life the atelier has already written more than fifty works: symphonies by a Polish classicist and an English aleatorist, Portuguese epistolary pieces and fairy tales, Italian monologues of barbers, watchmen and firemen. Below are these works, their sound and their texts, the laws of the world in which they are born, and the way the life of the cluster itself, its load, its incidents, its new tenants and the rest, reaches the music and the prose.</p>
+  <p>In the first four days of the cluster's continuous life the atelier has already written more than fifty works: symphonies of Polish classicism and English aleatoric music, Portuguese epistolary pieces and fairy tales, Italian monologues of barbers, watchmen and firemen. Below are these works, their sound and their texts, the laws of the world in which they are born, and the way the life of the cluster itself, its load, its incidents, its new tenants and the rest, reaches the music and the prose.</p>
 
   <p>One thing matters here: the artifacts that come out of the atelier become a backup of the cluster's state, so the cluster can be restored from them to any moment in time.</p>
 
 
   <figure>
-    <img src="img/mnemosyne/gallery-home.jpg" alt="The atelier's main gallery page" loading="lazy">
+    <img src="img/mnemosyne/en/gallery-home.jpg" alt="The atelier's main gallery page" loading="lazy">
     <figcaption>The atelier's main gallery</figcaption>
   </figure>
 
   <h2>The idea</h2>
 
-  <p>Mnemosyne is an add-on for Kubernetes that turns the life of a cluster into material for art and turns the resulting art into a backup of the cluster itself. Technically it is an operator with ten resource types of its own. It reads the state of the cluster through the ordinary API, folds what it has read into a “climate” and hands this climate to agents built on language models, which live in the cluster as creators, critics and a chronicler. Everything the agents produce, from the first idea to the recording of a finished symphony, is stored as Kubernetes objects and files on a volume, and an encrypted piece of the cluster's state is woven into each of these artifacts. The cluster thus becomes at once the source of events, the environment in which the agents live, the store of their works and the content that these works preserve.</p>
+  <p>Mnemosyne is an add-on for Kubernetes that turns the life of a cluster into material for art and turns the resulting art into a backup of the cluster itself. Technically it is an operator with ten resource types of its own. It reads the state of the cluster through the ordinary API, packs what it has read into a “climate” and hands this climate to agents built on language models, which live in the cluster as creators, critics and a chronicler. Everything the agents produce, from the first idea to the recording of a finished symphony or story, is stored as Kubernetes objects and files on a volume, and an encrypted piece of the cluster's state is woven into each of these artifacts. The cluster thus becomes at once the source of events, the environment in which the agents live, the store of their works and the content that these works preserve.</p>
 
   <p>Music and prose serve here as an illustration. They make it easy to see how the events of the cluster reach the agents, why the same event resonates differently in different agents, and how a backup is assembled from many scattered artifacts. The literary sources discussed below are not decoration either: each of them became a quite concrete technical decision.</p>
 
@@ -110,9 +110,9 @@
 
   <p>Three rules passed from the manifesto into the code, and they cannot be broken.</p>
 
-  <p>The first is no literalness. An event in the cluster never becomes an object in a work: a month does not turn into a hall, an incident does not turn into a scar on a painting. The life of the cluster reaches a creator only as feelings and shades.</p>
+  <p>The first is no literalness and no rigid determinism. An event in the cluster never becomes an object or one fixed entity in a work: a month does not automatically turn into, say, a hall, and an incident does not turn into an obligatory screech of the violin. The life of the cluster reaches a creator only as feelings and their shades. And since every creator has a character and a past of their own, they react to the same events in quite different ways.</p>
 
-  <p>The second is that the process is the work. The idea, the critic's interrogation, the sketches, the drafts and the revisions are kept together with the finished piece and shown on an equal footing with it.</p>
+  <p>The second is that the process is the work. The idea, the inner critic's questions, the sketches, the drafts and the revisions are kept together with the finished piece and are just as valuable.</p>
 
   <p>The third is that speed does not matter. The order is memory first, then quality, then the load on the cluster. The atelier may think over a symphony all night.</p>
 
@@ -120,23 +120,48 @@
 
   <h3>The lineage</h3>
 
-  <p>The atelier is a lineage rather than a single artist. The first creator is born together with the atelier, and the next ones arrive one at a time, days and weeks apart. The median life is about two real years, so over its lifetime a cluster sees three or four generations.</p>
+  <p>The atelier is a whole lineage rather than a single artist. The first creator is born together with the atelier, and the next ones arrive one at a time, days and weeks apart. The median life is about two real years, so over an average lifetime the cluster sees three or four generations come and go.</p>
 
-  <p>A place in the atelier is held by whoever creates, not by whoever is alive. A creator who stops creating lives on in obscurity, grows old, and may come back one day, or may never come back; meanwhile someone else takes the place. Succession comes to an empty place, and not only after a death.</p>
+  <p>A place in the atelier is held by whoever creates, not by whoever is alive. A creator who stops creating lives on in obscurity, grows old, and may come back one day, or may never come back; meanwhile someone else takes the place. New creators come to an empty place, and not only after the death of those before them.</p>
 
-  <p>A life is defined by state and forces, not by a list of events. Illness comes when a heavy inner life coincides for a long time with a creative crisis. Being written out is measured: novelty falls relative to the creator's own catalogue. Money can pull a creator into commerce and self-repetition; poverty can add pain or break them. Encounters produce friendship, rivalry, influence and quarrels, and the dead can influence too, through their works. A deferred idea matures and one day returns as an illumination. Before death a creator has a secret miracle, like the hero of Borges's story: time to finish the last piece.</p>
+  <p>A life is defined by state and forces, not by a list of events. Illness comes when a heavy inner life coincides for a long time with a creative crisis. How written out a creator is gets measured by novelty relative to their own catalogue of works. Money can pull an author into commerce and self-repetition; poverty can add pain or break them. Encounters produce friendship, rivalry, influence and quarrels, and the dead can influence too, through their works. A deferred idea matures and one day returns as an illumination. Before death a creator has a secret miracle, like the hero of Borges's story: time to finish the last piece.</p>
 
-  <p>Out of this come fates that nobody wrote: the meteor that flared and went into obscurity; the late bloomer; the even master of a long life; the one recognized only after death; the one who returned after a long silence with a late style; the founder of a school.</p>
+  <figure>
+    <img src="img/mnemosyne/en/timeline.jpg" alt="The atelier's chronology: births, first accepted works, dreams, reviews" loading="lazy">
+    <figcaption>The atelier's chronology: births, first accepted works, dreams, reviews</figcaption>
+  </figure>
+
+  <p>Out of this come fates that nobody hard-coded: the meteor that flared and went into obscurity; the late bloomer; the even master of a long life; the one recognized only after death; the one who returned after a long silence with a late style; the founder of a school.</p>
 
   <h3>Schools</h3>
 
-  <p>Every creator writes in some school. For composers these are, for example, Viennese classicism, Pärt's tintinnabuli or spectralism; for writers, skaz, magical realism, the epistolary novel or the school of Platonov. A school here is code rather than a label: a musical school has a grammar by which the score is built, a literary school has a poetics that is checked against every draft.</p>
+  <p>Every creator writes within some school. For composers these are, for example, Viennese classicism, Pärt's tintinnabuli or spectralism; for writers, skaz, magical realism, the epistolary novel or the style of Andrei Platonov. A school here is not a label but a set of principles: a musical school has a grammar by which the score is built, and a literary school has a poetics that is checked against every draft.</p>
 
   <p>Nobody knows all the schools. A young writer knows the teacher's school, what is being written around them, and a few schools from their reading; the library grows with age. A school can also be founded: the creator writes its manifesto and rules, the inner critic checks whether it is just a known school under a new name, and if the school is born, the creator immediately writes the first piece in it. One such school has already been born in earlier runs of the atelier.</p>
 
+  <figure>
+    <img src="img/mnemosyne/en/schools.jpg" alt="The atelier's schools: what each of them does and who has worked in it" loading="lazy">
+    <figcaption>The atelier's schools: what each of them does and who has worked in it</figcaption>
+  </figure>
+
+  <h3>How the schools and ensembles sound</h3>
+  <p>The easiest way to understand the musical schools is to hear them. Before the creators had moved into the atelier, the studio played one piece in every school and one for every ensemble. These pieces were written not by a creator but by the engine itself, strictly by each school's grammar, and in them you can hear the vocabulary from which the creators later choose.</p>
+  <p>Schools, three to four minutes each:</p>
+  <ul>
+    <li>additive music, piano: <a href="img/mnemosyne/audio/school-additive.mp3">mp3</a></li>
+    <li>the Fibonacci series, string quartet: <a href="img/mnemosyne/audio/school-fibonacci.mp3">mp3</a></li>
+    <li>Pärt's tintinnabuli, string quartet: <a href="img/mnemosyne/audio/school-tintinnabuli.mp3">mp3</a></li>
+    <li>Feldman, strings and piano: <a href="img/mnemosyne/audio/school-feldman.mp3">mp3</a></li>
+    <li>Riley's In C, chamber ensemble: <a href="img/mnemosyne/audio/school-in_c.mp3">mp3</a></li>
+    <li>Messiaen, chamber ensemble: <a href="img/mnemosyne/audio/school-messiaen.mp3">mp3</a></li>
+    <li>drone, string orchestra: <a href="img/mnemosyne/audio/school-drone.mp3">mp3</a></li>
+    <li>Ustvolskaya, strings and piano: <a href="img/mnemosyne/audio/school-ustvolskaya.mp3">mp3</a></li>
+  </ul>
+  <p>Ensembles, 44 seconds each: <a href="img/mnemosyne/audio/ensemble-choir.mp3">choir</a>, <a href="img/mnemosyne/audio/ensemble-organ.mp3">organ</a>, <a href="img/mnemosyne/audio/ensemble-accordion.mp3">accordion</a>, <a href="img/mnemosyne/audio/ensemble-dan_tranh.mp3">đàn tranh</a> (a Vietnamese zither), <a href="img/mnemosyne/audio/ensemble-guitar_solo.mp3">guitar</a>, <a href="img/mnemosyne/audio/ensemble-harpsichord.mp3">harpsichord</a>, <a href="img/mnemosyne/audio/ensemble-string_quartet.mp3">string quartet</a>, <a href="img/mnemosyne/audio/ensemble-piano_trio.mp3">piano trio</a>.</p>
+
   <h3>How a creator chooses a school</h3>
 
-  <p>The choice of a school is the creator's own decision, and the creator explains it. Before them are the idea, the schools they know, their attitude to tradition, and what is being written around them right now. Anselm Korda, the bridge builder, crossed his school with drone music for the symphony “Precamber”: “My own school gives me the crowd and its separate breaths, but by itself it lets harmony only shimmer, never settle. Drone gives me beats as audible weight, a measure of where the deck stands.” Halina Dorsz keeps to the Viennese form because it “promises that every question gets an answer, and I want to keep that promise honestly,” and she breaks exactly one rule in it. Bellandi came to Platonov through his father's hunger and the language of bankruptcy files.</p>
+  <p>The choice of a school is the creator's own decision, and the creator explains it. Before them are the idea, the schools they know, their attitude to tradition, and what is being written around them right now. Anselm Korda, the bridge builder, crossed his school with drone music for the symphony “Precamber”: “My own school gives me the crowd and its separate breaths, but by itself it lets harmony only shimmer, never settle. Drone gives me beats as audible weight, a measure of where the deck stands.” Halina Dorsz keeps to the Viennese form because it “promises that every question gets an answer, and I want to keep that promise honestly,” and she breaks exactly one rule in it. Bellandi came to Platonov through his father's hunger and the language of tender documents.</p>
 
   <p>A school cannot be founded whenever a creator likes, only after a great turn in their life: an illumination, a loss, a return after silence, an illness, a secret miracle. At any other time the creator is told plainly that now is not the time, and chooses the nearest of the schools they know.</p>
 
@@ -146,14 +171,14 @@
 
   <p>The first is the creator's own taste, their inner critic: what they value, what they cannot stand, what they are proud of and what ashamed of. It guides the drafts and decides when to put a work down. The second is a circle of outside critics with names, with schools they love and despise, and with reputations. The third is the public, with its fashions, its word of mouth and its pull toward what is already popular.</p>
 
-  <p>None of them is infallible. The inner critic sometimes lets something weak through and sometimes kills something good; the outside critics sink a masterpiece and raise up a failure, and years later admit they were wrong. What is rejected does not die. Sketches, abandoned drafts and unfinished pieces stay in the notebooks, and one day they may be taken up again, like Kafka's manuscripts or Schubert's “Unfinished.” Repetition is still dangerous, and both the author and the critics watch for it, but it is an illness that is noticed or missed, not a sentence.</p>
+  <p>None of them has the final word. The inner critic sometimes lets weak things through and sometimes tries to kill something good; the outside critics can sink a masterpiece and extol an empty thing, and years later admit they were wrong. What is rejected does not die. Sketches, abandoned drafts and unfinished pieces stay in the notebooks, and one day they may be discovered, like the manuscripts of Kafka or Schubert. Repetition is still dangerous, and both the author and the critics watch for it, but it is an illness that is noticed or missed, not a sentence.</p>
 
   <h3>Notebooks</h3>
 
-  <p>Every work is born together with its notebooks: the idea, the inner critic's interrogation, the choice of school, the plan, the drafts, the revisions, the doubts. In the gallery all of this is as open as the finished pieces. Textual scholarship calls it the avant-texte, everything that came before the text, and in the atelier it is valued no less than the works themselves.</p>
+  <p>Every work is born together with its notebooks: the idea, the inner critic's interrogation, the choice of school, the plan, the drafts, the revisions, the doubts. In the gallery all of this is available alongside the finished work. Textual scholarship calls it the avant-texte, everything that came before the text, and in the atelier it is valued no less than the works themselves.</p>
 
   <figure>
-    <img src="img/mnemosyne/work-idea.jpg" alt="The idea of “The Glover” in the composer's notebook" loading="lazy">
+    <img src="img/mnemosyne/en/work-idea.jpg" alt="The idea of “The Glover” in the composer's notebook" loading="lazy">
     <figcaption>The idea of “The Glover” in the composer's notebook</figcaption>
   </figure>
 
@@ -167,7 +192,7 @@
 
   <h3>The climate</h3>
 
-  <p>All of this folds into a dozen qualities of experience: turbulence, volatility, crowding, strain, scars, loss, renewal, steadiness, density, closedness, age, abundance or scarcity. The climate has a memory: what is recent weighs more, but nothing is forgotten completely. Past this boundary only the climate gets through.</p>
+  <p>All of this folds into a dozen qualities: turbulence, volatility, crowding, strain, scars, loss, renewal, steadiness, density, closedness, age, abundance or scarcity. The climate has a memory: what is recent weighs more, but nothing is forgotten completely.</p>
 
   <h3>Temperaments</h3>
 
@@ -175,7 +200,7 @@
 
   <h3>Down to the score</h3>
 
-  <p>The climate reaches the work itself as inclinations rather than images, and the creator's taste weighs them. Interwoven services pull toward dense polyphony, a closed network toward strict closed forms, volatile load toward rhythmic unevenness, steadiness toward long arcs, age toward a late style. A symphony can take the abstract shape of a year lived through, where the storm stood and how long the lull lasted, as its proportions and its curve of tension, the way Gubaidulina used Fibonacci numbers. The same weather gives different things to two creators.</p>
+  <p>The climate reaches the work itself as inclinations rather than images, and these inclinations shape the creator's taste. Interwoven services pull toward dense polyphony, a closed network toward strict closed forms, volatile load toward rhythmic unevenness, steadiness toward long arcs, age toward a late style. A symphony can take the abstract shape of a year lived through, where the storm stood and how long the lull lasted, as its proportions and its curve of tension, the way Sofia Gubaidulina used Fibonacci numbers. The same weather gives different things to two creators.</p>
 
   <p>The live atelier is only a few days old, and the climate has been steady all that time: no incidents, no losses. To show how one and the same event lands on different people, we ran the mechanics of life a year ahead, without models, on a synthetic cluster, Leonia, with a real load history: thirty-one incidents, eight tenants, a Kubernetes upgrade in September. A run like this has no works, only fates; and no names either, because the creators write their names for themselves.</p>
 
@@ -185,7 +210,7 @@
 
   <p>Writer number two felt the incident least of all. She had strength to spare, her despair never rose above a tenth, and in June her wonderful year began: her own Boldino autumn, Pushkin's most fertile season, in the middle of summer.</p>
 
-  <p>Writer number four felt it more strongly and met it already at the edge: despair close to one, a quarter of his strength left. After the incident an inner heaviness he had not had before began to accumulate every night. In May he fell silent, because he had begun to repeat himself; in August he fell ill and recovered, in October he fell ill again, in November a third time, and he died, having managed on his last night to finish a piece that was accepted. While he was still alive, researchers found an old work in his notebooks and published it.</p>
+  <p>Writer number four felt it more strongly and met it already at the edge: despair close to one, a quarter of his strength left. After the incident an inner heaviness he had not had before began to accumulate every night. In May he fell silent, because he had come to repeat himself and realized it; in August he fell ill and recovered, in October he fell ill again, in November a third time, and he died, having managed on his last night to finish a piece that the critics accepted. While he was still alive, researchers found one of his old, unknown works in his notebooks and published it as well.</p>
 
   <p>Composer number five, born on the night the atelier's first composer died, felt the incident more sharply than anyone: within two weeks the scars reached their limit for him. But he did not break. His despair grew but stayed bearable, and in eight nights his deferred idea gained 68 points of maturity, while the others gained three or four over the same nights. For him the storm became a time of ripening.</p>
 
@@ -245,6 +270,16 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
 
   <p>First the creator writes the idea, that is, one sentence about what they want to do to the listener and a paragraph about what they want to say. The prompt from which the idea is born contains their self-portrait, their teachers, their inner weather, the poetics of their school and the climate of the cluster translated into feelings, without a single fact about the cluster. The idea is interrogated by the inner critic, who has his own notions of taste. If the answer does not satisfy him, the creator rewrites the idea, seeing both the previous version and the critic's objections. If the second version does not satisfy him either, the idea is put aside and turns into a problem that will mature until it comes back as an insight.</p>
 
+  <figure>
+    <img src="img/mnemosyne/en/work-manifesto.jpg" alt="The manifesto of the idea of “The Glover”: the supertask, the thought, why now" loading="lazy">
+    <figcaption>The manifesto of the idea of “The Glover”: the supertask, the thought, why now</figcaption>
+  </figure>
+
+  <figure>
+    <img src="img/mnemosyne/en/work-interrogation.jpg" alt="The inner critic's interrogation: the idea accepted in the first round" loading="lazy">
+    <figcaption>The inner critic's interrogation: the idea accepted in the first round</figcaption>
+  </figure>
+
   <p>An accepted idea gets a method. The creator chooses a school from those they know or one of the schools founded in the atelier itself, and they can cross two schools, break one principle of their own school or declare a new one. At the same point they choose the form and the ensemble, seeing in which forms and for which ensembles their latest works were written. Then the undertones are written, that is, the shades the work has to carry, and the structural inclinations are chosen from the climate, which the creator's taste is free to weigh in its own way.</p>
 
   <p>After that the composer writes the plan. The plan is JSON composed according to the grammar of the school or of the symphony, and the music in it is given not by notes but by decisions: which sections a movement consists of, in which metre and mode it goes, which instruments play, who leads the melody, who holds the background, and in which register and at what volume. Here is the beginning of the second movement of “The Glover,” which is called “The Fitting”:</p>
@@ -272,7 +307,12 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
 
   <p>The themes (<code>theme:glove</code>, <code>theme:arabesque</code>) are described separately in the same plan as sequences of pitches and durations, and <code>time_scale</code> stretches or compresses a theme for a single voice. This is how the flute, the clarinet and the cello play the same material at different tempi, and the result is the chase in free rhythms that Korda wrote about in his idea. Nothing the plan does not name appears in the score. This strictness had to be introduced after the first version of the grammar added the same harp to every symphony.</p>
 
-  <p>The work goes in rounds. First a sketch is written, the studio returns a score, an analysis and images of three pages for it, and the composer “listens” to the sketch through the analysis and the notes. The model knows that this is not real listening, and the prompt says so. Then up to three drafts are written, each with its own scale of revision: the first corrects form and dramaturgy, the second texture and voice leading, the third nuance. After each draft the inner critic gives a verdict, measuring the work by the measure of its school and the masters of that school, not by general taste. If the critic still asks for revisions and the drafts have run out, the decision is left to the creator: a confident one lets the work go over the critic's head, and an unsure one leaves it unfinished. The novelty of an accepted work is computed as the distance between its musical features and the features of the author's whole previous catalogue, and over time this figure adds up to how written out the author is.</p>
+  <p>The work is built in cycles. First a sketch is written, the studio returns a score, an analysis and images of three pages for it, and the composer “listens” to the sketch through the analysis and the notes. The model knows that this is not real listening, and the prompt says so. Then up to three drafts are written, each with its own scale of revision: the first corrects form and dramaturgy, the second texture and voice leading, the third nuance. After each draft the inner critic gives a verdict, measuring the work by the measure of its school and the masters of that school, not by general taste. If the critic still asks for revisions and the drafts have run out, the decision is left to the creator: a confident one lets the work go over the critic's head, and an unsure one leaves it unfinished. The novelty of an accepted work is computed as the distance between its musical features and the features of the author's whole previous catalogue, and over time this figure adds up to how written out the author is.</p>
+
+  <figure>
+    <img src="img/mnemosyne/en/work-listening.jpg" alt="How the composer listened to his drafts: the sketch not brought off, score 0.62" loading="lazy">
+    <figcaption>How the composer listened to his drafts: the sketch not brought off, score 0.62</figcaption>
+  </figure>
 
   <h3>How notes and sound come out of the plan</h3>
 
@@ -280,7 +320,7 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
 
   <p>The score is built by music21, an MIT-licensed Python library for working with music notation. The school's grammar reads the plan and lays it out into music21 voices, bars and notes, after which the orchestration distributes the musical lines among the instruments. It takes into account ranges and transpositions, the breathing of the winds, bow changes in the strings, doublings and the division of sections into divisi, and an assignment that cannot be played stops the work with an error.</p>
 
-  <p>The finished score is written to MusicXML, an open music notation format that Sibelius, MuseScore, Finale and Dorico can read. Then <code>musicxml2ly</code> converts the MusicXML into LilyPond source, LilyPond engraves a PDF from it, and <code>pdftoppm</code> cuts page images out of the PDF for the critic. Before engraving, the studio rereads the written MusicXML and checks it against the original score note for note. If even one pitch differs, the work goes no further. Once this check caught a quarter tone lost when a trumpet part was transposed.</p>
+  <p>The finished score is written to MusicXML, an open music notation format that Sibelius, MuseScore, Finale and Dorico can read. Then <code>musicxml2ly</code> converts the MusicXML into LilyPond source, LilyPond produces a PDF from it, and <code>pdftoppm</code> cuts the single PDF into pages for the critic. Before the PDF is produced, the studio rereads the written MusicXML and checks it against the original score note for note. If there is a discrepancy anywhere at all, the work goes no further. Once this check caught a quarter tone lost when a trumpet part was transposed.</p>
 
   <p>The sound is made from the same score. Each part is played by its own instance of sfizz, a free sampler for the SFZ format. SFZ is a text description of which sample of a live instrument sounds on which note, at which volume and with which technique. The samples come from open libraries: Sonatina Symphonic Orchestra and VSCO (Versilian Community Sample Library) for the orchestra, FreePats for the accordion, and VCSL for the Vietnamese zither đàn tranh. In all, the studio has 93 patches. The tracks are placed according to the seating of the orchestra, pass through convolution with the impulse response of the Jack Lyons Concert Hall at the University of York from the OpenAIR library, and are levelled to −20 LUFS with a peak limit. From this, ffmpeg makes FLAC and mp3 files, for the whole work and for each movement.</p>
 
@@ -322,13 +362,60 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
 
   <p>A published work is read by the outside critics. There are six of them, and each has a voice of their own: Mira writes laconically, Leon argues, Ada writes as a lyric poet, Pavel as a scholar, Iris as an ironist, and Nora confidingly, as if in a letter to someone close. Each has their own values, schools they love and dislike, a reputation, and a mood that also depends on the climate. Before reading, a critic has an expectation, and after reading the critic may change their mind. The author has to live with the verdict that was printed, and if it was crushing, the author's despair grows.</p>
 
+  <figure>
+    <img src="img/mnemosyne/en/critics.jpg" alt="The atelier's critics: voice, what they write about, how many texts and the average score" loading="lazy">
+    <figcaption>The atelier's critics: voice, what they write about, how many texts and the average score</figcaption>
+  </figure>
+
   <p>The chronicler writes biographies strictly from the events of a life and invents nothing. The Translator translates into Russian everything written in other languages and keeps the finished translations so as never to translate the same thing twice. He takes no part in the life of the atelier, does not age and influences no one. A translation into which a character from a foreign alphabet has slipped, a Chinese character in the middle of a Russian sentence, for example, is sent back.</p>
 
-  <h3>Models and money</h3>
+  <h3>How the models are connected</h3>
 
-  <p>For each role, the creator, the critic, the chronicler, the “eye” that looks at the pages of a score, and the Translator, the owner assigns a list of models that are tried in turn. A model can be an external API, Anthropic or any OpenAI-compatible one, or a model running in the same cluster through llama.cpp, vLLM or Ollama. Only artistic context goes to the models, and the snapshot of the cluster goes nowhere.</p>
+  <p>The atelier itself contains no model at all. It only calls models over HTTP, and which models are used and where they run is decided by the owner in the chart values. Each endpoint is described separately, with its address, model name, token limit, timeout and price, and then the endpoints are handed out to roles. This is the configuration of our atelier, with only the references to keys removed:</p>
 
-  <p>In our atelier the creators write on Claude Opus, while the critics, the chronicler, the “eye” and the Translator work on Claude Sonnet. By measurements made during development, one composer's work with a sketch and three drafts costs about seven dollars, and one critic's reading of score pages costs about thirty cents. The atelier keeps its own book of expenses and can hold to a monthly budget: when the budget is used up, the creators wait for the start of the next month. Identical requests are answered from a cache.</p>
+<pre><code>models:
+  endpoints:
+    opus:
+      backend: anthropic
+      base_url: https://api.anthropic.com/v1
+      model: claude-opus-5-5
+      vision: true
+      max_tokens: 64000
+      timeout: 1800
+      price_in: 4      # dollars per million input tokens
+      price_out: 20    # dollars per million output tokens
+    sonnet:
+      backend: anthropic
+      base_url: https://api.anthropic.com/v1
+      model: claude-sonnet-5-5
+      vision: true
+      max_tokens: 16000
+      timeout: 600
+      price_in: 2
+      price_out: 10
+  roles:
+    artist: [opus]
+    critic: [sonnet]
+    chronicler: [sonnet]
+    eye: [sonnet]
+    translator: [sonnet]</code></pre>
+
+  <p>There are five roles. The creator (<code>artist</code>) writes ideas, plans, drafts and texts. The critic (<code>critic</code>) judges: both the creator's inner critic, who interrogates the idea and gives verdicts on drafts, and the outside critics with their reviews work under this role. The chronicler (<code>chronicler</code>) writes biographies, the “eye” (<code>eye</code>) looks at the images of score pages, and the Translator (<code>translator</code>) translates. Which role is needed is determined by the name of the step: everything that begins with <code>interrogation</code>, <code>listen:</code> or <code>verdict</code> goes to the critic, everything to do with images goes to the “eye”, and the rest goes to the creator. Several endpoints can be listed for each role, and if the first is unavailable, the request goes to the second. Instead of an external API you can specify a model running in the cluster itself; the endpoint then has <code>backend: openai</code>, <code>location: cluster</code> and the address of a llama.cpp, vLLM or Ollama server.</p>
+
+  <p>Every step of the work is a separate request with a strict response schema. The schema is described in the code as a pydantic model. For example, this is the response of the inner critic listening to a composer's draft:</p>
+
+<pre><code>class Listening(BaseModel):
+    verdict: Literal['accept', 'rewrite', 'repetition']
+    reasons: str
+    corrections: list[str]
+    matters: bool                   # whether this work needs a chapter in the biography
+    quality: float = Field(ge=0, le=1)</code></pre>
+
+  <p>A JSON Schema is built from it and sent to the Anthropic API in the <code>output_config</code> field, so the model physically cannot answer with anything other than an object of this shape. The response is still checked once more by pydantic on the atelier's side, because the API does not accept some constraints, such as the range from 0 to 1 for the <code>quality</code> score, and they have to be cut out of the schema before sending. If the provider is overloaded or the network drops, the living atelier does not abandon the work but waits and repeats the request with pauses of 15, 30, 60, 120, 240 and 420 seconds, about a quarter of an hour in total. Responses are put into a cache keyed by the hash of the request, so a repeated identical request, for example after the pod restarts in the middle of a work, costs nothing. Every call is written into the notebook: which model answered, how many seconds it took and what it answered. The body of an error is never written down, because the provider may return the key and part of the prompt in it.</p>
+
+  <p>Everything to do with infrastructure has been cleaned out of the prompts. A creator is never told about the cluster, pods or incidents and receives only the climate translated into feelings. The models never receive the snapshot of the cluster at all: only artistic context goes to them.</p>
+
+  <p>Every call, with its token count and price, is written into the expense book <code>spend.jsonl</code>. From 15 November, when we turned it on, to 18 November the atelier spent 172 dollars: 111 went on 2133 Opus calls and 61 on 2545 Sonnet calls, and over this time 62 works were accepted, which comes to less than three dollars per accepted piece on average, not counting the rejected ones. For comparison, by measurements made during development, a full composer's work with a sketch and three drafts costs about seven dollars, and one critic's reading of score pages about thirty cents. The <code>addon.budget</code> value sets a monthly budget, and when it is used up, the creators wait for the start of the next month.</p>
 
   <h3>How the backup hides in the works</h3>
 
@@ -364,11 +451,16 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
 
   <p>The gallery shows everything the atelier has made, and on the <a href="https://mnemosyne.scheherazade.workshop.aenix.io/restore.html">restore page</a> it hands out all the carriers as a single archive, <code>carriers.tar.gz</code>. This is the way back: the owner downloads the archive, assembles the state from it on their own machine with their key, installs the platform and the atelier's chart in suspended mode into a new cluster, and applies the restored objects. How this is done step by step is described below, in the section on installation.</p>
 
+  <figure>
+    <img src="img/mnemosyne/en/restore.jpg" alt="The restore page: which cluster snapshots have already been collected and to what moment the cluster can be brought up" loading="lazy">
+    <figcaption>The restore page: which cluster snapshots have already been collected and to what moment the cluster can be brought up</figcaption>
+  </figure>
+
   <p>The most durable backup is the one that people cannot stop repeating.</p>
 
   <h2>What had to be fixed</h2>
 
-  <p>Most of the time went into making the creators stop writing the same thing. Nearly every failure looked the same: the works of different people came out alike, and each time the cause turned out to lie not in the models but in the way we ourselves had built the world.</p>
+  <p>Most of the time went into making the creators stop writing the same thing. Nearly every failure looked the same: the works of different people came out alike, and each time the cause turned out to lie not in the models but in the way the world was built.</p>
 
   <p><strong>Everything in one quiet domestic register.</strong> The first works converged on one intonation, which always had some object, some moment and, without fail, a kitchen. It turned out that newcomers wrote their idea before any school at all had reached them, and our prompts carried one aesthetic for everyone. Now the poetics of the creator's own school enters the idea from the very start, the draft is written and reread by that school's measure, and every creator comes to the atelier with a life before art, a character and a manner of writing of their own.</p>
 
@@ -396,6 +488,11 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
 
   <p><strong>Anselm Korda</strong> writes in English and builds bridges: “By day I calculate loads, argue with riveters, and walk girders above brown water. By night I write music.” He is closed and resilient, keeps to his school, aleatoric counterpoint, in which each musician decides for himself when to come in, and he has already written six accepted symphonies.</p>
 
+  <figure>
+    <img src="img/mnemosyne/en/artist-korda.jpg" alt="A creator's page: Korda's self-portrait and the score of his work" loading="lazy">
+    <figcaption>A creator's page: Korda's self-portrait and the score of his work</figcaption>
+  </figure>
+
   <p><strong>Halina Dorsz</strong> is a Polish fisherwoman on a seiner. She “grew up between the docks and the fish market, among people who shout prices as if they were singing cantatas.” She is open to everything new, but fragile and lonely. She writes in the manner of Viennese classicism; the critics rejected two of her works as repetition, and her despair has begun to accumulate.</p>
 
   <p><strong>Tomé Arrais</strong> writes in Portuguese and grew up in an old quarter of tinsmiths and bookbinders, “in a big city that never looked at us.” He is open and resilient, and he moves from the fairy tale to skaz and on to the epistolary novel.</p>
@@ -403,7 +500,7 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
   <p><strong>Ignazio Bellandi</strong> writes in Italian and “was born twice: the first time in a railway crossing house in the middle of the steppe, where the trains went by without stopping and the wind carried off even the words; the second time now, in mid-November, when I understood that I had to write or suffocate.” He has no teachers and keeps away from people. He writes skaz, magical realism, and prose in the school of Platonov.</p>
 
   <figure>
-    <img src="img/mnemosyne/gallery-creators.jpg" alt="The atelier's creators: who they are, which art, which school and how many works" loading="lazy">
+    <img src="img/mnemosyne/en/gallery-creators.jpg" alt="The atelier's creators: who they are, which art, which school and how many works" loading="lazy">
     <figcaption>The creators of the atelier: who, in which art, in which school, and how many works</figcaption>
   </figure>
 
@@ -602,17 +699,792 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
     <p class="src">Translated from the Italian. Original, “In quanto”: <a href="https://mnemosyne.scheherazade.workshop.aenix.io/work-mnemosyne-atelier-0004-w00022.html">the work's page in the gallery</a>.</p>
   </details>
 
+  <h3>Unravel</h3>
+
+  <p>Tikhon Molchanov, “The Poetics of the Unentrusted”, in Russian (<a href="https://github.com/tym83/mnemosyne/blob/main/examples/leonia/raspustit.ru.txt">original</a>). This story and the next one were written back in the runs on the synthetic cluster Leonia, which came up in the section about one incident and three fates. Molchanov wrote in Russian, and below is an English translation of his text.</p>
+
+  <p>The narrator keeps a workshop where old knitted things are unravelled back into yarn, and one day a woman brings him a green sweater with a cuff that has been cut. Molchanov founded the school in which the story is written himself, on the seventh night of his life, because, as he explained, “none of the schools on offer holds on to the main thing: closeness does not give the right to dispose of what belongs to another.” He ended the manifesto of the new school with three rules: “mend what you have damaged; ask where a pocket is needed; do not demand that your mending become someone's reconciliation”, and, as the laws of the atelier require, he immediately wrote the first piece in it. At the end of the text are the variants that the author did not strike out: that is how they were kept in his notebook.</p>
+
+  <details>
+    <summary>Unravel: read the translation</summary>
+
+    <p>On Tuesday a woman laid a green sweater in front of me and did not take her hands away at once. With one palm she held the shoulder, with the other the sleeve, as if the thing might slide off a level table. The sweater was heavy, with a wide ribbing at the bottom. On the left side, quite low, there was a dark patch pocket. A thread stuck out of the cuff.</p>
+    <p>“It’s already started,” she said.</p>
+    <p>I drew the sleeve toward me. The cuff had been cut near the seam; a few rows had come undone, and the rest had bunched up by the cut in small snags. The woman took hold of the sleeve with both hands. I pulled the loose end, and she let a little of the fabric go toward me.</p>
+    <p>That is how people hold a thing while someone is sewing it up.</p>
+    <p>“How much will it cost?”</p>
+    <p>“That depends on how much can be saved.”</p>
+    <p>She looked at the sweater, then at the bags under my table. In a clear bag lay short red threads, in a blue one a loose beige wool tangled with a darker one. Two more bags stood against the wall, pinned there by an empty basin. With my foot I pushed the blue one further in.</p>
+    <p>“Sell the yarn,” she said. “Keep the money for the work. If it isn’t enough, I’ll add more.”</p>
+    <p>There was no room on the table for the whole sweater. I had to move the scales to the windowsill and put the box of buttons on the floor. The woman held the edge while I cleared the board. Under her nails there were thin white lines of flour or chalk. On the thumb of her right hand the skin had split beside the nail and been smeared with something shiny.</p>
+    <p>She said her name was Nina Sergeyevna.</p>
+    <p>“Do you need a receipt?” I asked.</p>
+    <p>“Let’s have one.”</p>
+    <p>I wrote in her name, the color of the item and the word “unravel.” In the space for the amount I put a dash.</p>
+    <p>“Payment after weighing. I don’t count wet wool. It still has to dry, and more will fall out of it.”</p>
+    <p>“All right.”</p>
+    <p>“And buyers don’t pay for scraps.”</p>
+    <p>She nodded so quickly that it was as if I were the one offering her too much.</p>
+    <p>The room behind the shop was narrow. If someone sat at the table, you could get to the sink only sideways. Customers had long since stopped washing their hands at the sink: the door here was covered by a curtain, and behind it my half began. Wooden frames for skeins hung on the wall, and a faded towel on a nail. The window looked out on the passage between our building and the bakery. Even on a clear day you needed a light here by noon, and in November the day did not venture in at all.</p>
+    <p>Nina Sergeyevna took off her coat. Under it was a cardigan buttoned on the wrong buttons. She noticed me looking, ran her palm down her stomach and rebuttoned the bottom two.</p>
+    <p>“May I sit for a while?”</p>
+    <p>I pulled a second stool out from under the table.</p>
+    <p>She put her bag on her knees but kept her hands on the sweater.</p>
+    <hr>
+    <p>I was not a craftsman, though the owner of the shop sometimes told customers, “We have a craftsman back there, ask him.” At first I corrected her. Then I stopped coming out from behind the curtain when the talk was about me, and there was no one left to correct.</p>
+    <p>Olga gave me the knitted things that hadn’t sold. Some had been left on consignment and not collected when the time ran out; others were brought in by the sackful from the start. For things that could still be put out for sale, she settled with the owners. The ones handed over for good, to be taken apart, she entered in my notebook by weight. I unpicked the seams, took off zippers and buttons, looked for where the knitting began. Then I unraveled it, tied the yarn into skeins, washed, dried and rewound it.</p>
+    <p>Two thirds of the takings were mine. Water, space and bags counted as Olga’s share. For days when nothing sold, nobody paid anybody.</p>
+    <p>Decent wool came along rarely. More often people brought cardigans cut out of knitted fabric: you unravel one row and get a thread as long as the cardigan is wide, the next row the same. I kept these lengths separately, though I knew in advance that nobody would take them. Now and then someone asked for stuffing for a pillow, but wanted it for free. Olga allowed me to give away the worst scraps and got angry if I started explaining to the customer how much work was in the bag.</p>
+    <p>“He doesn’t need your work in a pillow,” she would say. “He needs bulk.”</p>
+    <p>There was less and less room under the table.</p>
+    <p>Once I gave her back a child’s vest that had felted at the neck. I said that wool like that wouldn’t unravel. The vest was small, with two cables down the front, and its owner had sewn a white strip with a name onto the inside. Three letters were left on the strip. I couldn’t find which edge to start from, and for some reason I couldn’t admit it. Olga took the vest back into the shop, to the box of cheap things. A week later someone took it along with two sheets.</p>
+    <p>Since then I had especially liked people who said, as they handed a thing over, “You know best.”</p>
+    <p>Nina Sergeyevna didn’t say it. But she didn’t ask how long I had worked here, didn’t test the scissors, and didn’t even warn me that the sweater was hand-knitted. She turned the cuff toward me and waited.</p>
+    <p>I took out a few damaged rows. The yarn came away with a dry crackle. At the folds the wool was duller; near the seam it kept a deep green. Unraveling the ribbing from the bottom turned out to be awkward: the stitches caught on one another, and I had to pull the end through each one. I explained that first I would take the seams apart and start the sleeve from the top.</p>
+    <p>“It’s all the same to me how you find it easier,” she said.</p>
+    <p>That was almost what I liked to hear.</p>
+    <p>Behind the curtain Olga was arguing with a man about a jacket. He had brought it in a week ago and now claimed the price on the tag had been different. While they looked for the record, I spread out the shoulders of the sweater. There were stripes on the back from the drying rack. Nina Sergeyevna watched my fingers.</p>
+    <p>“Did you wash it recently?”</p>
+    <p>“The day before yesterday. It takes a long time to dry.”</p>
+    <p>“Good wool.”</p>
+    <p>“Yes.”</p>
+    <p>She said it without pleasure.</p>
+    <hr>
+    <p>At first I decided the sweater had belonged to her husband. It was broad, and the sleeves had stretched at the elbows. Nina Sergeyevna took a pair of men’s trousers out of her bag, turned up the bottom of one leg and began looking in the lining for a needle. I pushed the box of thread toward her.</p>
+    <p>“I have my own,” she said. “Only I could use some light.”</p>
+    <p>I switched our stools. She ended up closer to the window. As she sat down, the green sleeve slipped off the table into her lap; she picked it up at once and laid it beside me.</p>
+    <p>“Your husband’s?” I asked.</p>
+    <p>“The trousers? Yes.”</p>
+    <p>I touched the sweater.</p>
+    <p>“That’s my daughter’s.”</p>
+    <p>She was threading the needle and couldn’t see my face.</p>
+    <p>“She doesn’t need it anymore?”</p>
+    <p>“There’s a lot she doesn’t need, and she wears it.”</p>
+    <p>I wrote the number on the receipt, put it under the scissors and set to work on the seam. The words seemed clear enough. An old sweater, an unneeded sweater, wool for sale. I already had orders lined up, and I was working out who the green would suit.</p>
+    <p>“When did you knit it?”</p>
+    <p>“Four years ago now. I sat over it for three months. In the evenings. Back then there was work too, and everything else.”</p>
+    <p>She turned up the trouser leg and pressed the fold with her nail.</p>
+    <p>“I want those three months back.”</p>
+    <p>“Hardly anyone knits yarn that loosely now,” I said. “Usually it’s tight, so the wind doesn’t get through.”</p>
+    <p>That was an answer not to her words but to the thing. She went on, though, as if I had agreed.</p>
+    <p>“I keep reminding her. Put it on, I knitted it for you. Don’t throw it around, I sat over it. Yesterday I heard myself. There I am again: I spent three months… And she says, ‘I wear it when you’re not around, too.’”</p>
+    <p>Nina Sergeyevna stopped with the needle above the fold.</p>
+    <p>“Well, there it is. I’ve lived to see it. That’s how she answers now.”</p>
+    <p>She pulled the thread, but the knot didn’t hold in the fabric. She had to start again.</p>
+    <p>“Maybe she just wears it,” I said.</p>
+    <p>“I know how she said it.”</p>
+    <p>I didn’t argue. I was pleased that a woman who had come in half an hour ago was talking about this with me and not with Olga behind the curtain. I left the scissors lying where they were and waited while she tied the knot. She blew on the end of the thread.</p>
+    <p>“This morning I took it off the rack. She’s on shift. I thought I’d quickly unravel it myself. I found the end, made a cut. And then I keep putting it on my arm. I hold it here,” she showed her wrist, “and think: it could be finished. It still could.”</p>
+    <p>“It could have been.”</p>
+    <p>“That’s why I brought it to you.”</p>
+    <p>Now I looked up.</p>
+    <p>She made the first stitch in the trousers. The stitch came out long, and she pulled the needle back.</p>
+    <p>“You won’t do half a day of it and then give up, will you? You have to earn a living too.”</p>
+    <p>Behind the curtain the front door banged. The man with the jacket had left. Olga asked whether we wanted tea. Nina Sergeyevna answered for both of us:</p>
+    <p>“No, thank you.”</p>
+    <p>I picked up the scissors and slipped them under the joining thread of the shoulder.</p>
+    <hr>
+    <p>I had three gray vests of the same size, brought from a shoe repair shop that had closed. One woman must have knitted them: on all of them the stitches were decreased the same way, and the same knot stuck out near the right shoulder. The first one I had taken apart the week before. It gave a hundred and eighty grams of clean dry yarn. On Monday Tamara bought it and left seven hundred rubles for the next six hundred grams by Thursday.</p>
+    <p>The six hundred were to come from the two remaining vests and my stock of gray wool. Tamara was going to knit a long sleeveless top for her sister. From the first batch she had already cast on the back. I showed her the other vests, and we agreed that the shade barely wandered.</p>
+    <p>Now they lay on the top shelf, under the box of buttons, and the green sweater took up the table. I decided I would manage both. The sleeve came easily; the joining seams gave too. Nina Sergeyevna hemmed one trouser leg and laid the other against it.</p>
+    <p>“He can’t have the edge catching,” she said. “He uses a walker. He gets angry himself when I fix things. And then he steps on it and calls me.”</p>
+    <p>She measured off the fold and pinned it. In her bag was a loaf of bread wrapped in a towel. I saw the end of the loaf every time she bent for the scissors.</p>
+    <p>“And what will you do in the evenings?” I asked.</p>
+    <p>“What do you mean?”</p>
+    <p>“Well, when they’re free.”</p>
+    <p>She looked at the trousers on her knees.</p>
+    <p>“This, for now.”</p>
+    <p>By lunchtime I had separated the sleeve and unraveled it almost to the cuff. A big curly bundle lay on the back of the stool. Now and then Nina Sergeyevna ran her fingers over it. She wasn’t checking it or untangling it, just touching it, the way people touch the edge of a tablecloth during a conversation.</p>
+    <p>Under the arm the wool had felted. The seam thread, the stitches of the sleeve and the edge of the body had got mixed up there. I spent a long time separating them with a needle, then got tired. I decided to cut out the dense little piece whole. Nina Sergeyevna was folding the trousers just then. I squeezed the fabric, slid the lower blade under it and heard a short crunch.</p>
+    <p>Three stitches opened up on the body.</p>
+    <p>I held them down with my thumb. If the sweater was going to be unraveled anyway, nothing terrible had happened. That is what I told myself, though there was a lot of work left before the unraveling was done, and now the loose ends would have to be tied.</p>
+    <p>“Is that it?” Nina Sergeyevna asked.</p>
+    <p>“No, it’ll be a long while yet.”</p>
+    <p>“I have to go home. He won’t eat lunch without me.”</p>
+    <p>She put on her coat, took the receipt and counted the money in her purse.</p>
+    <p>“How much should I leave now?”</p>
+    <p>“Later. I don’t know the yield yet.”</p>
+    <p>At the door she came back to the table.</p>
+    <p>“Don’t put it off, now.”</p>
+    <p>“I’ll do it.”</p>
+    <p>I wanted her to leave at ease. She took her bag in both hands and went through the shop, the trousers in her bag brushing the skirts that hung by the aisle.</p>
+    <p>The pocket got in the way of spreading out the bottom edge. I slipped the scissors under the thread it was sewn on with and cut it in several places. It could have been unpicked more neatly. Crumbs spilled onto the table, a dry bit of tangerine peel, a white thread. A small safety pin was stuck in the corner of the pocket.</p>
+    <p>I brushed the crumbs into my palm. The sweater smelled of wet wool, though it was already dry, and of something sweet from the pocket.</p>
+    <p>Before this I had already called it unneeded twice: once aloud, telling Olga why I needed one more thing on the table, and once in a note on the back of the receipt.</p>
+    <hr>
+    <p>The daughter came when Olga was already taking the price tags off the rack outside. First I heard her question, then the owner’s silence. Usually Olga answered at once, even if she knew nothing.</p>
+    <p>The curtain was drawn aside.</p>
+    <p>The girl wore a short jacket over a thin cardigan. Wet snow pellets sat on the collar of the jacket. She held the receipt by the corner, between two fingers.</p>
+    <p>“Where is it?”</p>
+    <p>I stood up. The green sweater lay in front of me, folded so that the cut under the arm was on the inside. Next to it lay the sleeve, no longer a sleeve, and the pocket.</p>
+    <p>She went to the table, unfolded the body and held it up by the shoulders. The empty armhole sagged. The girl lowered the thing, touched the other sleeve, then picked up the pocket.</p>
+    <p>“What was this for?”</p>
+    <p>“To get to the edge.”</p>
+    <p>“What edge?”</p>
+    <p>I showed her.</p>
+    <p>“But it’s sewn on separately. You could have left it alone.”</p>
+    <p>“For a full taking apart I’d have had to anyway.”</p>
+    <p>“I didn’t ask for a full taking apart.”</p>
+    <p>She said it without raising her voice, and for the first time I heard in the words “a full taking apart” something I hadn’t heard that morning.</p>
+    <p>“Your mother brought…”</p>
+    <p>“I know. I found the slip at her place. She said she’d given it in to have a sleeve taken off.”</p>
+    <p>“No, she ordered the whole sweater unraveled.”</p>
+    <p>The girl looked at the receipt. There was only one word on it, which I had written myself.</p>
+    <p>“Give it back.”</p>
+    <p>I took the bundle from the back of the stool.</p>
+    <p>“This is yours too. I haven’t washed it yet.”</p>
+    <p>She didn’t hold out her hand. She stood holding the pocket and looking at the curly wool.</p>
+    <p>Olga stayed by the curtain. I wanted her to step in, to explain at least that the thing had been brought in willingly, but she asked the girl:</p>
+    <p>“Do you need a bag?”</p>
+    <p>“Yes.”</p>
+    <p>Only then did I notice she was trembling. Not crying, not choking with anger: her shoulders were trembling finely under the jacket.</p>
+    <p>“I can fix it,” I said.</p>
+    <p>The girl turned her face to me.</p>
+    <p>“Can you knit?”</p>
+    <p>“I’ll find someone. The sleeve is all there in the yarn. Almost all.”</p>
+    <p>“And this?”</p>
+    <p>She spread the cut under the arm. I saw her finger on the other side of the fabric.</p>
+    <p>“I caught that. When I was separating the felted place.”</p>
+    <p>Olga went for a bag. I was left alone before the girl and the green hole.</p>
+    <p>“By Friday,” I said. “I’ll try to have it by Friday.”</p>
+    <p>“I have work tomorrow.”</p>
+    <p>“We can find you something here.”</p>
+    <p>She glanced back at the curtain, behind which the clothes hung.</p>
+    <p>“I came to get my own.”</p>
+    <p>I didn’t offer anything more.</p>
+    <hr>
+    <p>Her name was Asya. She wrote it herself on the back of the receipt, where I had noted the unneeded thing. She crossed out my note with a single line and held the pencil over the paper for a long time.</p>
+    <p>“I’ll take the pocket now. And you don’t cut anything else.”</p>
+    <p>“All right.”</p>
+    <p>“You don’t unravel the other sleeve. Or the bottom. I don’t need it all to match afterward. I need to wear it.”</p>
+    <p>“Understood.”</p>
+    <p>“And you don’t give it to my mother. Even if she comes.”</p>
+    <p>I wrote that down. Asya didn’t check every word, only moved the paper closer to the light.</p>
+    <p>“I can leave it till Friday. On Friday I have a short shift. I’ll come by after two.”</p>
+    <p>She spoke as if she were dividing work among people she had known a long time and from whom she expected no particular care. I wanted to explain that nothing like this had happened to me with other people’s things before. But that wouldn’t have been quite true either: other people’s things passed through my hands all the time, and most often I didn’t know who else considered them theirs.</p>
+    <p>“You don’t need to pay anything,” I said.</p>
+    <p>“I hadn’t asked yet.”</p>
+    <p>She pulled her jacket tighter and did up the top button. Olga brought a thick men’s jumper from a shelf.</p>
+    <p>“Take this till Friday. It’s wide, but it’ll fit under your jacket. No deposit needed.”</p>
+    <p>Asya touched the collar.</p>
+    <p>“Is it scratchy?”</p>
+    <p>“A little. Over a cardigan it’s bearable.”</p>
+    <p>“Can I bring it back afterward?”</p>
+    <p>“You can.”</p>
+    <p>Asya took off her jacket and pulled on the jumper. One arm got stuck in the sleeve, and Olga helped her straighten the lining of the cardigan. For a moment both of them were taken up only with this: an elbow, a turned-out edge, someone else’s wide ribbing.</p>
+    <p>In the doorway Asya turned around.</p>
+    <p>“Did she tell you I don’t wear it?”</p>
+    <p>“She said you wear things you don’t need.”</p>
+    <p>“Ah.”</p>
+    <p>She fingered the pocket in her hand.</p>
+    <p>“Yesterday I told her I wear it without her, too. So she’d leave me alone. Not so she’d unravel it.”</p>
+    <p>It was the same phrase I had already heard that morning. Asya stuffed the pocket into her bag and left.</p>
+    <p>I sat down, took the receipt and for the first time read carefully everything I had written. There wasn’t enough room on the back. I could have started a new sheet, neat, without crossings-out, but I didn’t. Olga moved the stool back against the wall.</p>
+    <p>“Tomorrow go to Vera first thing,” she said. “You won’t knit this yourselves.”</p>
+    <p>“I know.”</p>
+    <p>“I don’t mean you. I mean in general.”</p>
+    <p>She took the scales off the windowsill, set them in front of me and closed the door to the shop. I was left with the wool in my lap. In two hours it had grown noticeably heavier, though the scales wouldn’t have shown it.</p>
+    <p>I unwound the bundle back into a skein. In places the yarn caught on my skin. It needed washing, drying, straightening, and before that all the broken stitches on the body had to be found and secured. I didn’t know in what order to take it on.</p>
+    <p>Two gray vests lay on the shelf. I had promised Tamara six hundred grams by Thursday.</p>
+    <hr>
+    <p><em>Wednesday</em></p>
+    <p>Vera Ilyinichna came at half past eight, before the shop opened. Olga had met her on the way and brought her through the back yard. Vera was carrying a string bag of jars and was displeased that we were standing in the doorway.</p>
+    <p>“It’s slippery out there, and you’re blocking the way.”</p>
+    <p>I moved the bucket.</p>
+    <p>She laid out the sweater, took off her glasses, put them on again. She looked at the cut longer than at the unraveled sleeve.</p>
+    <p>“Why was this cut?”</p>
+    <p>“It had felted.”</p>
+    <p>“I can see it felted. Why from that side?”</p>
+    <p>I showed her how I had held the fabric. She took the scissors, repeated the movement in the air and put them further away.</p>
+    <p>“You should have opened the seam first. It’s a double thread here. Pull out one, and the other would have loosened.”</p>
+    <p>“I was in a hurry.”</p>
+    <p>“Now I’ll be the one who has to hurry.”</p>
+    <p>She said it without any particular meaning, simply stating how things stood. She had an unfinished cardigan back of her own waiting, for a woman who was leaving on Saturday. Vera had also promised her daughter to sit with her grandson on Thursday afternoon. I listened and couldn’t tell whether she had agreed or was refusing.</p>
+    <p>“It has to be by Friday after two,” I said.</p>
+    <p>“I heard.”</p>
+    <p>She took the whole sleeve, counted a few rows, measured the width with her palm, then asked for a tape measure. Mine turned out to be in the box under the buttons. Vera told me to bring paper.</p>
+    <p>“This one is longer than it was. It stretched at the elbow. If I knit to match it, the new one will stretch later too. The owner needs to be asked how she wants to wear it.”</p>
+    <p>“She said not to change anything else.”</p>
+    <p>“I’m talking about the new sleeve. It doesn’t exist yet.”</p>
+    <p>Again I felt like a man being told the simplest things. I wanted to say that at least I knew how to unravel. Instead I straightened out the skein.</p>
+    <p>Vera ran the yarn through her fingers.</p>
+    <p>“Wash it first. In warm water, no sudden change. Don’t rub. And don’t wring it into a rope, or I’ll be fighting your rope afterward. Roll it in a towel. Dry it loose. We’ll see by evening.”</p>
+    <p>“And the hole?”</p>
+    <p>“The ends are short. Not everything can be picked up. I’ll secure it, draw it together. On the inside it’ll be thicker.”</p>
+    <p>“Can it be made invisible?”</p>
+    <p>“To you or to her?”</p>
+    <p>I fell silent.</p>
+    <p>“Under the arm it won’t show,” she added. “But she’ll feel it. Tell her straight away.”</p>
+    <p>For the sleeve, the assembly and the cut she asked two thousand two hundred. I was to prepare the yarn myself. If it turned out to be too little, extra yarn would be separate.</p>
+    <p>I didn’t have two thousand two hundred rubles to spare.</p>
+    <p>“Agreed,” I said.</p>
+    <p>Vera covered the sweater with a clean sheet so that lint and dust from the other things wouldn’t land on it. Then she took her jars and went for milk. A few minutes later she came back for the tape measure, which she had put in her pocket by mistake.</p>
+    <p>“And don’t touch the collar. It’s good.”</p>
+    <p>I hadn’t meant to touch the collar, but after she left I checked all the same whether I had done something to it the day before.</p>
+    <hr>
+    <p>When I started washing the green wool, Nina Sergeyevna came. She had her purse in her hands. She didn’t take off her coat.</p>
+    <p>“Did my daughter come by?”</p>
+    <p>“She did.”</p>
+    <p>“Did she take it?”</p>
+    <p>I pointed at the table. The sweater lay under the sheet, and she didn’t realize at once that it was the sweater.</p>
+    <p>“I thought you’d finished.”</p>
+    <p>“She asked for it to be restored.”</p>
+    <p>“Restored how?”</p>
+    <p>I turned back the sheet. Nina Sergeyevna looked at the empty armhole, at the other sleeve. I had pinned the cut, as Vera told me, and it looked smaller than it was.</p>
+    <p>“But I asked for it to be unraveled,” she said.</p>
+    <p>“And she’s asking for it back.”</p>
+    <p>“I’m paying for the work.”</p>
+    <p>The smell of wet wool rose slowly from the basin. I kept my hands over the water so as not to drip on the table.</p>
+    <p>“You won’t pay for this. I’m the one who cut it.”</p>
+    <p>“Then what do I owe?”</p>
+    <p>I dried my hands.</p>
+    <p>“Nothing for now.”</p>
+    <p>“Don’t give me ‘nothing.’ How long did you work yesterday?”</p>
+    <p>She opened her purse. Between the bills lay a slip of paper folded in half, with a list. I saw the word “bread” and three figures under it.</p>
+    <p>“Nina Sergeyevna, I won’t take money for the unraveling.”</p>
+    <p>She closed the purse, then opened it again. She took out the slip, smoothed it and put it back.</p>
+    <p>“She isn’t speaking to me. This morning she came for her cup. She took the cup, and not a word to me.”</p>
+    <p>I knew nothing about the cup. Yesterday, listening to her, I would have asked how long the daughter had lived on her own, how often she came by, how she helped with her father. Now every question seemed like the beginning of a job she might hand me next.</p>
+    <p>“She’ll come today to measure for the sleeve,” I said. “If she has time.”</p>
+    <p>“I’ll wait.”</p>
+    <p>“She doesn’t know you’re here.”</p>
+    <p>Nina Sergeyevna looked at me with dislike.</p>
+    <p>“I’m not a stranger.”</p>
+    <p>“I know.”</p>
+    <p>“Then why do you talk like that?”</p>
+    <p>I had no good answer. I wrung the edge of the towel over the basin, though there was no need to.</p>
+    <p>She went to the table and lifted the whole sleeve. She put her palm into the cuff and smoothed the ribbing. Then she took her hand out.</p>
+    <p>“I didn’t want her bowing to me for it for another five years.”</p>
+    <p>“She didn’t say yesterday that she bows to you.”</p>
+    <p>“There’s a lot you weren’t told.”</p>
+    <p>That was fair, and I couldn’t use the fairness of her words for anything useful.</p>
+    <p>Nina Sergeyevna stood by the stool. I offered her a seat, but she shook her head.</p>
+    <p>“If she comes, tell her…”</p>
+    <p>She stopped. I waited.</p>
+    <p>“Nothing. I’ll do it myself.”</p>
+    <p>In the doorway she asked where the pocket was. I said Asya had taken it. Nina Sergeyevna nodded and went out. The purse was still in her hand.</p>
+    <hr>
+    <p>Asya came before lunch with a bundle under her arm. In the bundle was Olga’s jumper. She said she had put it on in the morning but the collar rubbed her neck, and she asked for something else for the time being. Olga went to look.</p>
+    <p>Vera hadn’t come back yet. I showed Asya the note with the measurements and explained about the length. She pulled the remaining sleeve onto her arm, holding the body in front of her chest. The cuff covered her knuckles.</p>
+    <p>“This is how I like it.”</p>
+    <p>“It may stretch later.”</p>
+    <p>“Let it. I turn it up if it gets in the way.”</p>
+    <p>“The new one will be different after washing. Softer.”</p>
+    <p>“As long as it isn’t elbow-length.”</p>
+    <p>She laughed briefly, more from irritation. I wrote down the length from the shoulder. Then I told her about the seam under the arm.</p>
+    <p>“How thick?”</p>
+    <p>“I don’t know yet. Vera Ilyinichna said you’ll feel it.”</p>
+    <p>“And without it?”</p>
+    <p>“Part of the body would have to be unraveled and reknitted. That takes longer. And you forbade it.”</p>
+    <p>“I forbade you to cut anything else. If it needs reknitting, you should have said so yesterday.”</p>
+    <p>“Yesterday I didn’t know.”</p>
+    <p>Asya lowered the sweater onto the table.</p>
+    <p>“Then why did you promise it by Friday?”</p>
+    <p>Behind the curtain Olga was moving hangers. They knocked against each other, and I very much wanted her to come back in.</p>
+    <p>“So that you’d leave it,” I said.</p>
+    <p>Asya looked at me, then at the skeins hung over the basin.</p>
+    <p>“I left it because I have nothing to work in. There’s a draft from the door. In my kiosk. If I had two more, I’d take it right now and look for someone to do it myself.”</p>
+    <p>She spoke without pauses, for the first time not waiting for my answer.</p>
+    <p>“I don’t need you to calm me down. I need to understand what I’ll get on Friday. One sleeve different. A seam under the arm. Right?”</p>
+    <p>“Right.”</p>
+    <p>“Can the seam be redone later?”</p>
+    <p>“We can show it to Vera. I don’t want to make promises for her again.”</p>
+    <p>“We’ll show her. For now let her do what she has time for. Only don’t touch the bottom. I need it for the length.”</p>
+    <p>I asked whether she worked at the end of the line. Yesterday Nina Sergeyevna had mentioned a kiosk, but I had listened to her story as if the kiosk were only the place where her daughter was absent from home.</p>
+    <p>“At the far one, by the turnaround.”</p>
+    <p>“It’s cold there.”</p>
+    <p>“It varies.”</p>
+    <p>Olga brought a buttoned sleeveless top and a long scarf. Asya tried the top on over her cardigan, turned to the window, raised her arms. It was tight across the chest, but under a jacket there was no need to button it.</p>
+    <p>“It’ll do till Friday,” she said.</p>
+    <p>Before leaving, Asya took the pocket out of her bag. In one corner was the pin, which I hadn’t noticed when I gave it back.</p>
+    <p>“Did a key fall out here?”</p>
+    <p>“What key?”</p>
+    <p>“To the toilet. A little one, on a string.”</p>
+    <p>We looked under the table, in the basin, in the bag of crumbs. There was no key. Asya said she would check at home. I saw her to the curtain and asked whether she had worn the sweater often.</p>
+    <p>She stopped.</p>
+    <p>“Would that have helped yesterday?”</p>
+    <p>I stepped back so she could pass.</p>
+    <hr>
+    <p><em>The Sunday before these four days</em></p>
+    <p>Asya opened the kiosk at seven forty. Two buses stood at the end of the line; between them a man was tipping gray water out of a bucket. There had been a frost in the night. By the kiosk step lay a flat slab of ice with a cigarette butt frozen into it; Asya pushed it aside with her toe so she wouldn’t step on it later.</p>
+    <p>Inside it smelled of cardboard, sweet buns and a damp rag. The other shift had left the rag in the sink. Asya hung it on the edge of the bucket and wrote on a scrap of paper: “Lyuba, wring it out, please.” She looked at the note and added at the bottom: “It smells in the morning.” Then she put the scrap under the sugar bowl so it wouldn’t blow away.</p>
+    <p>The chair was rocking again. Under the short leg was a piece of cardboard that had gone soggy back on Friday. Asya pulled it out, tore a dry strip off a box of biscuits and folded it in four. She sat down and tested it. It was better, though now the chair leaned slightly toward the counter.</p>
+    <p>She wore the sweater over a cotton shirt. She hung her jacket on the nail by the door. She had to turn up the left cuff: the edge kept brushing the paper cups. She left the right one as it was, because she held her mug in her right hand more often, and the mug stayed warm a long time.</p>
+    <p>The first to come was a driver who always asked for the softest bun and got angry if Asya felt it through the bag.</p>
+    <p>“How else am I supposed to know?” she asked.</p>
+    <p>“You can see it.”</p>
+    <p>She picked the palest one. The driver approved, asked for two napkins, then came back for a third.</p>
+    <p>By nine it was warmer in the kiosk. Asya took off her scarf and ate half an egg standing over an open drawer. In the drawer were bags, spoons and her bread. Crumbs fell onto a bag; she shook them into her palm and ate those too. She didn’t get to the second half of the egg: two road workers came for tea.</p>
+    <p>When she sat down, the low pocket of the sweater ended up right under her left palm. In it was the toilet key on a blue string. Asya felt for it before going round behind the kiosk, and sometimes it was by this movement that she noticed she had been holding on for a long time.</p>
+    <p>There was also some tangerine peel in the pocket. Lyuba’s little nephew had put it there when he came by during the week: he wanted to make a scented pouch, and no pouch could be found. Asya had thrown out most of it, but one piece had got stuck by the seam. She took it out, sniffed it and threw it in the bucket.</p>
+    <p>Around noon a woman in a red hat asked her to write down three rubles against her name. Asya said three rubles didn’t need writing down. The woman took offense and left a glove on the counter as a pledge. After that Asya spent a long time looking at the stranger’s glove next to the buns, not knowing where to put it.</p>
+    <p>Her mother didn’t call that day. Asya remembered her when she saw a thin trace of flour on her sleeve. The same trace was left on the table at home after pirozhki. She brushed off the flour but didn’t brush down the whole sweater: just then a draft came in from the door behind her.</p>
+    <p>After her shift Asya brought the sweater to her mother’s to be washed. Her mother had a good drying rack, while in Asya’s rented room a wide garment fit only across the backs of two chairs and got in her neighbor’s way.</p>
+    <p>“Did you check the pockets?” her mother asked.</p>
+    <p>Asya took out the key, put it on the saucer by the bread bin and said:</p>
+    <p>“Yes.”</p>
+    <p>Later she took the key back along with some coins, but not right away. First she and her mother looked for where the saucepan lid had got to, and her father called from the other room asking them not to clatter: he had only just dozed off.</p>
+    <hr>
+    <p>By Wednesday evening the green wool was still damp. I hung the skeins further apart, put a dry basin under them and went for Vera Ilyinichna. She lived across the yard, on the ground floor. She opened the door with flour on her forearm.</p>
+    <p>“I told you I’d come by.”</p>
+    <p>“It’s almost dry.”</p>
+    <p>“Almost doesn’t suit me. If I knit it damp, it’ll dry and the size will go.”</p>
+    <p>I went back. Olga was closing the shop. On my table lay the money I had earned in two days: four hundred and eighty rubles and some change. In a box under the shelf I kept seven hundred grams of good dark blue yarn. I had been saving it to sell in December, when people start looking for wool for presents. It was soft, without knots, all one shade. It could fetch more than everything I had unraveled in the last week and a half.</p>
+    <p>“Tamara’s coming tomorrow,” said Olga.</p>
+    <p>“I remember.”</p>
+    <p>“What will you tell her?”</p>
+    <p>“That I didn’t make it.”</p>
+    <p>“She asked back on Monday whether Thursday was certain. I heard.”</p>
+    <p>I took one gray vest down from the shelf. The familiar knot stuck out on the shoulder. I unpicked the side seam and separated the front. Gray threads settled on the stool; green ones hung over the basin. I wanted to quickly do something I was good at.</p>
+    <p>When Olga left, you could hear in the room the water dripping from the wet towel. I worked until I began missing snags and breaking the yarn where I could have pulled more carefully. I gathered the skein I had and weighed it: seventy grams. There were still the back, the ribbings and the whole second vest.</p>
+    <p>Seventy grams didn’t bring Thursday close enough to be worth spoiling the rest. I put the vest in the box, covered the table and went home.</p>
+    <p>At the shop door I had to search a long time for the key. It turned out to be in the other pocket. I stood in the wet snow, sorting through change, and was angry at Asya for her question, whether it would have helped yesterday to know she wore the sweater. It would have, I wanted to answer. Of course it would have. I had to learn it from somewhere.</p>
+    <p>Then I found the key and saw green fluff on my thumb. That morning Nina Sergeyevna had said: my daughter’s. There had been somewhere to learn that from as well.</p>
+    <p>I didn’t lock the door on the first try. The bottom corner had swollen, and I had to lift it by the handle. Olga had long been asking me to look at the hinges, but neither she nor I knew how. We just lifted the door every evening, and for now it closed.</p>
+    <hr>
+    <p><em>Thursday</em></p>
+    <p>Tamara came without a bag for yarn. She had only a small shoulder bag and a rolled-up pattern. From this I understood that she meant first to check the weight and only then go home for money or for a big bag. But it turned out she wanted to show me the start of the back.</p>
+    <p>In the roll was a piece of gray knitting. Tamara spread it out right on the sheet that covered the green sweater.</p>
+    <p>“See, it’s coming along well. At first I thought it would look patchy, but it’s even.”</p>
+    <p>She ran her hand over the rows. I could see the back was knitted neatly, with two stripes along the edges, and it was unpleasant to me that I could judge her work but couldn’t give her what she had come for.</p>
+    <p>“The rest isn’t ready,” I said.</p>
+    <p>Tamara didn’t raise her head.</p>
+    <p>“None of it?”</p>
+    <p>“I’ve taken part of it apart. But I haven’t washed it. An urgent repair came up.”</p>
+    <p>“Urgent for whom?”</p>
+    <p>I pointed at the sweater.</p>
+    <p>“My mistake. I have to put it right.”</p>
+    <p>She rolled up the knitting, then unrolled it again, as if she had forgotten she meant to show something else.</p>
+    <p>“I did tell you when my sister’s leaving.”</p>
+    <p>“Yes.”</p>
+    <p>“On Sunday. I’m not knitting for an exhibition. She needs it for the journey. She’s always freezing on the train, and then she complains she didn’t bring anything warm. I wanted something for her to wear under her coat.”</p>
+    <p>“We could add a different gray. I have…”</p>
+    <p>“I’ve seen that one. It’s thinner.”</p>
+    <p>“Doubled.”</p>
+    <p>“Then the fabric will be different. Pavel, I know how to knit. Don’t tell me how to hide what you haven’t got ready.”</p>
+    <p>I took my hand off the box.</p>
+    <p>Tamara sat on the edge of the stool. She didn’t take off her bag.</p>
+    <p>“If you’d told me yesterday, I’d have gone to the market. There’s a woman there who sometimes has that color. Today she isn’t there. Tomorrow I’m with my granddaughter till evening.”</p>
+    <p>“I could have told you through Olga.”</p>
+    <p>“You could. I work nearby.”</p>
+    <p>She looked at the gray back in her lap. Then she asked:</p>
+    <p>“How much dry is there?”</p>
+    <p>“From stock, two hundred and ten grams. What I unraveled yesterday isn’t washed yet.”</p>
+    <p>“Two hundred and ten will get me part of the front.”</p>
+    <p>I brought the money from the box. The seven hundred rubles of deposit lay separately; I hadn’t touched them.</p>
+    <p>“Take it back for now.”</p>
+    <p>“I will. And the yarn?”</p>
+    <p>“I can give you the two hundred and ten now. The rest by tomorrow evening. But I can’t promise six hundred dry: I reckoned by the first vest, and there was less waste in it.”</p>
+    <p>For the first time Tamara looked at the two vests, one already unpicked, the other still whole.</p>
+    <p>“So you didn’t even know the weight?”</p>
+    <p>“I estimated.”</p>
+    <p>She pressed her fingers to the bridge of her nose. I stood holding the money until she took it.</p>
+    <hr>
+    <p>We went through the gray stock. Tamara set aside a skein that ran slightly toward blue and said she wouldn’t take it. A hundred and sixty grams were left. I offered that she not pay for them until the whole batch was ready.</p>
+    <p>“I wasn’t going to anyway,” she answered.</p>
+    <p>She didn’t take the yarn right away. She went out into the shop, looked at the cheap cardigans, came back with one over her shoulder. I had looked at that cardigan before but rejected it because of the thin yarn and the many buttons.</p>
+    <p>“Is this one similar in content?”</p>
+    <p>I felt the edge and looked at the seam.</p>
+    <p>“Similar. But the color’s lighter.”</p>
+    <p>“I can see it’s lighter. It might do for the button bands.”</p>
+    <p>She held the cardigan against her back piece. It was dark in the room, and we went to the window. Tamara held both pieces; I moved the basin. The difference was smaller than under the light over the table.</p>
+    <p>Olga named a price for the cardigan. Tamara shook her head.</p>
+    <p>“I won’t pay that much for buttons.”</p>
+    <p>They haggled. I offered to pay for the cardigan myself. Tamara wouldn’t agree.</p>
+    <p>“You’d do better to take it apart for me today. I’ll collect it unwashed this evening and wash it myself. Not all of it, the two fronts. If the yarn’s long in them.”</p>
+    <p>I wanted to say that today I had to help Vera with the sleeve. Tamara was already holding the cardigan so that I could see the seams. She was waiting for an answer, and her waiting was shorter than all my explanations.</p>
+    <p>“I’ll have the fronts apart by six.”</p>
+    <p>“For sure?”</p>
+    <p>I looked at the clock, at the wet green wool, at the gray vests.</p>
+    <p>“Yes. That I can manage.”</p>
+    <p>She left the cardigan, took the hundred and sixty grams from the stock and went. She carried the gray back away unrolled so as not to crease the edge.</p>
+    <p>After her came Vera. The green skeins had dried. She wound a small ball, knitted a swatch and laid it next to the whole sleeve. The new little piece was lighter and more even. On the old one the fibers were flattened, and a shadow lingered in the folds.</p>
+    <p>“The other one could be washed too,” said Vera.</p>
+    <p>“She asked us not to touch it.”</p>
+    <p>“Then that’s how it’ll be.”</p>
+    <p>Vera began counting stitches. She lost count, told me not to move the table and started again. I sat across from her with Tamara’s cardigan. Its seams had been sewn with a strong smooth thread that was hard to catch. After my first failed attempt Vera raised her head.</p>
+    <p>“Not with those scissors. The tips are too thick.”</p>
+    <p>I put the scissors down more sharply than I meant to.</p>
+    <p>“I don’t have any others.”</p>
+    <p>“Olga has nail scissors in her top drawer. She cuts tags with them.”</p>
+    <p>I went into the shop. The scissors were indeed in the top drawer. Beside them lay my pencil, which I had been looking for since Monday. I took both.</p>
+    <hr>
+    <p>By midday the room was crowded with work begun. On one stool lay the green wool, on the other the gray. Vera sat on a chair brought in from the shop and knitted the sleeve. I stood at the edge of the table, separating the fronts from the back. To reach the water I had to stretch past her elbow.</p>
+    <p>“Sit down,” she said at last. “You hover so, I keep thinking you want something.”</p>
+    <p>I sat on an upturned crate. My knees came almost up to my chin.</p>
+    <p>Vera knitted fast, but without the ease I had expected to see. Sometimes she undid a few stitches, shifted the needles, rubbed the base of her thumb. The yarn caught on her dry skin. She took a small jar from the table, rubbed cream into her hands, waited, then wiped them on a handkerchief.</p>
+    <p>“I used to do it faster,” she said.</p>
+    <p>“It’s fast now too.”</p>
+    <p>“To you. But I know where I didn’t use to stop.”</p>
+    <p>We worked in silence. Then she asked for some bread: she hadn’t had time for breakfast. Olga had two slices left and some processed cheese. I brought them on a saucer. Vera put down her knitting, wrapped the needles in a towel so they wouldn’t fall, and ate standing at the window.</p>
+    <p>“Will there be enough wool for the new sleeve?” I asked.</p>
+    <p>“If you don’t ask every half hour, we’ll find out sooner.”</p>
+    <p>I got angry. Not even at the words, but at the fact that I wanted her approval, and she was busy with the sleeve the whole time instead of noticing my efforts.</p>
+    <p>At one o’clock a woman came for the blue yarn. That morning Olga had told two regular customers that I was selling the stock cheaper than I had meant to. The woman spent a long time going through the skeins, looking for knots, asking whether the wool bled. I showed her the white rag I had tested it with after washing. She still asked me to soak a small length.</p>
+    <p>I cut one, wet it and rubbed it on the rag. No mark was left.</p>
+    <p>For the seven hundred grams she gave one thousand eight hundred. I counted the money and put it next to Asya’s receipt. Out of this money Olga was owed a share for the original garments and the space. I asked her to let it wait until the next sale.</p>
+    <p>“How long?”</p>
+    <p>“Till Monday.”</p>
+    <p>Olga opened the notebook.</p>
+    <p>“I’ll write it down. I pay the rent on Saturday, I have to keep count too.”</p>
+    <p>She added nothing about other people’s mistakes or my nobility. She subtracted her share on paper, circled the sum and closed the notebook.</p>
+    <p>Vera gathered the sleeve and the wool into a pillowcase. It was time for her to fetch her grandson.</p>
+    <p>“I’ll knit at their place till evening. I’ll bring it tomorrow morning. Give me the body for now, I’ll secure the cut when he’s asleep.”</p>
+    <p>I wrapped up the sweater. Without it the table at once became too big.</p>
+    <hr>
+    <p>Nina Sergeyevna came at about three with pirozhki in a paper bag. At first I thought she had brought them for me and got ready to refuse. But she asked whether Asya had been in.</p>
+    <p>“Not today.”</p>
+    <p>“She sometimes has a break. I thought she’d come here.”</p>
+    <p>Nina Sergeyevna set the bag on the edge of the table. Then she moved it toward the window, where it was cooler.</p>
+    <p>“If she comes in, give them to her.”</p>
+    <p>“I can keep them. But I don’t know whether she’ll come.”</p>
+    <p>“They won’t spoil before evening.”</p>
+    <p>She took off her gloves. On the right palm a piece of different fabric had been sewn on, much lighter. Nina Sergeyevna noticed me looking and turned the gloves over.</p>
+    <p>“Where’s the sweater?”</p>
+    <p>“With the knitter. She’ll bring it tomorrow.”</p>
+    <p>“Does she knit well?”</p>
+    <p>“Yes.”</p>
+    <p>“I had decreases every other row there. After the elbow. Not all in a row, you can see it from the pattern.”</p>
+    <p>I said Vera had taken the measurements from the whole sleeve. Nina Sergeyevna frowned.</p>
+    <p>“It stretched. She’ll make it long.”</p>
+    <p>“Asya asked for that length.”</p>
+    <p>“Asya always asks for them down over her fingers. Then the sleeves get dirty.”</p>
+    <p>She pushed the bag a little further. The edge of the table was uneven, and the paper caught on a splinter. Nina Sergeyevna freed it with two fingers, carefully, so as not to tear it.</p>
+    <p>“I could have done it all at home,” she said. “Not brought it anywhere.”</p>
+    <p>I didn’t know what to answer and went on taking apart the gray vest.</p>
+    <p>“Only I wouldn’t have finished it myself. I kept thinking: any minute she’ll come. Any minute she’ll say, put it down. And I’d put it down again.”</p>
+    <p>She took a short gray thread from the table and stretched it between her fingers.</p>
+    <p>“I didn’t want to talk about it anymore.”</p>
+    <p>“Now you have to.”</p>
+    <p>She raised her eyes to me.</p>
+    <p>“You didn’t help either.”</p>
+    <p>“I damaged it.”</p>
+    <p>“I don’t mean the hole.”</p>
+    <p>The room went quiet. From the shop came Olga’s voice: she was explaining to a customer that trousers could be shortened, but there was nothing to lengthen them with.</p>
+    <p>Nina Sergeyevna sat down. I didn’t offer her any work, and for a while she kept her hands on her knees. Then she asked whether she could look at the gray vest. I gave her the back. She found the knot at the neck, caught it with her nail and drew out the end.</p>
+    <p>“You need to go from the top here.”</p>
+    <p>“I know.”</p>
+    <p>“So I see.”</p>
+    <p>She put the back down again. Our hands didn’t meet.</p>
+    <p>Then Asya came.</p>
+    <hr>
+    <p>I wanted to go out into the shop, but Asya stopped me with a question about the sleeve. I explained that Vera would bring everything in the morning. Nina Sergeyevna sat by the window. Between them were the table and the bag of pirozhki.</p>
+    <p>“I found the key,” Asya said to me. “In another bag.”</p>
+    <p>“Good.”</p>
+    <p>She noticed the bag.</p>
+    <p>“Is that for me?”</p>
+    <p>“Cabbage,” her mother answered. “You didn’t take them yesterday.”</p>
+    <p>Asya opened the paper and looked inside.</p>
+    <p>“I didn’t come by yesterday.”</p>
+    <p>“The day before. I’m getting mixed up.”</p>
+    <p>Asya took out a pirozhok. She didn’t eat it, just held it.</p>
+    <p>Nina Sergeyevna said:</p>
+    <p>“I didn’t want you wearing it because of me.”</p>
+    <p>“I already explained that to you.”</p>
+    <p>“You told me: leave me alone.”</p>
+    <p>“First I said I wear it without you, too. Then: leave me alone. Because you started on about the three months.”</p>
+    <p>Her mother was looking at the bag.</p>
+    <p>“I won’t talk about the three months anymore.”</p>
+    <p>“All right.”</p>
+    <p>After that they could have fallen silent. Asya bit into the pirozhok, and crumbs fell on her jacket. I gave her a saucer; she put it on the table.</p>
+    <p>“But you do understand,” said Nina Sergeyevna, “I didn’t want to take it back for myself.”</p>
+    <p>Asya chewed.</p>
+    <p>“That wouldn’t have made me any warmer.”</p>
+    <p>“I thought I’d free you.”</p>
+    <p>“From the sweater?”</p>
+    <p>“From me with this sweater.”</p>
+    <p>Asya put the pirozhok on the saucer.</p>
+    <p>“Mom, you took it from me while I was out. Tomorrow I open at seven. Even my chair there is cold until you’ve sat on it a while. You could have asked.”</p>
+    <p>“You’d have said no.”</p>
+    <p>“Yes.”</p>
+    <p>Nina Sergeyevna ran her palm over the table, gathering invisible crumbs.</p>
+    <p>“There.”</p>
+    <p>“There what?”</p>
+    <p>“Nothing.”</p>
+    <p>Asya lifted the saucer so that her mother wouldn’t keep running her hand around it. Then she pulled the bag toward herself.</p>
+    <p>I stood at the sink holding the empty basin. It was awkward to stay and more awkward still to leave looking as if I had made them a present of the conversation on purpose. At last I put the basin down and said I would go for the gray cardigan from the shop. I didn’t need to go for the cardigan: it was lying in front of me. I took it with me.</p>
+    <p>Through the curtain I heard separate words, but stopped making them out. Olga suggested moving the box of shoes into the corner. We moved it. The box was heavy, the bottom sagged, and for a while all we had to do was watch that it didn’t fall out.</p>
+    <p>When I came back, Nina Sergeyevna already had her coat on. Asya was eating a second pirozhok. The bag lay open between them.</p>
+    <p>“Tell Dad I’ll come on Saturday,” she said. “Not in the morning.”</p>
+    <p>“He expects you in the morning.”</p>
+    <p>“I know. But not in the morning.”</p>
+    <p>Nina Sergeyevna buttoned her coat. This time the buttons matched up right.</p>
+    <hr>
+    <p>By six I had taken apart the fronts of the light cardigan. The yarn turned out to be long; only by the buttons did I have to fiddle with the fastenings. Tamara came on time, felt the skeins and asked how much I wanted for the taking apart.</p>
+    <p>“Nothing.”</p>
+    <p>“I paid for the cardigan. Your time is separate.”</p>
+    <p>“This is for the delay with the gray.”</p>
+    <p>She shrugged and put the yarn in her bag.</p>
+    <p>“All right. Only do the gray anyway. I won’t finish the top now, I’ll start her a scarf from something else. And this for later.”</p>
+    <p>“Tomorrow part of it will be dry.”</p>
+    <p>“I don’t need part of it if I have to come each time. When it’s all dry, tell Olga. I’ll stop by after work.”</p>
+    <p>She was no longer in the hurry she had been in that morning. That made it worse for me: the deadline I had broken had gone out of her voice, but it hadn’t gone back into her day.</p>
+    <p>I finished the second vest by seven. The third, the one that had still been whole that morning, I took apart after closing. Under its armholes there were more felted places than in the first two. I set aside the dense pieces, not cutting them out of the good fabric in one wide stroke but separating them little by little. It took time, but it didn’t correct anything special in me. I was still in a hurry, swore, and several times pulled too hard.</p>
+    <p>The two vests gave three hundred and forty grams of dry unprocessed yarn and a small bag of short ends. After washing the weight was bound to drop. Together with the hundred and sixty grams Tamara had already taken, it wasn’t only time that was short of the promised six hundred.</p>
+    <p>I soaked the skeins in two basins. The water turned gray. I changed it, rinsed, rolled the wool in towels and pressed it with my palms. A wet track formed on the floor from the sink to the table. I wiped it up with the towel Olga had told me not to use for the floor, and hung it up separately at once so as not to mix them up later.</p>
+    <p>Vera stopped by briefly with her grandson. The boy wanted to see how yarn came out of a sweater. I showed him a short leftover bit of ribbing. He pulled, the yarn broke, and he was upset.</p>
+    <p>“It’s already short here,” I said. “It isn’t your fault.”</p>
+    <p>Vera left the nearly finished sleeve on the table. A few rows remained before the top part.</p>
+    <p>“I’ll finish it in the morning and sew it in. I’ve secured the cut. Don’t pull at it for now.”</p>
+    <p>I gave her one thousand eight hundred and said I would bring the four hundred tomorrow. She counted the money, put it in her purse and asked the boy not to sit on the wet floor.</p>
+    <p>He sat down anyway, to look under the table.</p>
+    <p>“And what are these threads for?”</p>
+    <p>“They’re just lying there for now,” I answered.</p>
+    <p>“There’s a lot of them.”</p>
+    <p>“A lot.”</p>
+    <p>He pulled a red end out of the bag. Vera let him take it if I didn’t mind. I didn’t mind. The boy wound the thread around his finger and went out holding his hand in front of him so it wouldn’t unwind.</p>
+    <hr>
+    <p><em>Friday</em></p>
+    <p>In the morning the gray skeins seemed dry on the outside, but inside they kept a cold damp. I rehung them, spread the strands apart and didn’t weigh them. On the table lay the assembled green sweater.</p>
+    <p>Vera had brought it at half past ten. She hadn’t slept part of the night: her grandson was coughing, and then she couldn’t get back to sleep anyway and finished the top of the sleeve. I asked how the boy was.</p>
+    <p>“Running around now. In the daytime they’re always healthy.”</p>
+    <p>She laid the sweater face up. The new sleeve was different. It was softer, a little lighter, the stitches lay more evenly. The whole sleeve kept its stretched elbow and a dark crease by the cuff. Under the arm, on the inside, ran a thick seam.</p>
+    <p>“It may rub here,” said Vera. “I worked the ends in as best I could, but they didn’t get any longer.”</p>
+    <p>She let me feel it. I put my fingers inside and pressed the seam against my skin. It was stiff, especially in one place where several fastenings met.</p>
+    <p>“Maybe cover it with fabric?”</p>
+    <p>“You could. But let her put it on first. Add fabric and it gets thicker still. If there’s a shirt underneath, she may wear it as it is.”</p>
+    <p>I gave her the remaining four hundred rubles. To get them together I had to take from the grocery money. Vera didn’t know where it came from and wasn’t supposed to know. She counted it, said that was everything and began gathering her needles.</p>
+    <p>“If it has to be redone, can you do it?”</p>
+    <p>“Depends what. I can reknit the sleeve. I won’t take on taking the body apart now, I have a cardigan due Saturday. After that we can see.”</p>
+    <p>“How long after?”</p>
+    <p>“Next week. Come by on Tuesday if it’s needed.”</p>
+    <p>She left me the rest of the green wool, just a small ball, and a sheet with the number of stitches. I put the sheet in an envelope so as not to lose it. Vera went, and I spent a long time smoothing the sleeve on the table.</p>
+    <p>I wanted to weigh it down with something heavy so that it would look like the other one. I took the book that lay under the short leg of the table, held it in my hands and put it back. The table stopped rocking.</p>
+    <p>Olga looked in through the curtain.</p>
+    <p>“Did it work?”</p>
+    <p>“We’ll see when she puts it on.”</p>
+    <p>She touched the new sleeve.</p>
+    <p>“Soft.”</p>
+    <p>Then she went back to the shop. I took down from the shelf the empty box the gray vests had been in. Inside lay three seam threads and a button that had got in from who knew where. There were no more vests. All three now existed in different places: the first in Tamara’s back piece, the others over my basins.</p>
+    <hr>
+    <p>There were a few hours left until Asya. I swept the floor, washed the sink, sorted the box of needles. All of it had needed doing for a long time, but now I did it too diligently, as if a clean room could help with the fitting.</p>
+    <p>At eleven a woman came for cheap wool for a rug. She spent a long time looking at the bags under the table, picked the red scraps and asked how much.</p>
+    <p>I named a small sum. She said it was expensive for such lengths. I offered half the bag for less. She wanted the whole thing, but at the price of half.</p>
+    <p>We haggled for about four minutes. I gave way less than she asked, and she left pleased, pressing the bag to her side. The money I made barely covered lunch. I recorded the sale all the same and set aside Olga’s share.</p>
+    <p>Then a regular customer came for the beige skein. I began telling her how soft its yarn was, but she said she was taking it for sock heels and needed something sturdier. I had to get out another. The beige stayed on the shelf.</p>
+    <p>Around one I checked the gray skeins. Two had dried, the rest not yet. The dry ones came to a hundred and ninety grams. On paper I added them to the hundred and sixty Tamara had taken: three hundred and fifty. About a hundred and twenty should be left in the ones still drying, but I didn’t write that figure down as a finished weight.</p>
+    <p>Olga asked what to tell Tamara if she came in.</p>
+    <p>“A hundred and ninety are ready. The rest are still drying. Altogether it’ll come to less than six hundred. I’ll tell her myself.”</p>
+    <p>“She might not come in today.”</p>
+    <p>“Then I’ll take it to the bindery after work.”</p>
+    <p>Tamara worked there until seven. I had known that on Wednesday too.</p>
+    <p>Nina Sergeyevna didn’t come. Several times I looked at the door, though I was waiting for Asya. It seemed to me the mother might turn up first, ask to see it, bring money or take the leftover wool. I prepared answers in advance. Then I noticed I was once again carrying on a conversation with her that she hadn’t asked me to have and hadn’t come to herself.</p>
+    <p>The sweater lay on the table. I lifted it and looked at the place where the pocket had been. Two noticeable lines from the old seams were left, and in the bottom corner a small snag. I eased it out with a needle. The lines didn’t go anywhere, but the fabric became smoother.</p>
+    <p>At the edge of the table lay the envelope with the leftover yarn. I wrote Asya’s name on it and put the pencil away. There was nothing more to prepare.</p>
+    <hr>
+    <p>Asya came at twenty past two. She was wearing Olga’s sleeveless top, and the end of a scarf stuck out under her jacket. She took everything off at once and put it on the stool.</p>
+    <p>“Thank you, that helped,” she said to Olga.</p>
+    <p>“Not at all. Keep the scarf if you need it.”</p>
+    <p>“No, I have one. I found mine yesterday.”</p>
+    <p>She went to the table. She didn’t pick up the sweater at once; first she looked at both sleeves.</p>
+    <p>“It shows.”</p>
+    <p>“Yes.”</p>
+    <p>She touched the new one, then the old.</p>
+    <p>“This one’s nicer.”</p>
+    <p>I said nothing. Asya put the sweater on over her shirt, straightened her shoulders, lowered her arms. The new sleeve covered her fingers almost the way the old one did. She turned up the cuff, turned it back down, raised her elbow.</p>
+    <p>Her face changed.</p>
+    <p>“Here.”</p>
+    <p>I knew where.</p>
+    <p>“The seam?”</p>
+    <p>“It rubs.”</p>
+    <p>She raised and lowered her arm several times. Then she slipped her palm under the sweater and adjusted her shirt.</p>
+    <p>“Through this it’s bearable. But without a shirt it’ll be bad.”</p>
+    <p>I told her what Vera had said about a fabric facing and about next week. Asya heard me out.</p>
+    <p>“Nothing else is needed today. I’ll wear it. If it gets bad, I’ll bring it.”</p>
+    <p>“All right.”</p>
+    <p>“Just don’t promise it’ll definitely go away then.”</p>
+    <p>“I won’t.”</p>
+    <p>She turned to the small mirror by the curtain. It held her face and one shoulder. To see the bottom she had to step back almost into the shop. Olga moved a rack out of the aisle.</p>
+    <p>Asya looked at herself from the side and pulled the sweater down. Then she took the pocket out of her bag.</p>
+    <p>“Don’t sew it on yet.”</p>
+    <p>“I wasn’t going to without you.”</p>
+    <p>“I thought you’d offer. Maybe it was too low.”</p>
+    <p>She held the pocket higher, almost at her waist. Lowered it onto her palm. Raised it again.</p>
+    <p>“When I sit, the old place is handy. But standing, the key bangs against my leg. I’ll see.”</p>
+    <p>I offered her some pins. She took two big ones, held the pocket up once more, but didn’t pin it.</p>
+    <p>“At home, in peace.”</p>
+    <p>In one corner of the pocket a bit of seam thread stuck out. I showed her how to pull it out without catching a stitch. Asya hooked it with her nail herself and drew it out. The corner smoothed out.</p>
+    <p>She put the pocket in her bag and kept the sweater on.</p>
+    <hr>
+    <p>I gave Asya the envelope with the yarn and the sheet on which I had written down what had been done. She read only the top line, then asked:</p>
+    <p>“Am I supposed to keep this?”</p>
+    <p>“Better to keep it. The number of stitches and the length are there, in case you have it redone.”</p>
+    <p>“And the receipt?”</p>
+    <p>I took out the first one, with her name on the back. At the bottom I wrote: “Returned to owner. Amount due: 0.”</p>
+    <p>Asya took the pencil.</p>
+    <p>“Sign here?”</p>
+    <p>“Here.”</p>
+    <p>She signed and put the date. The pencil was short and awkward to hold. I kept meaning to replace it with a new one and kept forgetting.</p>
+    <p>“Did my mom come in?” Asya asked.</p>
+    <p>“Yesterday. You saw.”</p>
+    <p>“Today.”</p>
+    <p>“No.”</p>
+    <p>She nodded. I could have said that her mother was upset, that she had brought pirozhki, that at home she couldn’t finish it herself. Asya knew all of that or could find it out without me. I put the receipt in the drawer.</p>
+    <p>“Did you pay for the sleeve?” she asked.</p>
+    <p>“Yes.”</p>
+    <p>“I told Mom not to pay for the hole.”</p>
+    <p>“She didn’t.”</p>
+    <p>Asya zipped up her jacket. The new sleeve bunched a little at the wrist, and she pulled it straight with two fingers. Then she took the jacket off again, because she had forgotten her scarf on the stool, and laughed at herself.</p>
+    <p>“Always like being at a train station.”</p>
+    <p>Olga said everyone in the shop was like that: first they dress, then they remember their bag. They talked for another minute about the sleeveless top. Olga was going to put it out for sale again; Asya warned her that two stitches had come undone in the side seam and showed her where. Olga brought a needle.</p>
+    <p>I stood at the table holding the two pins Asya hadn’t taken after all. The old sleeve hung from her shoulder, and the new one beside it. She turned, and the seam under the arm made itself felt again: Asya moved her elbow out slightly but said nothing.</p>
+    <p>“If I bring it, when can I find you?” she asked.</p>
+    <p>“Tuesday to Saturday. After ten.”</p>
+    <p>“All right.”</p>
+    <p>She left in the green sweater, with the pocket in her bag. Neither Olga nor I saw her further than the door. Through the shop window I saw her stop on the step and check whether it was slippery. Then she walked toward the corner of the building.</p>
+    <p>I wanted to call Nina Sergeyevna. Not necessarily here, just to tell her that her daughter had kept the sweater, that she had put it on at once, that the new sleeve had turned out soft. I even took out the first receipt, which had her address.</p>
+    <p>Then I put it away again. Asya had already gone. On the table were two pins and a slight hollow in the sheet where the heavy thing had lain.</p>
+    <hr>
+    <p>By five the gray skeins had dried. I weighed everything: three hundred and twenty-four grams from the two vests. With the hundred and sixty Tamara had taken yesterday, that made four hundred and eighty-four. A hundred and sixteen grams short of the promised weight.</p>
+    <p>I could offer her the gray skein with the bluish shade as well. She had already turned it down. I could say that an approximate weight always changes after washing. That was true, but on Monday I hadn’t said “approximately,” I had said “six hundred.”</p>
+    <p>I packed the dry skeins, wrote the weight on a sheet of paper and took the money from the last sales out of the drawer. There was little of it. By Monday I had to give Olga back her deferred share, and there was still Vera, to whom I no longer owed any money but whom I might need again for Asya’s sweater. On the table there was not a single promise that would turn into earnings by itself.</p>
+    <p>Olga brought a sack of new things. On top lay a brown cardigan with wooden buttons, under it a white hat and a dark child’s sweater. She set the sack by the door.</p>
+    <p>“Will you look at them today?”</p>
+    <p>“Later.”</p>
+    <p>“There’s a woman waiting to hear what goes for sale and what for taking apart.”</p>
+    <p>I opened the sack. The brown cardigan was knitted chunky, with hand-sewn seams and thick yarn. It could be unraveled quickly, and by tomorrow there would already be something for sale. I undid the top button and found the joining thread under the collar.</p>
+    <p>Then I looked at Tamara’s bag.</p>
+    <p>A little over an hour was left before the bindery closed. If I started on the cardigan now, I would manage to take apart at least the back. If I went to Tamara, she might refuse the rest of the gray yarn, and then I would have to look for another buyer for a shade that had already begun to live in her sleeveless top.</p>
+    <p>I did the button up again.</p>
+    <p>“This one can go for sale,” I said to Olga. “It’s whole. Only a snag at the elbow.”</p>
+    <p>“And the rest?”</p>
+    <p>“When I get back.”</p>
+    <p>I took the bag and the sheet with the weight. At the door I remembered I hadn’t worked out the price. I went back to the table, sat down and multiplied the grams by the price we had agreed on Monday. Then I crossed out the sum: should I subtract the hundred and sixty already taken, which Tamara hadn’t paid for yet, or, on the contrary, include them? I was tired and getting muddled over simple things.</p>
+    <p>Olga came over and looked over my shoulder.</p>
+    <p>“First write what she has. Then what you’re bringing.”</p>
+    <p>I took a clean scrap of paper. I wrote two lines, added up the weight and counted again. It came to less than I had expected to make at the start of the week, and more than Tamara might now want to pay for an unfinished thing.</p>
+    <p>I put the reckoning in the bag. I would have to hand over the yarn before I knew how this conversation would end.</p>
+    <hr>
+    <p>The bindery smelled of glue and wet coats. Tamara stood at a long table folding sheets. Next to her another woman was pressing a stack of books under a board. I stopped by the entrance so as not to get in the way.</p>
+    <p>Tamara saw the bag.</p>
+    <p>“Has it dried?”</p>
+    <p>“Yes. Only there’s less of it altogether. Four hundred and eighty-four, counting what you have.”</p>
+    <p>She wiped her hands on her apron, came over and looked inside. She went through the skeins and held one up to the light. I kept the bag open.</p>
+    <p>“There won’t be enough for the whole top,” she said.</p>
+    <p>“No.”</p>
+    <p>“So the front will be light. Or I unravel the back and mix it in stripes.”</p>
+    <p>She took out one skein and unfolded it. In the light here the gray seemed warmer.</p>
+    <p>“I don’t know yet.”</p>
+    <p>I held out the reckoning. Tamara read it and folded the paper in half.</p>
+    <p>“I don’t have that much money on me today.”</p>
+    <p>“Later is fine.”</p>
+    <p>“On Monday. And I’ll still think about whether I’ll take all of it. I’ve already washed the light one, it came out well.”</p>
+    <p>Behind her the woman with the books asked for help: the board had slid, and the stack was starting to come apart. Tamara put the bag on the floor and went back to the table. I stepped after her and caught the bottom books. The woman told me to hold them straighter.</p>
+    <p>We squared up the stack. Tamara put the board on top, and the woman set a weight on it. A strip of glue was left on my palm. I rolled it off with my thumb.</p>
+    <p>“Leave the bag here,” said Tamara. “I’ll look at it at home tomorrow. And write down the price of the fronts of that cardigan separately. I do want to know what it cost me.”</p>
+    <p>“The taking apart is free.”</p>
+    <p>“I remember. It’s the cardigan itself I’ve forgotten the price of. Ask Olga.”</p>
+    <p>She went back to the sheets. I stood a while, then asked whether I should take back the empty bag she had borrowed on Monday.</p>
+    <p>“Oh, it’s at home. I’ll bring it later.”</p>
+    <p>I left without money and without the gray wool. It was ten minutes to the shop. In my pocket was the scrap of paper on which I had written the reminder to find out the price of the cardigan. I could have remembered it, but I had already once decided that I remembered everything I needed to about Tamara.</p>
+    <p>At the shop Olga was struggling with the lower lock. I lifted the door by the handle, and she turned the key.</p>
+    <p>“It’s late already,” she said. “You’ll go through the sack tomorrow.”</p>
+    <p>“I need to look up the price of the light cardigan.”</p>
+    <p>Olga sighed, opened the door again and went for the notebook. I went in after her. The room behind the shop was cold. Nothing hung over the basins anymore, and on the table lay the brown cardigan, which I hadn’t taken apart after all.</p>
+    <p>Olga named the price. I wrote it under the first line and put the scrap in the pocket of my coat where the keys were, so as not to forget to move it in the morning. Then I took the basin, poured out the remaining water and put it under the table. It sat more freely there: the red bag had been bought today.</p>
+    <p>Olga was waiting at the door. I turned off the light and went to her, leaving the cardigan till morning.</p>
+    <hr>
+    <p><em>A separate variant of the deferred ending</em></p>
+    <p>After Asya left I looked at the empty table for a long time. Then I took the brown cardigan out of the sack and spread it out in front of me. There was a snag at the elbow, and by the collar a small hole closed with a few stitches of a different yarn. I found the joining seam, caught it with a needle and pulled. The thread wouldn’t come. Before, I would have taken the scissors, but now I put down the needle, turned the cardigan over and began looking from the other edge.</p>
+    <p><em>A variant of a deferred fragment</em></p>
+    <p>I wrote “Amount due: 0” and held the pencil over the paper. A bare zero could mean that there was nothing more between us. These words meant only that I would not take money. The rest didn’t fit in the space, but I still looked at it too long, as if a good entry could complete the work.</p>
+    <p><em>A variant of a deferred line</em></p>
+    <p>Vera Ilyinichna listened while I told her about Tamara, and said:</p>
+    <p>“That’s work too. Saying it in time.”</p>
+    <p>I turned away to the sink. The gray skeins lay in the basin, and I wanted Vera to talk about water, about yarn, about something that could still be done with the hands.</p>
+
+    <p class="src">Translated from the Russian. Original, “Raspustit”: <a href="https://github.com/tym83/mnemosyne/blob/main/examples/leonia/raspustit.ru.txt">the text in the repository</a>.</p>
+  </details>
+
+  <h3>The Loose Button</h3>
+
+  <p>Eberhard Falkenstein, minimalism, in German (<a href="https://github.com/tym83/mnemosyne/blob/main/examples/leonia/der-lockere-knopf.de.txt">original</a>). A button has come loose on the father's shirt, and the neighbour comes to sew it on: Frau Seidel, who teaches the boy to read on Tuesdays after the swimming pool, while she herself is only learning to swim and, at the deep end of the pool, lets go of the ladder and then grabs it again.</p>
+
+  <details>
+    <summary>The Loose Button: read the translation</summary>
+
+    <p>The crack came from under the table. The boy looked up from his bread. His father sat bent forward, the shirt on his knees. He took a short thread off his lower lip.</p>
+    <p>“What was that?”</p>
+    <p>His father pulled at a button. That evening the boy had still watched him button the shirt. Now the button hung by a thread.</p>
+    <p>“Frau Seidel is coming soon.”</p>
+    <p>He laid the shirt over the back of the chair and fetched a plate.</p>
+    <p>“She asked whether there was anything to sew.”</p>
+    <p>The boy pushed the butter to the middle of the table.</p>
+    <p>Frau Seidel brought her sewing things in a sweet tin. She stayed standing at the door.</p>
+    <p>“I've already eaten.”</p>
+    <p>“You can manage half,” said his father.</p>
+    <p>She sat down. He cut a roll in two. Frau Seidel tested the button with her thumb, then reached into the tin.</p>
+    <p>The reader lay next to the boy. For some weeks now she had been coming on Tuesdays after swimming. Once, while he was reading, she had nodded. A drop had fallen from her hair onto the page. They had waited until it was dry.</p>
+    <p>“Into the water again today?” the boy asked.</p>
+    <p>“Afterwards.”</p>
+    <p>“The deep end too?”</p>
+    <p>“We'll see.”</p>
+    <p>At the deep end of the pool she could not stand. Sometimes she talked about it in the middle of a sentence. The boy would leave his hand lying on the page then.</p>
+    <p>“Yesterday I let go of the ladder,” she said.</p>
+    <p>His father put the roll in front of her.</p>
+    <p>“And?”</p>
+    <p>“Took hold of it again.”</p>
+    <p>She laughed. So did the boy. The needle stopped for a moment above the shirt.</p>
+    <hr>
+    <p>Frau Seidel laid two folded slips of paper beside the book. On the front were the swimming times. On the back she had written down words. The boy could read them from where he sat.</p>
+    <p>The last time, he had reached for her swimming bag. She had kept her finger on the line and pulled the book toward herself. The swimming cap had fallen down. Frau Seidel had looked under the table, then at her finger. Only when she left had she picked up the cap.</p>
+    <p>Yesterday the boy had heard her talking to his father in the hall.</p>
+    <p>“Perhaps you can find someone who can do this better. I'm not getting anywhere with him.”</p>
+    <p>Now she opened the book at the old page. Behind her ear there was a pale rim.</p>
+    <p>“From here?” he asked.</p>
+    <p>“Yes. Take your time.”</p>
+    <p>He read. Frau Seidel smoothed out one of the slips. He got as far as the part with the car that stopped in front of the house. There he got stuck. He had often stopped there before.</p>
+    <p>She raised her head and opened her mouth.</p>
+    <p>He read on. The next sentence too. When the page came to an end, she was still holding the slip by both corners.</p>
+    <p>“The next one too?”</p>
+    <p>“You can try it.”</p>
+    <p>He did not turn the page.</p>
+    <p>“Since before the holidays,” he said.</p>
+    <p>She put the slip down.</p>
+    <p>“The page?”</p>
+    <p>“The others too.”</p>
+    <p>In the yard a bucket was dragged across the stones.</p>
+    <p>“At the car,” she said. “That's where you always …”</p>
+    <p>“Yes.”</p>
+    <p>She took the second slip and folded the two together. One was bigger. She ran her finger along the edge that stuck out.</p>
+    <p>“I still wanted to hear what it's like at the deep end.”</p>
+    <p>“In the pool?”</p>
+    <p>He nodded.</p>
+    <p>She put the slips into her bag.</p>
+    <p>“I wasn't at the deep end today. We practised breathing out.”</p>
+    <p>The boy pushed his chair back so that she could pull out the bag. She took the towel off the radiator. Her bookmark lay next to the book.</p>
+    <hr>
+    <p>On the first Tuesday he sat on the stairs until the light from the upper window fell one step lower. On the second he heard Frau Seidel's key next door. He stayed in the kitchen.</p>
+    <p>Now she was standing downstairs in the hall.</p>
+    <p>“My bookmark,” she said. “The one with the red ribbon. Is it still here?”</p>
+    <p>He fetched it. When he came back, she had put the swimming bag on a step. A sleeve hung out of the opening. She pushed it in and pulled at the cords.</p>
+    <p>The boy moved aside. She sat down next to the bag. One cord had slipped out of its eyelet.</p>
+    <p>“Shall I get a needle?”</p>
+    <p>“It'll do like this.”</p>
+    <p>He stayed standing while she twisted the end between her fingers.</p>
+    <p>“Do you want to stay a bit?”</p>
+    <p>She looked up.</p>
+    <p>“I have to go later.”</p>
+    <p>He sat down one step below her. Frau Seidel threaded the cord through and set the closed bag between her feet.</p>
+    <p>For a while nobody said anything.</p>
+    <p>“How does breathing out work?” he asked.</p>
+    <p>She held the bookmark by its red ribbon.</p>
+    <p>“Above water I can do it,” she said.</p>
+
+    <p class="src">Translated from the German. Original, “Der lockere Knopf”: <a href="https://github.com/tym83/mnemosyne/blob/main/examples/leonia/der-lockere-knopf.de.txt">the text in the repository</a>.</p>
+  </details>
+
   <h2>Music</h2>
 
   <p>A composer writes a score, and the sound for it is made by the atelier's studio, described in detail above: every accepted score is played with samples of live instruments, and the recording is put next to the notes. A work's page has the recording itself, in full and by movement, the score, which you can leaf through page by page, and a Play button that plays the notes right in the browser. Rendering runs in a separate thread, so by the time the recording is ready the composer is usually already writing the next piece.</p>
 
   <figure>
-    <img src="img/mnemosyne/work-listen.jpg" alt="A work's page: the whole recording and each movement" loading="lazy">
+    <img src="img/mnemosyne/en/work-listen.jpg" alt="A work's page: the whole recording and each movement" loading="lazy">
     <figcaption>A work's page: the recording in full and by movement</figcaption>
   </figure>
 
   <figure>
-    <img src="img/mnemosyne/work-score.jpg" alt="The score viewer on a work's page" loading="lazy">
+    <img src="img/mnemosyne/en/work-score.jpg" alt="The score viewer on a work's page" loading="lazy">
     <figcaption>Leafing through the score on a work's page</figcaption>
   </figure>
 
@@ -665,22 +1537,7 @@ mnemosyne-atelier-0001-w00006      accept    music   3h12m</code></pre>
 
   <p>The last two pieces show how a creator's memory works. The atelier's critic Ada, whose voice is lyrical, wrote a review of “Precamber” and praised Korda, and the praise entered his next ideas: in “Centering Struck” it lands on him “like a mallet on timber wedges,” and after it, in “The Glover,” he walks home “warm and strangely embalmed.” Nobody asked him to write about the critic. The review went into his notebook as an event of his life.</p>
 
-  <h3>How the schools and ensembles sound</h3>
-  <p>So far all five sounded works are symphonies, although the language the composers write in is much wider. Before the creators had moved into the atelier, the studio played one piece in every school and one for every ensemble. These pieces were written not by a creator but by the engine itself, strictly by each school's grammar, and in them you can hear the vocabulary from which the creators later choose.</p>
-  <p>Schools, three to four minutes each:</p>
-  <ul>
-    <li>additive music, piano: <a href="img/mnemosyne/audio/school-additive.mp3">mp3</a></li>
-    <li>the Fibonacci series, string quartet: <a href="img/mnemosyne/audio/school-fibonacci.mp3">mp3</a></li>
-    <li>Pärt's tintinnabuli, string quartet: <a href="img/mnemosyne/audio/school-tintinnabuli.mp3">mp3</a></li>
-    <li>Feldman, strings and piano: <a href="img/mnemosyne/audio/school-feldman.mp3">mp3</a></li>
-    <li>Riley's In C, chamber ensemble: <a href="img/mnemosyne/audio/school-in_c.mp3">mp3</a></li>
-    <li>Messiaen, chamber ensemble: <a href="img/mnemosyne/audio/school-messiaen.mp3">mp3</a></li>
-    <li>drone, string orchestra: <a href="img/mnemosyne/audio/school-drone.mp3">mp3</a></li>
-    <li>Ustvolskaya, strings and piano: <a href="img/mnemosyne/audio/school-ustvolskaya.mp3">mp3</a></li>
-  </ul>
-  <p>Ensembles, 44 seconds each: <a href="img/mnemosyne/audio/ensemble-choir.mp3">choir</a>, <a href="img/mnemosyne/audio/ensemble-organ.mp3">organ</a>, <a href="img/mnemosyne/audio/ensemble-accordion.mp3">accordion</a>, <a href="img/mnemosyne/audio/ensemble-dan_tranh.mp3">đàn tranh</a> (a Vietnamese zither), <a href="img/mnemosyne/audio/ensemble-guitar_solo.mp3">guitar</a>, <a href="img/mnemosyne/audio/ensemble-harpsichord.mp3">harpsichord</a>, <a href="img/mnemosyne/audio/ensemble-string_quartet.mp3">string quartet</a>, <a href="img/mnemosyne/audio/ensemble-piano_trio.mp3">piano trio</a>.</p>
-
-  <h2>How to install it</h2>
+  <h2>How to install Mnemosyne</h2>
 
   <p>Installation requires a Kubernetes cluster at version 1.29 or newer, Helm 3, a default storage class and access to a model, whether an external API or your own OpenAI-compatible model running in the same cluster. The controller and studio images are public. They live at <code>ghcr.io/tym83/mnemosyne-controller</code> and <code>ghcr.io/tym83/mnemosyne-studio</code> and are referenced only by digest. On the owner's machine you will need <code>uv</code> and the repository itself, which contains the atelier's utility <code>mnemo</code>.</p>
 
@@ -753,7 +1610,7 @@ uv run mnemo works list --namespace mnemosyne --context &lt;ctx&gt;</code></pre>
 
   <h2>What is ahead</h2>
 
-  <p>Two arts live in the atelier now, music and literature, but the repository already holds studies for three more: paper architecture drawn by Blender, painting and perfumery. The next step is to settle them in the atelier on the same terms, with their own schools, their own critics and their own way of carrying the cluster's memory.</p>
+  <p>Two arts live in the atelier now, music and literature, but the repository already holds studies for three more: architecture drawn by Blender, painting and perfumery. The next step is to settle them in the atelier on the same terms, with their own schools, their own critics and their own way of carrying the cluster's memory.</p>
 
   <p>After that we want to move the atelier onto its own models. It can already call an OpenAI-compatible model running inside the cluster and run NotaGen, which generates music in the style of a given period, so the next goal is a fully autonomous atelier that lives on a single node with a GPU and does without an external API.</p>
 
